@@ -1,0 +1,33 @@
+<div class="flex flex-column my-4">
+  <p-listbox
+    [options]="organizations"
+    [(ngModel)]="selectedOrganization"
+    [listStyle]="{ 'max-height': '250px' }"
+    [style]="{ width: '15rem' }"
+    optionDisabled="isOrgAccessBlocked"
+    (onChange)="onSelectOrganization()">
+    <ng-template let-org pTemplate="item">
+      <div class="flex align-items-center">
+        <div class="mr-2">
+          <prime-avatar labelMode="prefix"
+                        styleClass="p-avatar-xs"
+                        [fileId]="org.logo"
+                        [label]="org.name"></prime-avatar>
+        </div>
+        <span>{{ org.name }}</span>
+      </div>
+    </ng-template>
+    <ng-template [ngIf]="showCreateButton" pTemplate="footer">
+      <p-button label="Create organization"
+                icon="pi pi-plus"
+                iconPos="right"
+                severity="success"
+                styleClass="w-full"
+                (onClick)="openCreateOrganizationDialog()"
+                [text]="true"></p-button>
+    </ng-template>
+    <ng-template pTemplate="empty">
+      No organizations
+    </ng-template>
+  </p-listbox>
+</div>

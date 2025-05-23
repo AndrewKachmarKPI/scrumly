@@ -1,0 +1,19 @@
+server:
+  port: 8761
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://DEV_DISCOVERY_USERNAME:DEV_DISCOVERY_PASSWORD@localhost:8761/eureka
+  instance:
+    hostname: localhost
+  server:
+    waitTimeInMsWhenSyncEmpty: '5'
+spring:
+  application:
+    name: eurekaserver
+  security:
+    user:
+      name: DEV_DISCOVERY_USERNAME
+      password: DEV_DISCOVERY_PASSWORD

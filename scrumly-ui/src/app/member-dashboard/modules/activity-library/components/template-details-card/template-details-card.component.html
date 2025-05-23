@@ -1,0 +1,66 @@
+<ng-template [ngIf]="activityTemplateDto">
+  <div class="surface-section">
+    <ul class="list-none p-0 m-0">
+      <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+        <div class="text-500 w-6 md:w-4 font-medium">Template name</div>
+        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+          {{ activityTemplateDto?.name! }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+        <div class="text-500 w-6 md:w-4 font-medium">Description</div>
+        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1 overflow-hidden text-overflow-ellipsis">
+          <prime-text-editor [value]="activityTemplateDto?.description!"></prime-text-editor>
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+          *ngIf="activityTemplateDto.type">
+        <div class="text-500 w-6 md:w-4 font-medium">Activity Type</div>
+        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+          {{ activityTemplateDto.type?.type! }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+        <div class="text-500 w-6 md:w-4 font-medium">Template image</div>
+        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+          <prime-image-box [src]="activityTemplateDto?.previewImageId!"
+                           height="50px"
+                           width="50px"
+                           containerStyleClass="justify-content-start"
+                           styleClass="mb-2"
+                           alt="Sample Image"></prime-image-box>
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+        <div class="text-500 w-6 md:w-4 font-medium">Tags</div>
+        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+          <div class="flex flex-wrap flex-row gap-2">
+            <p-chip *ngFor="let tag of activityTemplateDto?.tags!"
+                    [label]="tag"></p-chip>
+          </div>
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+        <div class="text-500 w-6 md:w-4 font-medium">Activity Scope</div>
+        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+          {{ activityTemplateDto?.owner?.scope! }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+        <div class="text-500 w-6 md:w-4 font-medium">Number of blocks</div>
+        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+          {{ activityTemplateDto?.blocks?.length! }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+          *ngFor="let block of activityTemplateDto.blocks! | activityBlockSort; let i = index">
+        <div class="text-500 w-6 md:w-4 font-medium">
+          #{{ i + 1  }} {{ block.blockDto.name }}
+        </div>
+        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+          <prime-template-block-info [block]="block!"></prime-template-block-info>
+        </div>
+      </li>
+    </ul>
+  </div>
+</ng-template>

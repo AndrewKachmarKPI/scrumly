@@ -1,0 +1,85 @@
+<ng-template [ngIf]="mode == 'list'">
+  <ul class="list-none p-0 m-0">
+    <li class="mb-2"
+        *ngFor="let block of activityRoom?.blockNavigationMetadata?.blocks | activityBlockSort; trackBy: trackById">
+      <ng-container *ngTemplateOutlet="blockCard;context:{block: block}"></ng-container>
+      <ng-container *ngTemplateOutlet="nestedNavigation;context:{block: block}"></ng-container>
+    </li>
+  </ul>
+</ng-template>
+
+<p-dropdown
+  *ngIf="mode == 'popup'"
+  [options]="menuOptions"
+  (onChange)="onSelectBlockChange($event)"
+  styleClass="text-sm">
+  <ng-template pTemplate="selectedItem" let-selectedOption>
+    <div class="flex align-items-center gap-2" *ngIf="activeBlock">
+      <ng-container *ngTemplateOutlet="dropdownCard;context:{block: activeBlock}"></ng-container>
+    </div>
+  </ng-template>
+  <ng-template let-block pTemplate="item">
+    <div class="flex align-items-center gap-2">
+      <ng-container *ngTemplateOutlet="dropdownCard;context:{block: block}"></ng-container>
+    </div>
+  </ng-template>
+</p-dropdown>
+
+<ng-template #blockCard let-block="block">
+  <a
+    class="flex flex-grow-0 p-2 align-items-start hover:surface-50 border-transparent border-1 border-round cursor-pointer transition-colors transition-duration-150"
+    [ngClass]="[isActiveBlock(block) ? 'border-green-500 bg-green-50': '',
+                  isSelectedBlock(block) ? 'border-gray-500 bg-gray-50' : '']"
+    (click)="onSelectBlock(block)">
+    <i class="text-500 mr-3 text-xl mt-1" [ngClass]="getBlockIcon(block.type)"></i>
+    <span>
+        <span class="block text-700 font-medium"> {{block.name}}</span>
+        <p class="mt-1 mb-0 text-600 text-sm text-container">
+          {{block.description}}
+        </p>
+      </span>
+  </a>
+</ng-template>
+
+<ng-template #dropdownCard let-block="block">
+  <a *ngIf="block"
+     class="flex flex-grow-0 align-items-start border-transparent border-round cursor-pointer transition-colors transition-duration-150">
+    <i class="text-500 mr-3 text-xl" [ngClass]="getBlockIcon(block.type)"></i>
+    <span>
+      <span class="block text-700 font-medium"> {{block.name}}</span>
+    </span>
+  </a>
+</ng-template>
+
+
+<ng-template #nestedNavigation let-block="block">
+  <ng-template [ngIf]="block.type === ActivityBlockType.ESTIMATE_BLOCK">
+    <div class="flex flex-column flex-wrap ml-2 mt-2 gap-2">
+      <div class="flex flex-row justify-content-between align-items-center">
+        <p class="m-0 text-700 w-full">
+          Selected issues:
+          <span class="ml-2">
+            ({{nestedMenuOptions.get(block.id)?.length}})
+          </span>
+        </p>
+        <p-button severity="success"
+                  icon="pi pi-search"
+                  *ngIf="isFacilitator && activityRoom?.statusMetadata?.isActive"
+                  [rounded]="true"
+                  (onClick)="onOpenSearchEstimateIssue(block)"/>
+      </div>
+      <div
+        class="hover:surface-50 cursor-pointer border-transparent border-1 border-round transition-colors transition-duration-150"
+        [ngClass]="[isEstimateIssueActive(block, issue) ? 'border-green-500 bg-green-50' : '',
+        isFacilitator ? 'cursor-pointer' : '',
+        isEstimateIssueSelected(issue) ? 'border-gray-500 bg-gray-50' : '']"
+        (click)="onSelectEstimateIssue(block, issue)"
+        *ngFor="let issue of nestedMenuOptions.get(block.id); trackBy: trackById">
+        <estimate-item-row [issue]="issue.issueMetadata"></estimate-item-row>
+      </div>
+      <p class="text-sm" *ngIf="!nestedMenuOptions.get(block.id) || nestedMenuOptions.get(block.id)?.length == 0 ">
+        No issue selected yet
+      </p>
+    </div>
+  </ng-template>
+</ng-template>

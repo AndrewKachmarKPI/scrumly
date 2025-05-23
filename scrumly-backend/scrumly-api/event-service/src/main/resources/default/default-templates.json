@@ -1,0 +1,412 @@
+[
+  {
+    "name": "Daily Scrum",
+    "description": "A short meeting for the team to discuss progress, blockers, and goals for the day.",
+    "tags": [
+      "scrum",
+      "daily",
+      "standup"
+    ],
+    "activityType": "Standup",
+    "scope": "PUBLIC",
+    "blocks": [
+      {
+        "order": 1,
+        "isOptional": false,
+        "block": {
+          "name": "Team Status Update",
+          "description": "Each team member provides an update on their progress since the last meeting.",
+          "type": "QUESTION_BLOCK",
+          "isMandatory": true,
+          "questions": [
+            {
+              "question": "What did you work on yesterday?"
+            },
+            {
+              "question": "What will you work on today?"
+            },
+            {
+              "question": "Are there any blockers?",
+              "answerOptions": [
+                "Yes",
+                "No"
+              ]
+            }
+          ],
+          "answerTimeLimit": 30
+        }
+      }
+    ]
+  },
+  {
+    "name": "Sprint Retrospective",
+    "description": "A reflective meeting where the team discusses what went well, what didn’t, and what can be improved in the next sprint.",
+    "tags": [
+      "scrum",
+      "retrospective"
+    ],
+    "activityType": "Retrospective",
+    "scope": "PUBLIC",
+    "blocks": [
+      {
+        "order": 1,
+        "isOptional": false,
+        "block": {
+          "name": "Reflect your opinion",
+          "description": "Each team member provides feedback on what went well, what didn’t, and what can be improved in the next sprint.",
+          "type": "REFLECT_BLOCK",
+          "isMandatory": true,
+          "reflectColumns": [
+            {
+              "columnOrder": 0,
+              "title": "What went well?",
+              "color": "#77DD77",
+              "instruction": "Express your opinion on what went well during the sprint."
+            },
+            {
+              "columnOrder": 1,
+              "title": "What didn’t go well?",
+              "color": "#DD7777",
+              "instruction": "Express your opinion on what didn’t go well during the sprint."
+            },
+            {
+              "columnOrder": 2,
+              "title": "What should be improved?",
+              "color": "#7777DD",
+              "instruction": "Express your opinion on what should be improved in the next sprint."
+            }
+          ],
+          "maxReflectionsPerColumnPerUser": 3,
+          "timePerColumn": 20,
+          "reflectTimeLimit": 20
+        }
+      }
+    ]
+  },
+  {
+    "name": "Morning Sync",
+    "description": "A quick meeting to align the team on the day's objectives, challenges, and support needs.",
+    "tags": [
+      "scrum",
+      "daily",
+      "standup"
+    ],
+    "activityType": "Standup",
+    "scope": "PUBLIC",
+    "blocks": [
+      {
+        "order": 1,
+        "isOptional": false,
+        "block": {
+          "name": "Progress Review",
+          "description": "Each team member provides a brief update on their progress and priorities for the day.",
+          "type": "QUESTION_BLOCK",
+          "isMandatory": true,
+          "questions": [
+            {
+              "question": "What task are you focusing on today?"
+            },
+            {
+              "question": "Is there any help you need from the team?"
+            },
+            {
+              "question": "Are you on track with your current task?",
+              "answerOptions": [
+                "Yes",
+                "No"
+              ]
+            }
+          ],
+          "answerTimeLimit": 20
+        }
+      },
+      {
+        "order": 2,
+        "isOptional": true,
+        "block": {
+          "name": "Impediment Identification",
+          "description": "A quick check-in for any potential blockers that need to be addressed.",
+          "type": "QUESTION_BLOCK",
+          "isMandatory": false,
+          "questions": [
+            {
+              "question": "Do you foresee any blockers today?"
+            }
+          ],
+          "answerTimeLimit": 15
+        }
+      }
+    ]
+  },
+  {
+    "name": "Sprint Reflection",
+    "description": "A meeting to reflect on the sprint, discuss achievements, challenges, and plan improvements.",
+    "tags": [
+      "scrum",
+      "retrospective"
+    ],
+    "activityType": "Retrospective",
+    "scope": "PUBLIC",
+    "blocks": [
+      {
+        "order": 1,
+        "isOptional": false,
+        "block": {
+          "name": "Team Achievements",
+          "description": "Each team member shares one thing that went well during the sprint.",
+          "type": "QUESTION_BLOCK",
+          "isMandatory": true,
+          "questions": [
+            {
+              "question": "What was one achievement you are proud of this sprint?"
+            }
+          ],
+          "answerTimeLimit": 15
+        }
+      },
+      {
+        "order": 2,
+        "isOptional": false,
+        "block": {
+          "name": "Areas for Improvement",
+          "description": "Identify areas where the team can improve based on the sprint's experiences.",
+          "type": "QUESTION_BLOCK",
+          "isMandatory": true,
+          "questions": [
+            {
+              "question": "What part of the process can we improve?"
+            },
+            {
+              "question": "What hindered your work or slowed you down?"
+            }
+          ],
+          "answerTimeLimit": 20
+        }
+      },
+      {
+        "order": 3,
+        "isOptional": true,
+        "block": {
+          "name": "Actionable Items",
+          "description": "Define specific actions that can be taken to improve the team's performance in the next sprint.",
+          "type": "QUESTION_BLOCK",
+          "isMandatory": false,
+          "questions": [
+            {
+              "question": "What can we do differently in the next sprint to improve?"
+            }
+          ],
+          "answerTimeLimit": 10
+        }
+      },
+      {
+        "order": 4,
+        "isOptional": false,
+        "block": {
+          "name": "Sprint Reflection",
+          "description": "Reflect on various aspects of the sprint, including successes, challenges, and improvements.",
+          "type": "REFLECT_BLOCK",
+          "isMandatory": true,
+          "reflectColumns": [
+            {
+              "columnOrder": 0,
+              "title": "What went well?",
+              "color": "#77DD77",
+              "instruction": "Reflect on what worked well during the sprint."
+            },
+            {
+              "columnOrder": 1,
+              "title": "What didn't go well?",
+              "color": "#DD7777",
+              "instruction": "Reflect on the challenges or failures encountered during the sprint."
+            },
+            {
+              "columnOrder": 2,
+              "title": "What can we improve?",
+              "color": "#FFDD77",
+              "instruction": "Reflect on what the team could have done better."
+            }
+          ],
+          "maxReflectionsPerColumnPerUser": 3,
+          "timePerColumn": 15,
+          "reflectTimeLimit": 45
+        }
+      }
+    ]
+  },
+  {
+    "name": "Sprint Estimation",
+    "description": "A meeting to estimate tasks for the upcoming sprint, discuss achievements, challenges, and plan improvements.",
+    "tags": [
+      "scrum",
+      "estimation"
+    ],
+    "activityType": "Estimation",
+    "scope": "PUBLIC",
+    "blocks": [
+      {
+        "order": 1,
+        "isOptional": false,
+        "block": {
+          "name": "Estimate tasks",
+          "description": "Estimate the tasks for the upcoming sprint.",
+          "type": "ESTIMATE_BLOCK",
+          "isMandatory": true,
+          "estimateMethod": "PLANNING_POKER",
+          "createScaleRQ": {
+            "name": "Fibonacci sequence",
+            "scale": [
+              "1",
+              "2",
+              "3",
+              "5",
+              "8",
+              "13",
+              "21",
+              "34",
+              "?"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Sprint Estimation - T-shirt Sizes",
+    "description": "A meeting to estimate tasks for the upcoming sprint using T-shirt sizes (S, M, L, XL, XXL).",
+    "tags": [
+      "scrum",
+      "estimation"
+    ],
+    "activityType": "Estimation",
+    "scope": "PUBLIC",
+    "blocks": [
+      {
+        "order": 1,
+        "isOptional": false,
+        "block": {
+          "name": "Estimate tasks",
+          "description": "Estimate the tasks for the upcoming sprint using T-shirt sizes.",
+          "type": "ESTIMATE_BLOCK",
+          "isMandatory": true,
+          "estimateMethod": "PLANNING_POKER",
+          "createScaleRQ": {
+            "name": "T-shirt sizes",
+            "scale": [
+              "S",
+              "M",
+              "L",
+              "XL",
+              "XXL"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Sprint Estimation - Powers of Two",
+    "description": "A meeting to estimate tasks for the upcoming sprint using powers of two (1, 2, 4, 8, 16).",
+    "tags": [
+      "scrum",
+      "estimation"
+    ],
+    "activityType": "Estimation",
+    "scope": "PUBLIC",
+    "blocks": [
+      {
+        "order": 1,
+        "isOptional": false,
+        "block": {
+          "name": "Estimate tasks",
+          "description": "Estimate the tasks for the upcoming sprint using powers of two.",
+          "type": "ESTIMATE_BLOCK",
+          "isMandatory": true,
+          "estimateMethod": "PLANNING_POKER",
+          "createScaleRQ": {
+            "name": "Powers of Two",
+            "scale": [
+              "1",
+              "2",
+              "4",
+              "8",
+              "16"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Sprint Estimation - Story Points",
+    "description": "A meeting to estimate tasks for the upcoming sprint using story points (1, 2, 3, 5, 8, 13, 20).",
+    "tags": [
+      "scrum",
+      "estimation"
+    ],
+    "activityType": "Estimation",
+    "scope": "PUBLIC",
+    "blocks": [
+      {
+        "order": 1,
+        "isOptional": false,
+        "block": {
+          "name": "Estimate tasks",
+          "description": "Estimate the tasks for the upcoming sprint using story points.",
+          "type": "ESTIMATE_BLOCK",
+          "isMandatory": true,
+          "estimateMethod": "PLANNING_POKER",
+          "createScaleRQ": {
+            "name": "Story Points",
+            "scale": [
+              "1",
+              "2",
+              "3",
+              "5",
+              "8",
+              "13",
+              "20"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Sprint Estimation - Dot Voting",
+    "description": "A meeting to estimate tasks for the upcoming sprint using dot voting.",
+    "tags": [
+      "scrum",
+      "estimation"
+    ],
+    "activityType": "Estimation",
+    "scope": "PUBLIC",
+    "blocks": [
+      {
+        "order": 1,
+        "isOptional": false,
+        "block": {
+          "name": "Estimate tasks",
+          "description": "Estimate the tasks for the upcoming sprint using dot voting.",
+          "type": "ESTIMATE_BLOCK",
+          "isMandatory": true,
+          "estimateMethod": "DOT_VOTING",
+          "createScaleRQ": {
+            "name": "Dot Voting",
+            "scale": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ]
+          }
+        }
+      }
+    ]
+  }
+
+
+
+
+]

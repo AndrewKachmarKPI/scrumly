@@ -1,0 +1,48 @@
+server:
+  port: 8084
+
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    url: jdbc:mysql://localhost:3307/conference_service_db
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+  cloud:
+    openfeign:
+      oauth2:
+        enabled: true
+
+keycloak:
+  url: http://localhost:9999
+  realm: scrumly
+  token-path: /realms/master/protocol/openid-connect/token
+  master-username: SCRUMLY_DEV_ADMIN
+  master-password: SCRUMLY_DEV_ADMIN
+
+open-vidu:
+  url: http://localhost:4443
+  secret: MY_SECRET
+  call:
+    private-access: ENABLED
+    recording: ENABLED
+    broadcast: DISABLED
+  CALL_OPENVIDU_CERTTYPE: selfsigned
+  CALL_USER: admin
+  CALL_SECRET: MY_SECRET
+  CALL_ADMIN_SECRET: MY_SECRET
+
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html

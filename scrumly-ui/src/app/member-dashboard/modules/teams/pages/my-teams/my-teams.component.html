@@ -1,0 +1,299 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Your teams
+      </h1>
+      <p-badge severity="success"
+               [value]="orgTeamGroup?.length"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your team groups.</p>
+  </div>
+</div>
+
+
+<p-confirmDialog/>
+
+
+<div class="flex flex-row flex-wrap gap-3 justify-content-between align-items-center mb-3">
+  <div class="flex flex-row flex-wrap gap-3">
+    <!--    <prime-input placeholder="Organization name"-->
+    <!--                 iconPos="p-input-icon-left"-->
+    <!--                 icon="pi pi-search"-->
+    <!--                 styleClass="w-100 lg:w-20rem"-->
+    <!--                 [delayEnabled]="true"-->
+    <!--                 [control]="control(filtersGroup, 'organizationName')"-->
+    <!--                 (onDelayOver)="filterByName()"></prime-input>-->
+  </div>
+</div>
+
+<ng-template [ngIf]="orgTeamGroup"
+             [ngIfThen]="teamsBlock"
+             [ngIfElse]="skeleton">
+</ng-template>
+
+<ng-template #teamsBlock>
+
+  <div class="w-full">
+    <div class="grid">
+      <div class="col-12">
+
+        <p-table [value]="orgTeamGroup!"
+                 [scrollable]="true"
+                 [rowHover]="true"
+                 dataKey="organization.organizationId"
+                 editMode="row"
+                 styleClass="p-datatable-gridlines">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5rem"></th>
+              <th pSortableColumn="name" class="text-left">
+                Organization
+                <p-sortIcon field="name"/>
+              </th>
+              <th class="text-center" pSortableColumn="teams.length">
+                Total teams
+                <p-sortIcon field="teams.length"/>
+              </th>
+              <th class="text-center" pSortableColumn="created">
+                Created date
+                <p-sortIcon field="created"/>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-group
+                       let-expanded="expanded"
+                       let-editing="editing"
+                       let-ri="rowIndex">
+            <tr [pEditableRow]="group">
+              <td>
+                <p-button type="button"
+                          [pRowToggler]="group"
+                          [text]="true"
+                          [rounded]="true"
+                          [plain]="true"
+                          [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"/>
+              </td>
+              <td class="text-left">
+                <org-short-info avatarSize="large"
+                                [orgInfo]="group.organization"></org-short-info>
+              </td>
+              <td class="text-center">
+                <div class="flex justify-content-center">
+                  <div
+                    pTooltip="Team teams"
+                    tooltipPosition="bottom"
+                    showDelay="500"
+                    class="border-1 p-1 px-2 border-round flex align-items-center w-min font-medium surface-100 text-600 surface-border">
+                    <i class="pi pi-building-columns mr-2"></i>
+                    <span class="mr-2">Teams</span>
+                    <span>{{ group.organization.teams.length }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center">
+                <p>{{ group.organization.created | date: 'mediumDate' }}</p>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="rowexpansion" let-group>
+            <tr>
+              <td colspan="4">
+                <p-table [value]="group?.teams!"
+                         [scrollable]="true"
+                         [rowHover]="true"
+                         dataKey="teamId"
+                         editMode="row"
+                         styleClass="p-datatable-gridlines">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th pSortableColumn="name" class="text-left" style="width:20%">
+                        Team name
+                        <p-sortIcon field="name"/>
+                      </th>
+                      <th class="text-center" pSortableColumn="totalMembers">
+                        Total members
+                        <p-sortIcon field="created"/>
+                      </th>
+                      <th class="text-center" pSortableColumn="createdBy.firstName">
+                        Creator
+                        <p-sortIcon field="createdBy.firstName"/>
+                      </th>
+                      <th class="text-center" pSortableColumn="created">
+                        Created date
+                        <p-sortIcon field="created"/>
+                      </th>
+                      <th class="text-right" style="width:20%;">
+                        Actions
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-team>
+                    <tr>
+                      <td class="text-left">
+                        {{ team.name }}
+                      </td>
+                      <td class="text-center">
+                        <div class="flex justify-content-center">
+                          <div
+                            pTooltip="Team members"
+                            tooltipPosition="bottom"
+                            class="border-1 p-1 px-2 border-round flex align-items-center w-min font-medium surface-100 text-600 surface-border">
+                            <i class="pi pi-users mr-2"></i>
+                            <span class="mr-2">Members</span>
+                            <span>{{ team.totalMembers }}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex align-items-center justify-content-center">
+                          <prime-user-header [profile]="team.createdBy"></prime-user-header>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <p>{{ team.created | date: 'mediumDate' }}</p>
+                      </td>
+                      <td class="text-right">
+                        <p-button label="Select team"
+                                  severity="success"
+                                  size="small"
+                                  (onClick)="onSelectTeam(group, team)"
+                                  [outlined]="team.teamId !== selection?.team?.teamId"></p-button>
+                      </td>
+                    </tr>
+                  </ng-template>
+
+                  <ng-template pTemplate="emptymessage">
+                    <tr>
+                      <td [colSpan]="6" class="p-0">
+                        <prime-no-data-placeholder *ngIf="!group?.teams || group?.teams?.length == 0"
+                                                   text="No teams invites found"
+                                                   description="We couldn't find any teams created">
+                          <p-button label="Create new team"
+                                    severity="success"
+                                    size="small"
+                                    icon="pi pi-plus"></p-button>
+                        </prime-no-data-placeholder>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </td>
+            </tr>
+          </ng-template>
+
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [colSpan]="6" class="p-0">
+                <prime-no-data-placeholder text="No teams invites found"
+                                           description="We couldn't find any teams created">
+                  <p-button label="Create new team"
+                            severity="success"
+                            size="small"
+                            icon="pi pi-plus"></p-button>
+                </prime-no-data-placeholder>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+
+        <!--        <p-table #dt-->
+        <!--                 [value]="teams?.data!"-->
+        <!--                 [tableStyle]="{'min-width': '50rem'}"-->
+        <!--                 [scrollable]="true"-->
+        <!--                 [scrollHeight]="'flex'"-->
+        <!--                 [rowHover]="true"-->
+        <!--                 styleClass="p-datatable-gridlines">-->
+        <!--          <ng-template pTemplate="header">-->
+        <!--            <tr>-->
+        <!--              <th pSortableColumn="name" style="width:20%">-->
+        <!--                Name-->
+        <!--                <p-sortIcon field="name"/>-->
+        <!--              </th>-->
+        <!--              <th class="text-center" pSortableColumn="created">-->
+        <!--                Created-->
+        <!--                <p-sortIcon field="created"/>-->
+        <!--              </th>-->
+        <!--              <th pSortableColumn="createdBy.firstName">-->
+        <!--                Created By-->
+        <!--                <p-sortIcon field="createdBy.firstName"/>-->
+        <!--              </th>-->
+        <!--              <th class="text-center" pSortableColumn="createdDateTime">-->
+        <!--                Total members-->
+        <!--                <p-sortIcon field="createdDateTime"/>-->
+        <!--              </th>-->
+        <!--              <th class="text-center" style="width:15%">-->
+        <!--                Actions-->
+        <!--              </th>-->
+        <!--            </tr>-->
+        <!--          </ng-template>-->
+        <!--          <ng-template pTemplate="body" let-team>-->
+        <!--            <tr>-->
+        <!--              <td>-->
+        <!--                {{team.name}}-->
+        <!--              </td>-->
+        <!--              <td class="text-center">-->
+        <!--                <p>{{ team.created | date: 'mediumDate' }}</p>-->
+        <!--              </td>-->
+        <!--              <td>-->
+        <!--                <prime-user-header [profile]="team.createdBy!"-->
+        <!--                                   avatarSize="normal"-->
+        <!--                                   textSize="text-xs"></prime-user-header>-->
+        <!--              </td>-->
+        <!--              <td class="text-center">-->
+        <!--                <p-tag-->
+        <!--                  severity="success"-->
+        <!--                  [value]="team.members.length"/>-->
+        <!--              </td>-->
+        <!--              <td class="text-center">-->
+<!--                        <p-button label="Select team"-->
+<!--                                  severity="success"-->
+<!--                                  size="small"-->
+<!--                                  (onClick)="onSelectTeam(team)"-->
+<!--                                  [outlined]="team.teamId !== selection?.team?.teamId"></p-button>-->
+        <!--              </td>-->
+        <!--            </tr>-->
+        <!--          </ng-template>-->
+
+        <!--          <ng-template pTemplate="summary">-->
+        <!--            <p-paginator styleClass="d-flex align-items-center justify-content-end bg-transparent px-0"-->
+        <!--                         (onPageChange)="onPageChange($event)"-->
+        <!--                         [rows]="teams?.size || 0"-->
+        <!--                         [totalRecords]="teams?.totalElements || 0"-->
+        <!--                         [rowsPerPageOptions]="defaultPageOptions()"></p-paginator>-->
+        <!--          </ng-template>-->
+        <!--          <ng-template pTemplate="emptymessage">-->
+        <!--            <tr>-->
+        <!--              <td [colSpan]="7" class="p-0">-->
+        <!--                <prime-no-data-placeholder text="No teams found"-->
+        <!--                                           description="We couldn't find any teams">-->
+        <!--                </prime-no-data-placeholder>-->
+        <!--              </td>-->
+        <!--            </tr>-->
+        <!--          </ng-template>-->
+        <!--        </p-table>-->
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #skeleton>
+  <div class="w-full">
+    <div class="grid">
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12">
+        <p-skeleton width="100%" height="4rem"/>
+      </div>
+    </div>
+  </div>
+</ng-template>

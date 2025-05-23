@@ -1,0 +1,176 @@
+<p-toast position="top-center"/>
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Backlog issues
+      </h1>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your backlog issues.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <!--        <p-button label="Create new issue type"-->
+    <!--                  severity="success"-->
+    <!--                  size="small"-->
+    <!--                  icon="pi pi-plus"-->
+    <!--                  (onClick)="op.toggle($event)"></p-button>-->
+  </div>
+</div>
+
+<ng-template [ngIf]="issues"
+             [ngIfThen]="dataTable"
+             [ngIfElse]="skeleton">
+</ng-template>
+
+<ng-template #dataTable>
+  <div class="w-full">
+    <p-table #dt
+             styleClass="p-datatable-sm"
+             [rowTrackBy]="trackByIssueId"
+             [value]="issues?.data!"
+             [tableStyle]="{'min-width': '50rem'}"
+             [scrollable]="true"
+             [scrollHeight]="'flex'"
+             [rowHover]="true">
+      <ng-template pTemplate="caption">
+        <div class="flex flex-row gap-3 flex-wrap align-items-center justify-content-between">
+          <div class="flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
+            <div class="flex flex-row flex-wrap gap-3">
+              <prime-input placeholder="Issue title or key"
+                           iconPos="p-input-icon-left"
+                           icon="pi pi-search"
+                           styleClass="w-full lg:w-20rem"
+                           [delayEnabled]="true"
+                           [control]="control(filtersGroup, 'searchIssue')"
+                           (onDelayOver)="onSearchChange()"></prime-input>
+            </div>
+          </div>
+          <div class="flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
+            <p-button label="Create Issue"
+                      severity="success"
+                      size="small"
+                      icon="pi pi-plus"
+                      (onClick)="onCreateIssue()"></p-button>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="text-start" pSortableColumn="issueKey" style="width:7%">
+            #Key
+            <p-sortIcon field="issueKey"/>
+          </th>
+          <th class="text-start" pSortableColumn="issueType.type" style="width:10%">
+            Issue type
+            <p-sortIcon field="issueType.type"/>
+          </th>
+          <th class="text-start" pSortableColumn="title" style="width:35%">
+            Title
+            <p-sortIcon field="title"/>
+          </th>
+          <th class="text-start" pSortableColumn="status.status" style="width:15%">
+            Status
+            <p-sortIcon field="status.status"/>
+          </th>
+          <th class="text-start" pSortableColumn="assignee.firstName" style="width:15%">
+            Assignee
+            <p-sortIcon field="assignee.firstName"/>
+          </th>
+          <th class="text-right" style="width:15%">
+            Actions
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-issue>
+        <tr (click)="viewIssue(isRedirect, issue)"
+            class="cursor-pointer">
+          <td class="text-start">
+            <a class="text-green-500 no-underline"
+               [routerLink]="'/app/backlog/'+issue.issueKey+'/issue'"
+               target="_blank">
+              {{issue?.issueKey}}
+            </a>
+          </td>
+          <td class="text-start">
+            <issue-type-row [issueType]="issue.issueType"
+                            styleClass="justify-content-start align-items-center"></issue-type-row>
+          </td>
+          <td class="text-start">
+            {{issue.title}}
+          </td>
+          <td class="text-start"
+              (mouseover)="isRedirect = false"
+              (mouseout)="isRedirect = true">
+            <div class="flex justify-content-start w-full">
+              <issue-status-dropdown [data]="issueStatuses"
+                                     [defaultValue]="issue.status"
+                                     (onSelectIssueStatus)="onChangeIssueStatus(issue, $event)"
+                                     style="width: 100%"
+                                     styleClass="w-full flex justify-content-start align-items-start"></issue-status-dropdown>
+            </div>
+          </td>
+          <td class="text-start"
+              (mouseover)="isRedirect = false"
+              (mouseout)="isRedirect = true">
+            <div class="flex justify-content-start w-full" *ngIf="issueAssignee.length > 0">
+              <issue-assignee-dropdown [data]="issueAssignee"
+                                       [defaultValue]="issue.assignee"
+                                       [backlogId]="backlogId"
+                                       (onSelectAssignee)="onChangeIssueAssignee(issue, $event)"
+                                       style="width: 100%"
+                                       styleClass="w-full flex justify-content-start align-items-start"></issue-assignee-dropdown>
+            </div>
+          </td>
+          <td class="text-right"
+              (mouseover)="isRedirect = false"
+              (mouseout)="isRedirect = true">
+            <div class="flex flex-row align-items-center justify-content-end">
+              <p-button severity="danger"
+                        icon="pi pi-trash"
+                        pTooltip="Delete issue"
+                        showDelay="500"
+                        (onClick)="deleteIssue(issue)"
+                        [outlined]="true"
+                        [text]="true"></p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="summary">
+        <p-paginator (onPageChange)="onPageChange($event)"
+                     [rows]="issues?.size || 0"
+                     [totalRecords]="issues?.totalElements || 0"
+                     [rowsPerPageOptions]="defaultPageOptions()"></p-paginator>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [colSpan]="6" class="p-0">
+            <prime-no-data-placeholder text="No issues found"
+                                       description="This backlog is empty">
+            </prime-no-data-placeholder>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</ng-template>
+
+<ng-template #skeleton>
+  <div class="w-full">
+    <div class="grid">
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12">
+        <p-skeleton width="100%" height="4rem"/>
+      </div>
+    </div>
+  </div>
+</ng-template>

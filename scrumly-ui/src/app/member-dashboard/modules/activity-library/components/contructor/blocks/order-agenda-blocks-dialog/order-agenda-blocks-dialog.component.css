@@ -1,0 +1,5 @@
+.p-picklist-buttons .p-button, .p-orderlist-controls .p-button {
+  background: var(--green-500) !important;
+  color: var(--surface-overlay) !important;
+  border: 1px solid !important;
+}

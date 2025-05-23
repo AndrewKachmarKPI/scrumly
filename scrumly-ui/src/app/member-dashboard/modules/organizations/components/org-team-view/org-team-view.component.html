@@ -1,0 +1,10 @@
+<div class="flex align-items-center">
+  <prime-avatar labelMode="prefix"
+                styleClass="p-avatar-xs"
+                [fileId]="selectedOrg?.logo!"
+                [label]="selectedOrg?.name!"></prime-avatar>
+  <div class="flex flex-column ml-3">
+    <span class="text-700 font-medium">{{ selectedOrg?.name }}</span>
+    <span class="text-sm text-600">{{ selectedTeam?.name }}</span>
+  </div>
+</div>

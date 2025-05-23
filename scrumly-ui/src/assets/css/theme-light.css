@@ -1,0 +1,46 @@
+@import "primeng/resources/themes/lara-light-green/theme.css";
+
+:root {
+  --navigation-surface: #f9fafb;
+}
+
+.p-inputtext:disabled {
+  opacity: 1;
+  background-color: #e2e8f0;
+  color: #64748b;
+}
+
+.p-tag.p-tag-primary {
+  background: var(--primary-100);
+  color: var(--primary-700);
+}
+
+.p-tag.p-tag-secondary {
+  background-color: var(--bluegray-100);
+  color: var(--bluegray-700);
+}
+
+.p-tag.p-tag-success {
+  background: var(--green-100);
+  color: var(--green-700);
+}
+
+.p-tag.p-tag-info {
+  background: var(--blue-100);
+  color: var(--blue-700);
+}
+
+.p-tag.p-tag-warning {
+  background: var(--orange-100);
+  color: var(--orange-700);
+}
+
+.p-tag.p-tag-danger {
+  background: var(--red-100);
+  color: var(--red-700);
+}
+
+.p-tag.p-tag-contrast {
+  background-color: #020617;
+  color: #ffffff;
+}

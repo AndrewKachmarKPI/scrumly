@@ -1,0 +1,141 @@
+<form>
+  <div class="grid mt-0 mb-3">
+    <div class="col-12">
+      <prime-load-spinner
+        *ngIf="isLoading"
+        [isShowSpinnerSync]="true"></prime-load-spinner>
+
+      <prime-no-data-placeholder *ngIf="exportOptions.length == 0"
+                                 text="No export options"
+                                 description="Seems you are not integrated with any external provider"></prime-no-data-placeholder>
+
+      <ul class="list-none p-0 m-0">
+        <li class="py-4 border-bottom-1 surface-border"
+            *ngFor="let exportOption of exportOptions">
+          <div class="surface-border border-round surface-0">
+            <div class="flex flex-wrap p-2 align-items-center gap-3">
+              <img
+                class="w-3rem p-2 shadow-2 flex-shrink-0 border-round"
+                src="./assets/img/integrations/{{ exportOption.serviceType }}.png"/>
+              <div class="flex-1 flex flex-column gap-2">
+                    <span class="font-bold">
+                      {{ exportOption.projectName }}
+                    </span>
+                <div class="flex align-items-center gap-2">
+                    <span>
+                      {{ exportOption.issueKey }}
+                    </span>
+                </div>
+              </div>
+
+              <p-dropdown
+                [options]="exportOption.issueTypes"
+                [(ngModel)]="exportOption.issueType"
+                (onChange)="onSelectIssueType(exportOption, $event)"
+                [disabled]="!isSelectedOption(exportOption)"
+                appendTo="body"
+                styleClass="text-sm w-20rem">
+                <ng-template pTemplate="selectedItem" let-selectedOption>
+                  <div class="flex align-items-center gap-2" *ngIf="exportOption.issueType">
+                    <ng-container
+                      *ngTemplateOutlet="issueTypeView;context:{issueType: exportOption.issueType}"></ng-container>
+                  </div>
+                </ng-template>
+                <ng-template let-issueType pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <ng-container *ngTemplateOutlet="issueTypeView;context:{issueType: issueType}"></ng-container>
+                  </div>
+                </ng-template>
+                <ng-template #issueTypeView let-issueType="issueType">
+                  <div class="flex flex-row w-full justify-content-start align-items-center gap-3">
+                    <img *ngIf="issueType?.iconUrl"
+                         [src]="issueType?.iconUrl"
+                         loading="lazy"
+                         class="mr-1 text-center" style="width: 15px;">
+                    <div class="flex flex-column justify-content-start align-items-start">
+                      <div class="font-medium flex-grow text-600">
+                        {{issueType?.name}}
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+
+              <p-checkbox
+                (onChange)="onChangeSelection(exportOption, $event)"
+                [binary]="true"
+                inputId="binary"/>
+
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <!--      <p-pickList-->
+      <!--        [source]="exportOptions"-->
+      <!--        [target]="selectedOptions"-->
+      <!--        sourceHeader="Export options"-->
+      <!--        targetHeader="Selected options"-->
+      <!--        [dragdrop]="true"-->
+      <!--        [responsive]="true"-->
+      <!--        [sourceStyle]="{ height: '30rem' }"-->
+      <!--        [targetStyle]="{ height: '30rem' }"-->
+      <!--        breakpoint="1400px">-->
+      <!--        <ng-template let-exportOption pTemplate="item">-->
+      <!--                <div class="flex flex-wrap p-2 align-items-center gap-3">-->
+      <!--                  <img-->
+      <!--                    class="w-3rem p-2 shadow-2 flex-shrink-0 border-round"-->
+      <!--                    src="./assets/img/integrations/{{ exportOption.serviceType }}.png"/>-->
+      <!--                  <div class="flex-1 flex flex-column gap-2">-->
+      <!--                    <span class="font-bold">-->
+      <!--                      {{ exportOption.projectName }}-->
+      <!--                    </span>-->
+      <!--                    <div class="flex align-items-center gap-2">-->
+      <!--                    <span>-->
+      <!--                      {{ exportOption.issueKey }}-->
+      <!--                    </span>-->
+      <!--                    </div>-->
+      <!--                  </div>-->
+
+      <!--                  <p-dropdown-->
+      <!--                    [options]="exportOption.issueTypes"-->
+      <!--                    [(ngModel)]="exportOption.issueType"-->
+      <!--                    [required]="true"-->
+      <!--                    appendTo="body"-->
+      <!--                    styleClass="text-sm">-->
+      <!--                    <ng-template pTemplate="selectedItem" let-selectedOption>-->
+      <!--                      <div class="flex align-items-center gap-2" *ngIf="exportOption.issueType">-->
+      <!--                        <ng-container *ngTemplateOutlet="issueTypeView;context:{issueType: exportOption.issueType}"></ng-container>-->
+      <!--                      </div>-->
+      <!--                    </ng-template>-->
+      <!--                    <ng-template let-issueType pTemplate="item">-->
+      <!--                      <div class="flex align-items-center gap-2">-->
+      <!--                        <ng-container *ngTemplateOutlet="issueTypeView;context:{issueType: issueType}"></ng-container>-->
+      <!--                      </div>-->
+      <!--                    </ng-template>-->
+      <!--                    <ng-template #issueTypeView let-issueType="issueType">-->
+      <!--                      <div class="flex flex-row w-full justify-content-start align-items-center gap-3">-->
+      <!--                        <img *ngIf="issueType?.iconUrl"-->
+      <!--                             [src]="issueType?.iconUrl"-->
+      <!--                             loading="lazy"-->
+      <!--                             class="mr-1 text-center" style="width: 15px;">-->
+      <!--                        <div class="flex flex-column justify-content-start align-items-start">-->
+      <!--                          <div class="font-medium flex-grow text-600">-->
+      <!--                            {{issueType?.name}}-->
+      <!--                          </div>-->
+      <!--                        </div>-->
+      <!--                      </div>-->
+      <!--                    </ng-template>-->
+      <!--                  </p-dropdown>-->
+
+      <!--          </div>-->
+      <!--        </ng-template>-->
+      <!--      </p-pickList>-->
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancel" severity="secondary" [outlined]="true" (onClick)="closeDialog()"/>
+    <p-button label="Export" severity="success" (onClick)="onSubmitForm()"/>
+  </div>
+</form>

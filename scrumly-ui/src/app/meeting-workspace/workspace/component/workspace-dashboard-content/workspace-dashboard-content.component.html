@@ -1,0 +1,12 @@
+<prime-zoomable-container [zoomLevel]="zoomLevel"
+                          (zoomLevelChange)="onZoomLevelChange($event)">
+  <workspace-content-block *ngIf="activeBlock"
+                           [activityRoomStatus]="activityRoom?.statusMetadata"
+                           [userMetadata]="activityRoom?.currentUser"
+                           [activityId]="activityRoom?.activityId"
+                           [activityBlock]="activeBlock"
+                           [nestedBlockId]="nestedBlockId"
+                           [isFacilitator]="isFacilitator"
+                           [teamMetadata]="activityRoom?.teamMetadata"
+                           [numberOfUsers]="activityRoom?.joinedUsers?.length"></workspace-content-block>
+</prime-zoomable-container>

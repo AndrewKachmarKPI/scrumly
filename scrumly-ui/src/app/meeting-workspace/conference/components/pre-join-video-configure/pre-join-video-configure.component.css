@@ -1,0 +1,38 @@
+
+.video-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-wrapper video {
+  width: 100%;
+  max-height: 500px; /* Adjust based on your needs */
+  border-radius: 8px;
+}
+
+.controls {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.icon-disabled {
+  position: relative;
+}
+
+.icon-disabled::after {
+  content: "";
+  position: absolute;
+  width: 1.5em; /* Adjust for line length */
+  height: 2px; /* Line thickness */
+  background: white;
+  transform: rotate(45deg);
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+  translate: -50% -50%;
+}

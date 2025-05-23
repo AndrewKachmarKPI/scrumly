@@ -1,0 +1,7 @@
+<prime-full-calendar [activities]="activities!"
+                     (onDateChanges)="onDateChange($event)"
+                     (onRemoveClick)="onRemoveClick($event)"
+                     (onEditClick)="onEditActivity.emit($event)"
+                     (onJoinClick)="onJoinWorkspace.emit($event)"
+                     (onOpenClick)="onOpenWorkspace.emit($event)"
+                     (onCellClick)="onCreateActivity.emit($event)"></prime-full-calendar>

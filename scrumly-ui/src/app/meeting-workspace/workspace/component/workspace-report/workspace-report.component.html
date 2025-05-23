@@ -1,0 +1,182 @@
+<div class="prime-dot-bg-white">
+</div>
+
+
+<div class="aligned w-full h-full overflow-y-auto">
+  <div class="grid">
+    <div class="col-12">
+<!--            <button (click)="test()">TEST</button>-->
+      <ng-container *ngTemplateOutlet="reportContainer"></ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #reportContainer>
+  <div id="report"
+       class="surface-card p-4 shadow-2 border-round flex-grow-1 report-box">
+    <div class="flex flex-row align-items-center justify-content-between w-full gap-2 mb-3 px-2">
+      <prime-logo routerLink="/app/home"></prime-logo>
+      <div class="flex flex-row w-full justify-content-end align-items-center gap-3"
+           data-html2canvas-ignore="true">
+        <p-button severity="success"
+                  icon="pi pi-objects-column"
+                  label="View workspace"
+                  size="small"
+                  (onClick)="viewWorkspace()"
+                  [outlined]="true"></p-button>
+        <p-button severity="success"
+                  label="Download report"
+                  size="small"
+                  [outlined]="true"
+                  [icon]="!isLoad ? 'pi pi-download' : ''"
+                  (onClick)="downloadReport()">
+          <p-progressSpinner
+            *ngIf="isLoad"
+            styleClass="w-1rem h-1rem mt-1 mr-2"
+            strokeWidth="1"
+            fill="var(--surface-ground)"
+            animationDuration=".5s"/>
+        </p-button>
+        <p-button severity="warning"
+                  label="View notes"
+                  size="small"
+                  *ngIf="isFacilitator"
+                  [outlined]="true"
+                  [icon]="!isLoad ? 'pi pi-sparkles' : ''"
+                  (onClick)="viewMeetingNotes()"/>
+        <p-button severity="success"
+                  icon="pi pi-home"
+                  label="Return home"
+                  size="small"
+                  (onClick)="returnHome()"></p-button>
+      </div>
+    </div>
+    <div class="grid pl-2">
+      <div class="col-12 lg:col-6 flex flex-column justify-content-between align-items-center">
+        <ul class="list-none w-full p-0 m-0">
+          <li
+            class="py-3 border-bottom-1 border-top-1 surface-border flex flex-row justify-content-between align-items-center">
+            <div class="font-medium text-700">
+              Event name
+            </div>
+            <h3 class="text-700 m-0">
+              {{roomReport?.activityName}}
+            </h3>
+          </li>
+          <li class="py-3 border-bottom-1 surface-border flex flex-row justify-content-between align-items-center">
+            <div class="font-medium text-700">
+              Event type
+            </div>
+            <h3 class="text-700 m-0">
+              {{roomReport?.activityType}}
+            </h3>
+          </li>
+          <li class="py-3 border-bottom-1 surface-border flex flex-row justify-content-between align-items-center">
+            <div class="font-medium text-700">
+              Date & time
+            </div>
+            <h3 class="text-700 m-0">
+              {{roomReport?.timeMetadata?.finishDateTime | date: 'fullDate'}}
+            </h3>
+          </li>
+          <li class="py-3 border-bottom-1 surface-border flex flex-row justify-content-between align-items-center">
+            <div class="font-medium text-700">
+              Facilitator
+            </div>
+            <h3 class="text-700 m-0">
+              {{roomReport?.facilitator?.firstName + ' ' + roomReport?.facilitator?.lastName}}
+            </h3>
+          </li>
+        </ul>
+      </div>
+      <div class="col-12 lg:col-6 flex flex-column justify-content-center align-items-center">
+        <ng-container *ngTemplateOutlet="stats"></ng-container>
+      </div>
+    </div>
+
+
+    <div class="flex flex-column w-full justify-content-center align-items-center gap-3 p-2">
+      <ng-container *ngFor="let block of roomReport?.blockReports">
+        <ng-template [ngIf]="block.metadata.type === ActivityBlockType.ESTIMATE_BLOCK">
+          <estimate-block-report style="width: 100%"
+                                 [block]="block"></estimate-block-report>
+        </ng-template>
+        <ng-template [ngIf]="block.metadata.type === ActivityBlockType.REFLECT_BLOCK">
+          <reflect-block-report style="width: 100%"
+                                [block]="block"></reflect-block-report>
+        </ng-template>
+        <ng-template [ngIf]="block.metadata.type === ActivityBlockType.QUESTION_BLOCK">
+          <question-block-report style="width: 100%"
+                                 [block]="block"></question-block-report>
+        </ng-template>
+        <ng-template [ngIf]="block.metadata.type === ActivityBlockType.ITEM_BOARD_BLOCK">
+          <item-board-block-report style="width: 100%"
+                                   [isGeneratingReport]="isGeneratingReport"
+                                   [block]="block"></item-board-block-report>
+        </ng-template>
+      </ng-container>
+    </div>
+
+  </div>
+</ng-template>
+
+
+<ng-template #stats>
+  <div class="grid w-full">
+    <div class="col-12 md:col-6 lg:col-6">
+      <div class="bg-green-50 border-1 border-green-200 text-center p-3 border-round flex flex-column">
+        <div class="flex flex-row gap-2 align-items-center justify-content-center text-green-700 mb-3">
+          <i class="pi pi-stopwatch block"></i>
+          <div class="font-medium">
+            Time spend
+          </div>
+        </div>
+        <h3 class="m-0 text-700 text-xl">
+          {{formatDuration(roomReport?.timeMetadata?.duration!)}}
+        </h3>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-6">
+      <div class="bg-yellow-50 border-1 border-yellow-200 text-center p-3 border-round flex flex-column">
+        <div class="flex flex-row gap-2 align-items-center justify-content-center text-yellow-700 mb-3">
+          <i class="pi pi-users block"></i>
+          <div class="font-medium">
+            Participants
+          </div>
+        </div>
+        <h3 class="m-0 text-700 text-xl">
+          {{roomReport?.usersParticipated?.length}}
+        </h3>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-6">
+      <div class="bg-blue-50 border-1 border-blue-200 text-center p-3 border-round flex flex-column">
+        <div class="flex flex-row gap-2 align-items-center justify-content-center text-blue-700 mb-3">
+          <i class="pi pi-objects-column block"></i>
+          <div class="font-medium">
+            Blocks
+          </div>
+        </div>
+        <h3 class="m-0 text-700 text-xl">
+          {{roomReport?.blockReports?.length}}
+        </h3>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-6">
+      <div class="bg-indigo-50 border-1 border-indigo-200 text-center p-3 border-round flex flex-column">
+        <div class="flex flex-row gap-2 align-items-center justify-content-center text-indigo-700 mb-3">
+          <i class="pi pi-pencil block"></i>
+          <div class="font-medium">
+            Answers
+          </div>
+        </div>
+        <h3 class="m-0 text-700 text-xl">
+          {{roomReport?.totalAnswers}}
+        </h3>
+      </div>
+    </div>
+  </div>
+</ng-template>

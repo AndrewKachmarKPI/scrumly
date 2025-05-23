@@ -1,0 +1,14 @@
+@import "primeng/resources/primeng.css";
+@import "primeflex/primeflex.scss";
+@import "primeicons/primeicons.css";
+@import "assets/css/fonts.css";
+@import "assets/css/layout.css";
+@import "assets/css/commons.css";
+@import "assets/css/calendar.css";
+@import "assets/css/conferencee.scss";
+@import "assets/css/animations.css";
+@import "assets/css/confluence.css";
+
+@import "../node_modules/quill/dist/quill.core.css";
+@import "../node_modules/quill/dist/quill.snow.css";
+@import "../node_modules/ngx-spinner/animations/ball-beat.css";

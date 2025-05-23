@@ -1,0 +1,48 @@
+<div class="flex flex-row align-items-center justify-content-between flex-wrap gap-3">
+
+  <ng-template [ngIf]="isSearchIssues">
+    <ng-template [ngIf]="isFacilitator">
+      <prime-load-spinner
+        *ngIf="isLoadIssues"
+        [isShowSpinnerSync]="true"></prime-load-spinner>
+
+      <select-estimate-items
+        [teamMetadata]="teamMetadata"
+        [blockId]="block.metadata.id"
+        [activityId]="activityId"
+        (onSelectIssuesSubmit)="onSelectedIssues($event)"></select-estimate-items>
+    </ng-template>
+
+
+    <ng-template [ngIf]="!isFacilitator">
+      <div class="surface-card border-round shadow-2 p-3 flex flex-column gap-3 max-h-30rem overflow-auto"
+           style="scrollbar-width: thin;">
+        <h3 class="mt-0 mb-2">Selected issues for estimate</h3>
+        <prime-no-data-placeholder *ngIf="!block.estimateIssues || block.estimateIssues?.length == 0"
+                                   padding="py-2"
+                                   text="Search issues"
+                                   description="No issues found yet!"/>
+        <ng-container *ngFor="let issue of block.estimateIssues">
+          <div
+            class="surface-card border-round cursor-pointer hover:surface-50">
+            <div class="flex flex-row w-full justify-content-between align-items-center gap-3">
+              <estimate-item-row [issue]="issue.issueMetadata"></estimate-item-row>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-template>
+  </ng-template>
+
+
+  <ng-template [ngIf]="!isSearchIssues && activeEstimateIssue">
+    <estimate-item-workspace [issue]="activeEstimateIssue"
+                             [block]="block"
+                             [activityRoomStatus]="activityRoomStatus"
+                             [activityId]="activityId"
+                             [userMetadata]="userMetadata"
+                             [numberOfUsers]="numberOfUsers"
+                             [isFacilitator]="isFacilitator"></estimate-item-workspace>
+  </ng-template>
+
+</div>

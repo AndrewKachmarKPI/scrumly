@@ -1,0 +1,144 @@
+<div class="flex flex-row flex-wrap"
+     [ngClass]="[sideBarState ? 'justify-content-end' : 'justify-content-between']">
+  <p-toolbar styleClass="workspace-toolbar" *ngIf="!sideBarState">
+    <div class="p-toolbar-group-start">
+      <div class="flex flex-row align-items-center gap-2">
+        <p-button icon="pi pi-bars"
+                  severity="secondary"
+                  size="small"
+                  (onClick)="toggleSidebar()"
+                  [rounded]="true"
+                  [text]="true"/>
+
+        <div class="flex flex-column" *ngIf="activityRoom?.templateMetadata">
+          <h3 class="text-900 font-medium m-0">
+            {{activityRoom?.activityName}}
+          </h3>
+          <p class="mt-1 mb-0 text-600 text-sm w-full">
+            {{activityRoom?.templateMetadata?.type}}
+          </p>
+        </div>
+
+        <p-divider layout="vertical"></p-divider>
+
+        <div class="flex flex-row justify-content-between align-items-center gap-3">
+          <div class="flex flex-row align-items-center gap-1">
+            <i class="pi pi-users"></i>
+            <prime-avatar labelMode="prefix"
+                          styleClass="p-avatar-xs"
+                          [label]="activityRoom?.teamMetadata?.organizationName!"></prime-avatar>
+          </div>
+          <div class="flex flex-row align-items-center gap-1">
+            <i class="pi pi-crown"></i>
+            <prime-avatar labelMode="split"
+                          styleClass="p-avatar-xs"
+                          [label]="activityRoom?.facilitator?.firstName! + ' '+activityRoom?.facilitator?.lastName!"></prime-avatar>
+          </div>
+        </div>
+
+        <p-divider layout="vertical"></p-divider>
+
+        <div class="flex flex-row flex-wrap justify-content-between align-items-center gap-3">
+          <template-block-navigation [mode]="'popup'"
+                                     [activityRoom]="activityRoom"
+                                     [selectedBlockId]="selectedBlockId"></template-block-navigation>
+        </div>
+      </div>
+    </div>
+  </p-toolbar>
+
+  <p-toolbar styleClass="workspace-toolbar">
+    <div class="p-toolbar-group-start">
+      <prime-clock [showDate]="true"></prime-clock>
+    </div>
+
+    <p-divider layout="vertical"></p-divider>
+    <prime-zoom-dropdown [zoomLevel]="zoomLevel"
+                         (zoomLevelChange)="onZoomLevelChange($event)"></prime-zoom-dropdown>
+    <p-divider layout="vertical"></p-divider>
+
+    <div class="p-toolbar-group-center cursor-pointer">
+
+
+      <ng-template [ngIf]="activityRoom?.statusMetadata?.isActive">
+        <div class="avatar-group"
+             (click)="op.toggle($event)">
+          <prime-avatar
+            *ngFor="let user of activityRoom?.joinedUsers! | slice:0:5; trackBy: trackByUserId, let last = last"
+            labelMode="split"
+            size="large"
+            shape="circle"
+            class="avatar-group-child"
+            styleClass="border-1 border-white"
+            [label]="user?.firstName! + ' ' + user?.lastName!">
+          </prime-avatar>
+          <p-avatar *ngIf="activityRoom?.joinedUsers?.length! > 5"
+                    [label]="'+' + (activityRoom?.joinedUsers?.length! - 5)"
+                    shape="circle"
+                    size="large"
+                    class="avatar-group-child border-1 border-white bg-green-500 text-white">
+          </p-avatar>
+          <i class="pi pi-chevron-down ml-2 text-600 text-sm"></i>
+        </div>
+        <p-overlayPanel #op
+                        (mouseleave)="op.hide()">
+          <div class="flex flex-column gap-3 w-25rem">
+          <span class="font-medium text-900 block mb-2">
+            Joined users ({{activityRoom?.joinedUsers?.length}})
+          </span>
+            <ul class="list-none p-0 m-0 flex flex-column gap-3">
+              <li *ngFor="let user of activityRoom?.joinedUsers!"
+                  class="flex align-items-center gap-2">
+                <prime-avatar size="large"
+                              shape="circle"
+                              [label]="user?.firstName! + ' ' + user?.lastName!"></prime-avatar>
+                <div>
+                  <span class="font-medium">{{ user?.firstName! + ' ' + user?.lastName! }}</span>
+                  <div class="text-sm text-color-secondary">{{ user.email }}</div>
+                </div>
+                <div class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm">
+                <span *ngIf="user.userId === activityRoom?.facilitator?.userId">
+                  Facilitator
+                </span>
+                  <span *ngIf="!isFacilitator && user.userId !== activityRoom?.facilitator?.userId">
+                  Member
+                </span>
+                </div>
+
+                <div class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm"
+                     *ngIf="isFacilitator && user.userId !== activityRoom?.facilitator?.userId">
+                  <p-button icon="pi pi-sign-out"
+                            pTooltip="Kick user"
+                            severity="danger"
+                            [text]="true"
+                            [rounded]="true"
+                            (click)="kickFromWorkspace(user.userId)"></p-button>
+                </div>
+
+              </li>
+            </ul>
+          </div>
+        </p-overlayPanel>
+      </ng-template>
+
+      <ng-template [ngIf]="!activityRoom?.statusMetadata?.isActive">
+        <p-button icon="pi pi-file"
+                  label="View report"
+                  severity="success"
+                  (onClick)="viewReport()"
+                  [outlined]="true"/>
+      </ng-template>
+
+
+    </div>
+    <p-divider layout="vertical"></p-divider>
+    <div class="p-toolbar-group-end">
+      <p-button icon="pi pi-sign-out"
+                label="Exit"
+                severity="danger"
+                (onClick)="exitRoom()"
+                [outlined]="true"/>
+    </div>
+  </p-toolbar>
+
+</div>

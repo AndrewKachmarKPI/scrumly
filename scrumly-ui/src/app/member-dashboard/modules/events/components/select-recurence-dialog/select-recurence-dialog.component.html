@@ -1,0 +1,15 @@
+<form>
+  <div class="grid mt-0 mb-3">
+    <div class="col-12">
+      <prime-recurrence-builder
+        [startDate]="startDate"
+        [rule]="selectedRule"
+        (onSelectRule)="onSelectRule($event)"></prime-recurrence-builder>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancel" severity="secondary" [outlined]="true" (onClick)="closeDialog()"/>
+    <p-button label="Save" severity="success" (onClick)="submit()"/>
+  </div>
+</form>

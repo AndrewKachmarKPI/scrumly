@@ -1,0 +1,12 @@
+<p-orderList
+  styleClass="activityOrder"
+  (onReorder)="onReorder()"
+  [value]="blocks"
+  [listStyle]="{ height: '25rem' }"
+  [dragdrop]="true">
+  <ng-template let-block pTemplate="item">
+    <div class="flex flex-wrap p-2 align-items-center gap-3">
+      <span>{{ block.block.name }}</span>
+    </div>
+  </ng-template>
+</p-orderList>

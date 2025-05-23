@@ -1,0 +1,46 @@
+<div *ngIf="control"
+     class="flex flex-column gap-2 w-full"
+     [ngClass]="styleClass">
+  <div class="flex" *ngIf="label">
+    <label>
+      {{label | translate}}
+      <span *ngIf="isRequired" class="text-red-500">*</span>
+    </label>
+  </div>
+  <p-dropdown
+    [options]="data"
+    [formControl]="control"
+    [placeholder]="placeholder"
+    [showClear]="showClear"
+    [readonly]="readonly"
+    [ngClass]="[hasError ? 'ng-invalid ng-dirty' : '']"
+    (onChange)="onChangeSelection($event)"
+    class="status-dropdown"
+    appendTo="body"
+    styleClass="w-full">
+    <ng-template pTemplate="selectedItem" let-selectedOption>
+      <ng-container *ngTemplateOutlet="issueStatusRow;context:{profile: selectedOption}"></ng-container>
+    </ng-template>
+    <ng-template let-block pTemplate="item">
+      <ng-container *ngTemplateOutlet="issueStatusRowOptions;context:{profile: block}"></ng-container>
+    </ng-template>
+  </p-dropdown>
+
+  <ng-template #issueStatusRow let-profile="profile">
+    <prime-user-header avatarSize="normal"
+                       [hideAvatar]="hideAvatar"
+                       [hideEmail]="hideEmail"
+                       [profile]="profile"></prime-user-header>
+  </ng-template>
+
+  <ng-template #issueStatusRowOptions let-profile="profile">
+    <prime-user-header avatarSize="normal"
+                       textSize="text-xs"
+                       [profile]="profile"></prime-user-header>
+  </ng-template>
+
+  <ng-template [ngIf]="hasError">
+    <prime-field-error-box [label]="label"
+                           [field]="control"></prime-field-error-box>
+  </ng-template>
+</div>

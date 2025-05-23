@@ -1,0 +1,21 @@
+<form [formGroup]="createTeamGroup">
+  <div class="grid mt-0 mb-3">
+    <div class="col-12">
+      <prime-input label="Team name"
+                   placeholder="Team name"
+                   [control]="control(createTeamGroup,'teamName')"></prime-input>
+    </div>
+    <div class="col-12">
+      <prime-user-autocomplete label="Invite members"
+                               placeholder="Search by username, full name, or email"
+                               [organizationId]="organizationId"
+                               [excludeMe]="true"
+                               [control]="control(createTeamGroup, 'inviteMembers')"></prime-user-autocomplete>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancel" severity="secondary" [outlined]="true" (onClick)="closeDialog()"/>
+    <p-button label="Create team" severity="success" (onClick)="createTeam()"/>
+  </div>
+</form>

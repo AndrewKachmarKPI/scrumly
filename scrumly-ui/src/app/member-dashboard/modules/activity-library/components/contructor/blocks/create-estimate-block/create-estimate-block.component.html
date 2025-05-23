@@ -1,0 +1,20 @@
+<form [formGroup]="estimateBlockForm" class="grid">
+  <div class="col-12">
+    <prime-dropdown label="Estimate method"
+                    placeholder="Estimation method"
+                    optionValue="method"
+                    optionLabel="label"
+                    [control]="control(estimateBlockForm,'estimateMethod')"
+                    [options]="estimationMethods"></prime-dropdown>
+  </div>
+  <div class="col-12">
+    <prime-input label="Scale name"
+                 placeholder="Scale name"
+                 [control]="control(estimateBlockForm, 'name')"/>
+  </div>
+  <div class="col-12">
+    <prime-chips label="Estimation scale"
+                 placeholder="Estimation scale"
+                 [control]="control(estimateBlockForm,'scale')"/>
+  </div>
+</form>

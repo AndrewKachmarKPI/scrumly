@@ -1,0 +1,109 @@
+<div class="surface-card p-0 shadow-2 border-round flex-grow-1"
+     [ngClass]="styleClass">
+  <p-tabView styleClass="tabview-custom px-0"
+             (onChange)="onTabChange($event)">
+    <p-tabPanel *ngFor="let tab of tabConfig">
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+          <img src="./assets/img/integrations/{{tab.logo}}"
+               class="mr-3 estimate-service-icon">
+          <span class="font-bold white-space-nowrap m-0">
+          {{tab.name}}
+        </span>
+        </div>
+      </ng-template>
+      <ng-container *ngTemplateOutlet="selectItemForm; context: {tab: tab}"></ng-container>
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+
+<ng-template #selectItemForm let-tab="tab">
+
+  <ng-template [ngIf]="tab.isConnected != undefined && !tab.isConnected">
+    <div class="flex flex-row align-items-center justify-content-center ">
+      <ng-template [ngIf]="tab.service === IntegrationServiceType.JIRA_CLOUD">
+        <p-button severity="success"
+                  size="large"
+                  [outlined]="true"
+                  (onClick)="connectJira()">
+          <div class="flex flex-row align-items-center justify-content-center gap-3">
+            <prime-image-box path="../assets/img/integrations/JIRA_CLOUD.png"
+                             height="1.5rem"
+                             width="1.5rem"
+                             styleClass="mr-2"></prime-image-box>
+            <h5 class="m-0 font-bold">
+              Connect Jira
+            </h5>
+          </div>
+        </p-button>
+      </ng-template>
+    </div>
+  </ng-template>
+
+  <ng-template [ngIf]="tab.isConnected === undefined">
+    <div class="flex flex-row align-items-center justify-content-center ">
+      <ng-template [ngIf]="tab.service === IntegrationServiceType.JIRA_CLOUD">
+        <p>This service is temporarily unavailable, use another issue provider</p>
+      </ng-template>
+    </div>
+  </ng-template>
+
+
+  <ng-template [ngIf]="tab.isConnected != undefined && tab.isConnected">
+    <div class="flex flex-column flex-wrap gap-2">
+      <div class="flex flex-row flex-wrap justify-content-between align-items-center gap-3 w-full">
+        <prime-input placeholder="Search issues..."
+                     iconPos="p-input-icon-left"
+                     icon="pi pi-search"
+                     styleClass="w-full flex-grow-1"
+                     style="flex-grow: 1;"
+                     [delayTime]="1000"
+                     [hideValidation]="true"
+                     [delayEnabled]="true"
+                     [control]="control(filtersGroup, 'searchIssue')"
+                     (onDelayOver)="searchIssue()"></prime-input>
+        <p-button
+          *ngIf="selectedIssues.length"
+          icon="pi pi-plus"
+          severity="success"
+          [outlined]="true"
+          [label]="'Select issues ('+selectedIssues.length+')'"
+          (onClick)="onSubmitSelectIssue()">
+        </p-button>
+
+        <p-button
+          *ngIf="tab.service === IntegrationServiceType.SCRUMLY"
+          icon="pi pi-plus"
+          severity="success"
+          (onClick)="onCreateIssue()">
+        </p-button>
+      </div>
+
+      <div class="flex flex-column gap-3 max-h-30rem overflow-auto pr-3"
+           style="scrollbar-width: thin;">
+        <prime-load-spinner
+          *ngIf="isLoadIssues"
+          [isShowSpinnerSync]="true"></prime-load-spinner>
+        <prime-no-data-placeholder *ngIf="!activeTab.issues || activeTab.issues?.length == 0"
+                                   padding="py-2"
+                                   text="Search issues"
+                                   description="No issues found yet!"/>
+        <ng-container *ngFor="let issue of activeTab.issues">
+          <div
+            class="surface-card border-round cursor-pointer hover:surface-50">
+            <div class="flex flex-row w-full justify-content-between align-items-center gap-3">
+              <estimate-item-row [issue]="issue"></estimate-item-row>
+              <p-checkbox
+                [binary]="true"
+                (onChange)="onSelectIssue($event, issue)"
+                inputId="binary"/>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+
+
+</ng-template>

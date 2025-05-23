@@ -1,0 +1,177 @@
+<div class="w-full">
+  <p-table #dt
+           [value]="team?.members!"
+           [tableStyle]="{'min-width': '50rem'}"
+           [scrollable]="true"
+           [scrollHeight]="'flex'"
+           [rowHover]="true"
+           [paginator]="false"
+           [columns]="cols"
+           [exportHeader]="'customExportHeader'"
+           [exportFilename]="team?.name+' members'"
+           dataKey="id"
+           editMode="row"
+           styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="caption" [ngIf]="showCaption">
+      <div class="flex flex-row gap-3 flex-wrap align-items-center justify-content-between">
+        <div class="flex flex-row flex-wrap justify-content-start align-items-center">
+          <div class="flex flex-row flex-wrap gap-3">
+            Team members
+          </div>
+          <div class="flex flex-row flex-wrap gap-3">
+            <div class="flex flex-grow-0 ml-2 justify-content-end align-items-center">
+              <p-badge severity="success"
+                       [value]="team?.members?.length"></p-badge>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
+          <p-button
+            icon="pi pi-download"
+            label="Export to csv"
+            severity="success"
+            size="small"
+            [outlined]="true"
+            (onClick)="dt.exportCSV({allValues:true})"/>
+          <p-button label="Add members"
+                    severity="success"
+                    size="small"
+                    icon="pi pi-user-plus"
+                    *ngIf="organizationMember?.role != OrganizationMemberRole.MEMBER"
+                    (onClick)="openInviteTeamMemberDialog()"></p-button>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="profile.firstName" style="width:25%">
+          Profile
+          <p-sortIcon field="profile.firstName"/>
+        </th>
+        <th class="text-center" pSortableColumn="role" style="width:20%">
+          Role
+          <p-sortIcon field="role"/>
+        </th>
+        <th class="text-center" pSortableColumn="badge" style="width:20%">
+          Badge
+          <p-sortIcon field="badge"/>
+        </th>
+        <th class="text-center" pSortableColumn="joinDateTime" style="width:20%">
+          Join date
+          <p-sortIcon field="joinDateTime"/>
+        </th>
+        <th class="text-right" style="width:10%">
+          Actions
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-member
+                 let-editing="editing"
+                 let-ri="rowIndex">
+      <tr [pEditableRow]="member">
+        <td>
+          <prime-user-header [profile]="member.profile"></prime-user-header>
+        </td>
+        <td class="text-center">
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown
+                [options]="getTeamMemberRoleOptions(member)"
+                [formControl]="getEditTeamMemberControl(member, 'role')"
+                appendTo="body"
+                optionValue="value"
+                optionLabel="name"
+                styleClass="w-full text-left"
+                placeholder="Team role"/>
+            </ng-template>
+            <ng-template pTemplate="output">
+              <p-tag
+                [value]="'organizations.members.TEAM_MEMBER_ROLE.'+member.role | translate"
+                [styleClass]="getTeamMemberRoleSeverity(member.role)"/>
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td class="text-center">
+          <div class="flex align-items-center justify-content-center">
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <prime-input [control]="getEditTeamMemberControl(member, 'badge')"></prime-input>
+              </ng-template>
+              <ng-template pTemplate="output">
+                <p *ngIf="member.badge">{{ member.badge }}</p>
+                <p *ngIf="!member.badge">[No badge]</p>
+              </ng-template>
+            </p-cellEditor>
+          </div>
+        </td>
+        <td class="text-center">
+          <p>{{ member.joinDateTime | date: 'dd.MM.YYYY' }}</p>
+        </td>
+        <td class="text-right">
+          <p-button
+            icon="pi pi-history"
+            styleClass="font-normal"
+            severity="success"
+            pTooltip="Change history"
+            showDelay="1000"
+            *ngIf="!editing"
+            [text]="true"
+            (onClick)="openTeamMemberHistory(member)"/>
+          <ng-template [ngIf]="currentMember?.profile?.userId != member.profile.userId &&
+           currentMember?.role == TeamMemberRole.TEAM_ADMIN ||
+           currentMember?.role == TeamMemberRole.SCRUM_MASTER ||
+           currentMember?.role == TeamMemberRole.TEAM_LEAD">
+            <p-button pTooltip="Cancel"
+                      tooltipPosition="left"
+                      severity="danger"
+                      icon="pi pi-times"
+                      iconPos="right"
+                      showDelay="1000"
+                      pCancelEditableRow
+                      *ngIf="editing"
+                      (onClick)="onCancelMemberEdit(member)"
+                      [text]="true"></p-button>
+            <p-button pTooltip="Accept"
+                      tooltipPosition="left"
+                      severity="success"
+                      icon="pi pi-check"
+                      iconPos="right"
+                      showDelay="1000"
+                      pCancelEditableRow
+                      *ngIf="editing"
+                      (onClick)="onAcceptMemberEdit(member)"
+                      [text]="true"></p-button>
+            <p-button pTooltip="Edit member"
+                      tooltipPosition="left"
+                      severity="warning"
+                      icon="pi pi-pencil"
+                      iconPos="right"
+                      showDelay="1000"
+                      pInitEditableRow
+                      *ngIf="!editing && member.role !== TeamMemberRole.TEAM_ADMIN"
+                      (onClick)="onEditTeamMember(member)"
+                      [text]="true"></p-button>
+            <p-button pTooltip="Remove member"
+                      tooltipPosition="left"
+                      severity="danger"
+                      icon="pi pi-trash"
+                      iconPos="right"
+                      showDelay="1000"
+                      pCancelEditableRow
+                      *ngIf="!editing && member.role !== TeamMemberRole.TEAM_ADMIN"
+                      (onClick)="onDeleteMember(member)"
+                      [text]="true"></p-button>
+          </ng-template>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="paginatorleft">
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [colSpan]="7">No members found!</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

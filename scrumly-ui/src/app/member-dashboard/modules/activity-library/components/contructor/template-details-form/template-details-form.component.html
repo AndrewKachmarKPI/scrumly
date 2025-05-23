@@ -1,0 +1,35 @@
+<form [formGroup]="templateDetailsFormGroup" class="grid">
+  <div class="col-12 lg:col-7">
+    <prime-input label="Template name"
+                 placeholder="Template name"
+                 [control]="control(templateDetailsFormGroup,'name')"></prime-input>
+  </div>
+  <div class="col-12 lg:col-5">
+    <prime-dropdown label="Template type"
+                    placeholder="Template type"
+                    optionValue="type"
+                    optionLabel="type"
+                    [control]="control(templateDetailsFormGroup,'activityType')"
+                    [options]="activityTypes"></prime-dropdown>
+  </div>
+  <div class="col-12">
+    <prime-text-editor label="Template description"
+                       placeholder="Template description"
+                       [control]="control(templateDetailsFormGroup,'description')"></prime-text-editor>
+  </div>
+  <div class="col-12">
+    <org-team-dropdown label="Template owner team"
+                       placeholder="Template owner team"
+                       [selectedTeamId]="control(templateDetailsFormGroup,'ownerId').value"
+                       [disabled]="isEditMode"
+                       [control]="control(templateDetailsFormGroup,'ownerId')"></org-team-dropdown>
+  </div>
+  <div class="col-12">
+    <prime-file-upload label="Template preview image"
+                       [styleClass]="'p-button-outlined'"
+                       [accept]="'image/**'"
+                       [showUploadButton]="false"
+                       [uploadMenu]="true"
+                       [control]="control(templateDetailsFormGroup,'previewImage')"></prime-file-upload>
+  </div>
+</form>

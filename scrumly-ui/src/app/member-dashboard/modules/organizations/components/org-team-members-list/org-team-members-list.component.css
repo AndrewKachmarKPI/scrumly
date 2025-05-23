@@ -1,0 +1,4 @@
+::ng-deep .p-picklist-transfer-buttons button {
+  background: var(--green-500) !important;
+  border-color: var(--green-500) !important;
+}

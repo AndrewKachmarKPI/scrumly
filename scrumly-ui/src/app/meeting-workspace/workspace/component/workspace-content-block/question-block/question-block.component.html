@@ -1,0 +1,99 @@
+<div class="flex flex-row flex-wrap gap-3">
+  <div class="w-full lg:w-30rem" *ngIf="activityRoomStatus?.isActive">
+    <ng-container *ngTemplateOutlet="userAnswerForm; context: {user: userMetadata, isEditMode: true}"></ng-container>
+  </div>
+
+  <ng-container *ngFor="let userAnswer of block.userQuestionAnswers">
+    <div class="w-full lg:w-30rem"
+         *ngIf="userAnswer.userMetadata.userId !== userMetadata?.userId">
+      <ng-container
+        *ngTemplateOutlet="userAnswerForm; context: {user: userAnswer.userMetadata, answer:userAnswer, isEditMode:false}"></ng-container>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #userAnswerForm
+             let-user="user"
+             let-isEditMode="isEditMode"
+             let-answer="answer">
+  <div class="surface-card shadow-2 border-round p-4">
+    <div class="flex flex-row align-items-center justify-content-between">
+      <prime-user-header *ngIf="user"
+                         [profile]="user"></prime-user-header>
+
+      <div class="flex flex-row align-items-center gap-2"
+           *ngIf="isEditMode && activityRoomStatus?.isActive">
+        <p-button icon="pi pi-pencil"
+                  [text]="true"
+                  [rounded]="true"
+                  *ngIf="!isEditing && this.hasAnswer"
+                  (click)="toggleEditing()"></p-button>
+        <p-button icon="pi pi-trash"
+                  severity="danger"
+                  [text]="true"
+                  [rounded]="true"
+                  *ngIf="this.hasAnswer && !isEditing"
+                  (click)="onDeleteAnswer()"></p-button>
+        <p-button icon="pi pi-times"
+                  severity="danger"
+                  [text]="true"
+                  [rounded]="true"
+                  *ngIf="isEditing"
+                  (click)="toggleEditing()"></p-button>
+        <p-button icon="pi pi-check"
+                  label="Submit"
+                  size="small"
+                  severity="success"
+                  *ngIf="isEditing || !this.hasAnswer"
+                  (click)="onSubmitAnswer()"></p-button>
+      </div>
+    </div>
+    <p-divider></p-divider>
+
+    <div class="flex flex-column gap-3 align-items-start justify-content-center">
+
+      <ng-template [ngIf]="isEditMode && activityRoomStatus?.isActive">
+        <div *ngFor="let question of block.questionMetadata; let i = index" class="w-full">
+          <h4 class="font-medium m-0 mb-1">{{ question.question }}</h4>
+
+          <prime-textarea placeholder="Share your answer..."
+                          styleClass="w-full"
+                          class="w-full"
+                          [readonly]="!isEditing && hasAnswer"
+                          *ngIf="!question.answerOptions || question.answerOptions.length == 0"
+                          [rows]="3"
+                          [control]="questionGroupAnswerControl(i)"></prime-textarea>
+          <prime-dropdown placeholder="Select answer option"
+                          *ngIf="question.answerOptions && question.answerOptions.length > 0"
+                          [readonly]="!isEditing && hasAnswer"
+                          [control]="questionGroupAnswerControl(i)"
+                          [options]="question.answerOptions"></prime-dropdown>
+        </div>
+      </ng-template>
+
+      <ng-template [ngIf]="!isEditMode">
+        <div *ngFor="let questionAnswer of answer.answers; let i = index" class="w-full">
+          <h4 class="font-medium m-0 mb-1">{{ questionAnswer.questionMetadata.question }}</h4>
+
+
+          <prime-textarea placeholder="Share your answer..."
+                          styleClass="w-full"
+                          class="w-full"
+                          [readonly]="true"
+                          *ngIf="!questionAnswer.questionMetadata.answerOptions || questionAnswer.questionMetadata.answerOptions.length == 0"
+                          [rows]="3"
+                          [control]="getUserAnswerControl(answer.userMetadata.userId, questionAnswer.questionMetadata.id)"></prime-textarea>
+          <prime-dropdown placeholder="Select answer option"
+                          *ngIf="questionAnswer.questionMetadata.answerOptions && questionAnswer.questionMetadata.answerOptions.length > 0"
+                          [readonly]="true"
+                          [control]="getUserAnswerControl(answer.userMetadata.userId, questionAnswer.questionMetadata.id)"
+                          [options]="questionAnswer.questionMetadata.answerOptions"></prime-dropdown>
+        </div>
+      </ng-template>
+
+
+    </div>
+
+  </div>
+</ng-template>
+

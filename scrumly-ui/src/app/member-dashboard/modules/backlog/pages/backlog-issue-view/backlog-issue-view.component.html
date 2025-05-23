@@ -1,0 +1,278 @@
+<p-confirmDialog/>
+<p-toast position="top-center"/>
+<ng-container *ngTemplateOutlet="dataTable"></ng-container>
+
+<ng-template #dataTable>
+  <div>
+    <div class="px-4 py-5 md:px-6 lg:px-6 surface-section">
+      <div class="flex flex-column lg:flex-row lg:align-items-center lg:justify-content-between relative">
+        <div class="flex flex-column gap-3 justify-content-center w-full">
+          <div class="flex flex-row align-items-center justify-content-start gap-3">
+            <a class="text-green-500 no-underline"
+               [routerLink]="'/app/backlog/issues'"
+               [queryParams]="{backlogId: issueDto?.backlogId}">
+              {{issueDto?.backlogName}}
+            </a>
+            <i class="pi pi-chevron-right text-700"></i>
+            <issue-type-row [issueType]="issueDto?.issueType"></issue-type-row>
+            <i class="pi pi-chevron-right text-700"></i>
+            <a class="no-underline">
+              {{issueDto?.issueKey}}
+            </a>
+          </div>
+          <div class="flex flex-row align-items-center justify-content-start gap-3" style="width:80%">
+            <div class="text-700 text-3xl font-medium" *ngIf="!isEditing">
+              {{ issueDto?.title }}
+            </div>
+            <prime-input *ngIf="isEditing"
+                         style="width:100%"
+                         styleClass="w-full"
+                         [control]="control(issueFormGroup,'title')"></prime-input>
+            <p-button pTooltip="Edit"
+                      tooltipPosition="left"
+                      severity="warning"
+                      icon="pi pi-pencil"
+                      iconPos="right"
+                      showDelay="1000"
+                      *ngIf="!isEditing"
+                      (onClick)="toggleEditing()"
+                      [text]="true"></p-button>
+            <p-button pTooltip="Cancel"
+                      tooltipPosition="left"
+                      severity="danger"
+                      icon="pi pi-times"
+                      iconPos="right"
+                      showDelay="1000"
+                      *ngIf="isEditing"
+                      (onClick)="onCancelEditing()"
+                      [text]="true"></p-button>
+            <p-button pTooltip="Accept"
+                      tooltipPosition="left"
+                      severity="success"
+                      icon="pi pi-check"
+                      iconPos="right"
+                      showDelay="1000"
+                      *ngIf="isEditing"
+                      (onClick)="onAcceptEditing()"
+                      [text]="true"></p-button>
+          </div>
+        </div>
+        <div class="mt-3 lg:mt-0 flex flex-row flex-wrap align-items-center gap-2">
+          <div class="flex flex-row gap-2 align-items-center justify-content-center">
+            <p-button label="Save changes"
+                      severity="success"
+                      icon="pi pi-save"
+                      styleClass="white-space-nowrap"
+                      (onClick)="onSaveIssueChanges()"></p-button>
+            <p-button icon="pi pi-ellipsis-v"
+                      severity="success"
+                      (onClick)="menu.toggle($event)"
+                      [rounded]="true"
+                      [text]="true"
+                      [outlined]="true"/>
+            <p-menu #menu
+                    [model]="menuItems"
+                    [popup]="true"
+                    appendTo="body"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="px-4 py-5 md:px-6 lg:px-6">
+      <div class="grid">
+        <div class="col-12 lg:col-8">
+          <div class="text-xl text-700 font-medium mb-3">
+            Description
+          </div>
+          <prime-text-editor placeholder="Issue description"
+                             height="400px"
+                             [control]="control(issueFormGroup,'description')"
+                             (onFocusLost)="onSaveIssueChanges()"></prime-text-editor>
+        </div>
+        <div class="col-12 lg:col-4">
+          <div class="text-xl text-700 font-medium mb-3">
+            Details
+          </div>
+          <div class="surface-card p-4 shadow-2 border-round flex-grow-1"
+               *ngIf="issueDto">
+            <div class="grid">
+              <div class="col-12">
+                <issue-status-dropdown label="Status"
+                                       [backlogId]="issueDto?.backlogId!"
+                                       [defaultValue]="issueDto?.status"
+                                       (onSelectIssueStatus)="onChangeIssueStatus(issueDto!, $event)"
+                                       style="width: 100%"
+                                       styleClass="w-full flex justify-content-start align-items-start"></issue-status-dropdown>
+              </div>
+              <div class="col-12">
+                <issue-assignee-dropdown label="Assignee"
+                                         [defaultValue]="issueDto?.assignee"
+                                         [backlogId]="issueDto?.backlogId!"
+                                         [hideAvatar]="false"
+                                         [hideEmail]="true"
+                                         (onSelectAssignee)="onChangeIssueAssignee(issueDto!, $event)"
+                                         style="width: 100%"
+                                         styleClass="w-full flex justify-content-start align-items-start"></issue-assignee-dropdown>
+              </div>
+              <div class="col-12">
+                <issue-assignee-dropdown label="Created by"
+                                         [defaultValue]="issueDto?.createdBy"
+                                         [backlogId]="issueDto?.backlogId!"
+                                         [hideAvatar]="false"
+                                         [hideEmail]="true"
+                                         [readonly]="true"
+                                         (onSelectAssignee)="onChangeIssueAssignee(issueDto!, $event)"
+                                         style="width: 100%"
+                                         styleClass="w-full flex justify-content-start align-items-start"></issue-assignee-dropdown>
+              </div>
+
+              <div class="col-12">
+                <prime-input label="Created date"
+                             placeholder="Created date"
+                             icon="pi pi-calendar"
+                             [readonly]="true"
+                             [control]="control(issueFormGroup, 'createdDate')"></prime-input>
+              </div>
+
+              <div class="col-12">
+                <div class="flex flex-column gap-2 w-full">
+                  <prime-input label="Final estimate"
+                               placeholder="Final estimate"
+                               [control]="control(issueFormGroup, 'estimation')"></prime-input>
+                  <div class="flex flex-row align-items-center gap-1"
+                       *ngIf="issueDto?.issueEstimation?.activityName">
+                    <span>Estimated at: </span>
+                    <a class="no-underline text-green-500">
+                      {{issueDto?.issueEstimation?.activityName}}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-12 lg:col-8" *ngIf="issueDto?.exportRefs! && issueDto?.exportRefs?.length! > 0">
+          <div class="text-xl text-700 font-medium mb-3">
+            External issues
+          </div>
+          <div class="surface-card p-4 shadow-2 border-round flex-grow-1">
+            <p-table
+              [value]="issueDto?.exportRefs!"
+              [tableStyle]="{ 'min-width': '50rem' }"
+              dataKey="id"
+              styleClass="p-datatable-gridlines">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th pSortableColumn="serviceName" class="text-center">
+                    Service
+                    <p-sortIcon field="serviceName"/>
+                  </th>
+                  <th pSortableColumn="finalEstimate" class="text-center">
+                    Project name
+                    <p-sortIcon field="finalEstimate"/>
+                  </th>
+                  <th pSortableColumn="serviceIssueKey" class="text-center">
+                    Issue key
+                    <p-sortIcon field="serviceIssueKey"/>
+                  </th>
+                  <th pSortableColumn="issueTypeName" class="text-center">
+                    Issue type
+                    <p-sortIcon field="issueTypeName"/>
+                  </th>
+                  <th pSortableColumn="exportedDate" class="text-center">
+                    Export date
+                    <p-sortIcon field="exportedDate"/>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-issue let-expanded="expanded">
+                <tr>
+                  <td class="text-center">
+                    <div class="flex flex-row align-items-center justify-content-center">
+                      <img src="./assets/img/integrations/{{ issue.serviceName }}.png"
+                           class="mr-3 integration-service-icon">
+                      <div class="flex flex-column align-items-start">
+                      <span class="text-700 font-medium mb-1">
+                        {{ 'integrations.' + issue.serviceName + '.title'|translate }}
+                      </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    {{issue.projectName}}
+                  </td>
+                  <td class="text-center">
+                    <a class="flex flex-grow justify-content-center text-green-500 no-underline"
+                       [href]="issue?.issueUrl!"
+                       target="_blank">
+                      {{issue?.serviceIssueKey}}
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <div class="flex flex-row w-full justify-content-center align-items-center gap-3">
+                      <img *ngIf="issue?.issueTypeUrl"
+                           [src]="issue?.issueTypeUrl"
+                           loading="lazy"
+                           class="mr-1 text-center" style="width: 15px;">
+                      <div class="flex flex-column justify-content-start align-items-start">
+                        <div class="font-medium flex-grow text-600">
+                          {{issue?.issueTypeName}}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    {{issue.exportedDate | date: 'fullDate'}}
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="rowexpansion" let-issue>
+                <tr>
+                  <td colspan="3">
+                    <p-table
+                      [value]="issue.userEstimateMetadata"
+                      [tableStyle]="{ 'min-width': '50rem' }"
+                      styleClass="p-datatable-gridlines">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th pSortableColumn="userMetadata.firstName" class="text-start">
+                            Participant
+                            <p-sortIcon field="userMetadata.firstName"/>
+                          </th>
+                          <th pSortableColumn="estimate" class="text-center">
+                            Estimate
+                            <p-sortIcon field="estimate"/>
+                          </th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-userIssue>
+                        <tr>
+                          <td>
+                            <prime-user-header avatarSize="normal"
+                                               textSize="text-xs"
+                                               [profile]="userIssue.userMetadata"></prime-user-header>
+                          </td>
+                          <td class="text-center">
+                            {{userIssue.estimate}}
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </td>
+                </tr>
+              </ng-template>
+
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</ng-template>

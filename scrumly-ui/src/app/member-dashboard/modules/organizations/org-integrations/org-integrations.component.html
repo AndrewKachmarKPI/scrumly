@@ -1,0 +1,25 @@
+<p-confirmDialog/>
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Organization Integrations
+      </h1>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your organization integrations.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+<!--    <p-badge [value]="organization?.status"-->
+<!--             [severity]="getOrgSeverity()"-->
+<!--             badgeSize="large"></p-badge>-->
+  </div>
+</div>
+
+<p-divider></p-divider>
+
+<ng-template [ngIf]="orgId">
+  <integration-services-list *ngIf="integrationServices | async as services"
+                             [callbackParam]="orgId"
+                             [services]="services"></integration-services-list>
+</ng-template>

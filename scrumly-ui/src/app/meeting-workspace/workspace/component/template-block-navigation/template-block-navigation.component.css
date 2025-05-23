@@ -1,0 +1,27 @@
+.text-container {
+  width: 12rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative; /* Ensures the hover effect stays aligned */
+}
+
+.text-container::after {
+  content: attr(data-full-text);
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 100%; /* Positions below the element */
+  width: max-content;
+  min-width: 12rem;
+  max-width: 20rem; /* Adjust as needed */
+  background: var(--surface-500);
+  padding: 0.5rem;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  white-space: normal;
+}
+
+.text-container:hover::after {
+  display: block;
+}

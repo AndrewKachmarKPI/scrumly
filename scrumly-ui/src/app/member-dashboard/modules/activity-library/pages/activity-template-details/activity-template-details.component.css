@@ -1,0 +1,9 @@
+::ng-deep #main-content-wrapper {
+  padding: 0 !important;
+}
+
+.page-cover {
+  height: 150px;
+  background: url(../../../../../../assets/media/cover.png) no-repeat;
+  background-size: cover;
+}

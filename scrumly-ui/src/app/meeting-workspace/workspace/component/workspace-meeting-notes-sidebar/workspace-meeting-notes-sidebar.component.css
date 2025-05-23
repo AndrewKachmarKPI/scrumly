@@ -1,0 +1,14 @@
+::ng-deep.p-sidebar-right {
+  width: 70rem !important;
+  z-index: 10000 !important;
+}
+
+@media screen and (max-width: 1440px) {
+  ::ng-deep.p-sidebar-right {
+    width: 100% !important;
+  }
+}
+
+::ng-deep.p-sidebar-mask {
+  z-index: 2 !important;
+}

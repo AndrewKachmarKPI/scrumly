@@ -1,0 +1,16 @@
+<div [@flip]="flipState"
+     class="flip-container">
+  <ng-container *ngIf="!isBack">
+    <div class="estimate-card border-2" [ngClass]="[getCardBackgroundColor(), styleClass]">
+      {{ value }}
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="isBack">
+    <div class="estimate-card border-2 bg-gray-200 border-gray-500">
+      <prime-image-box path="../assets/img/logo-icon-green.png"
+                       height="2.5rem"
+                       width="2.5rem"></prime-image-box>
+    </div>
+  </ng-container>
+</div>

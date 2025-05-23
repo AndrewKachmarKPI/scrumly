@@ -1,0 +1,140 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        {{selection?.team?.name}} - Backlogs
+      </h1>
+      <p-badge severity="success"
+               [value]="backlogs.length"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your team backlog.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-button label="Create new backlog"
+              severity="success"
+              size="small"
+              icon="pi pi-plus"
+              (onClick)="onCreateNewBacklog()"></p-button>
+  </div>
+</div>
+
+
+<p-confirmDialog/>
+
+
+<ng-template [ngIf]="backlogs"
+             [ngIfThen]="backlogBlock"
+             [ngIfElse]="skeleton">
+</ng-template>
+
+<ng-template #backlogBlock>
+  <div class="w-full">
+    <div class="grid">
+
+      <div class="col-12">
+        <p-table #dt
+                 [value]="backlogs"
+                 [tableStyle]="{'min-width': '50rem'}"
+                 [scrollable]="true"
+                 [scrollHeight]="'flex'"
+                 [rowHover]="true"
+                 styleClass="p-datatable-gridlines">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="name" style="width:20%">
+                Name
+                <p-sortIcon field="name"/>
+              </th>
+              <th class="text-center" pSortableColumn="issueIdentifier">
+                Issue Identifier
+                <p-sortIcon field="issueIdentifier"/>
+              </th>
+              <th class="text-center" pSortableColumn="createdDateTime">
+                Created
+                <p-sortIcon field="createdDateTime"/>
+              </th>
+              <th class="text-center" pSortableColumn="issueStatuses.length">
+                Total statuses
+                <p-sortIcon field="issueStatuses.length"/>
+              </th>
+              <th class="text-center" pSortableColumn="issueTypes.length">
+                Total types
+                <p-sortIcon field="issueTypes.length"/>
+              </th>
+              <th class="text-center" pSortableColumn="issues.length">
+                Total issues
+                <p-sortIcon field="issues.length"/>
+              </th>
+              <th class="text-center" style="width:15%">
+                Actions
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-backlog>
+            <tr>
+              <td>
+                {{backlog.name}}
+              </td>
+              <td class="text-center">
+                <p-tag
+                  severity="success"
+                  [value]="backlog.issueIdentifier"/>
+              </td>
+              <td class="text-center">
+                <p>{{ backlog.createdDateTime | date: 'mediumDate' }}</p>
+              </td>
+              <td class="text-center">
+                {{backlog.issueStatuses?.length || 0}}
+              </td>
+              <td class="text-center">
+                {{backlog.issueTypes?.length || 0}}
+              </td>
+              <td class="text-center">
+                {{backlog.issues?.length || 0}}
+              </td>
+              <td class="text-center">
+                <p-button label="Select backlog"
+                          severity="success"
+                          size="small"
+                          (onClick)="onSelectBacklog(backlog)"
+                          [outlined]="backlog.backlogId !== selectedBacklogId"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [colSpan]="7" class="p-0">
+                <prime-no-data-placeholder text="No backlogs found"
+                                           description="We couldn't find any backlogs created">
+                </prime-no-data-placeholder>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #skeleton>
+  <div class="w-full">
+    <div class="grid">
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12">
+        <p-skeleton width="100%" height="4rem"/>
+      </div>
+    </div>
+  </div>
+</ng-template>

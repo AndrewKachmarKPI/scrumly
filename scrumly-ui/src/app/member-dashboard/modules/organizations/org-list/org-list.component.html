@@ -1,0 +1,131 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        {{ 'organizations.list.title' | translate }}
+      </h1>
+      <p-badge severity="success"
+               [value]="organizations?.totalElements"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your integrations.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-button label="Create organization"
+              severity="success"
+              size="small"
+              icon="pi pi-plus"
+              (onClick)="openCreateOrganizationDialog()"></p-button>
+  </div>
+</div>
+
+<p-divider></p-divider>
+
+
+<div class="flex flex-row flex-wrap gap-3 justify-content-between align-items-center mb-3">
+  <div class="flex flex-row flex-wrap gap-3">
+    <prime-input placeholder="Organization name"
+                 iconPos="p-input-icon-left"
+                 icon="pi pi-search"
+                 styleClass="w-100 lg:w-20rem"
+                 [delayEnabled]="true"
+                 [control]="control(filtersGroup, 'organizationName')"
+                 (onDelayOver)="filterByName()"></prime-input>
+  </div>
+</div>
+
+<ng-template [ngIf]="organizations"
+             [ngIfThen]="organizationsBlock"
+             [ngIfElse]="skeleton">
+</ng-template>
+
+<ng-template #organizationsBlock>
+  <div class="w-full">
+    <div class="grid">
+      <div class="col-12 lg:col-6" *ngFor="let org of organizations?.data">
+        <div class="shadow-2 surface-card p-4 border-2 border-transparent h-full"
+             [ngClass]="[org.organizationId === selectedOrganization?.organizationId ? 'border-green-500' : '',
+             org.isActive ? 'cursor-pointer' : '',
+             org.isOrgAccessBlocked ? 'cursor-none opacity-50' : '']"
+             (click)="onSelectOrganization(orgSelector, org)"
+             style="border-radius: 10px;">
+          <div class="flex align-items-center mb-3">
+            <div class="mr-auto">
+              <org-short-info avatarSize="large"
+                              [orgInfo]="org"></org-short-info>
+            </div>
+            <p-radioButton #orgSelector
+                           styleClass="text-green-500"
+                           labelStyleClass="text-green-500"
+                           [disabled]="!org.isActive!"
+                           [value]="org.organizationId"
+                           [ngModel]="selectedOrganization?.organizationId"
+                           [inputId]="org.organizationId"></p-radioButton>
+          </div>
+          <div class="flex flex-row flex-wrap justify-content-between align-items-center gap-3 text-sm">
+            <div class="flex flex-row flex-wrap gap-3">
+              <div
+                pTooltip="Organization members"
+                tooltipPosition="bottom"
+                class="border-1 p-1 px-2 border-round flex align-items-center font-medium surface-100 text-600 surface-border">
+                <i class="pi pi-users mr-2"></i>
+                <span class="mr-2">Members</span>
+                <span>{{ org.numberOfMembers }}</span>
+              </div>
+              <div
+                pTooltip="Organization teams"
+                tooltipPosition="bottom"
+                class="border-1 p-1 px-2 border-round flex align-items-center font-medium surface-100 text-600 surface-border">
+                <i class="pi pi-sitemap mr-2"></i>
+                <span class="mr-2">Teams</span>
+                <span>{{ org.numberOfTeams }}</span>
+              </div>
+              <div
+                pTooltip="Date created"
+                tooltipPosition="bottom"
+                class="border-1 p-1 px-2 border-round flex align-items-center font-medium surface-100 text-600 surface-border">
+                <i class="pi pi-calendar mr-2"></i>
+                <span class="mr-2">Created</span>
+                <span>{{ org.created | date: 'mediumDate' }}</span>
+              </div>
+            </div>
+
+            <div
+              pTooltip="Organization admin"
+              tooltipPosition="bottom"
+              class="border-1 p-1 px-2 border-round flex align-items-center font-medium surface-100 text-600 surface-border">
+              <i class="pi pi-user mr-2"></i>
+              <span>{{ org.createdBy?.firstName}} {{ org.createdBy?.lastName}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <p-paginator styleClass="d-flex align-items-center justify-content-end bg-transparent px-0"
+                     (onPageChange)="onPageChange($event)"
+                     [rows]="organizations?.size || 0"
+                     [totalRecords]="organizations?.totalElements || 0"
+                     [rowsPerPageOptions]="defaultPageOptions()"></p-paginator>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #skeleton>
+  <div class="w-full">
+    <div class="grid">
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12">
+        <p-skeleton width="100%" height="4rem"/>
+      </div>
+    </div>
+  </div>
+</ng-template>

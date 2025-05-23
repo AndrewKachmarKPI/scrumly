@@ -1,0 +1,90 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Search activity templates
+      </h1>
+      <p-badge severity="success"
+               [value]="activityTemplates?.totalElements"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Find activity template that suites your needs.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-button label="Create custom template"
+              severity="success"
+              size="small"
+              icon="pi pi-plus"
+              routerLink="/app/activity/create"
+              (onClick)="onCreateCustomTemplate()"></p-button>
+  </div>
+</div>
+
+<p-divider></p-divider>
+
+<ng-container *ngTemplateOutlet="dataTable"></ng-container>
+
+<ng-template #dataTable>
+  <div class="w-full flex flex-wrap flex-row align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-row align-items-center flex-auto">
+      <div class="p-input-icon-left w-full p-input-filled">
+        <i class="pi pi-search"></i>
+        <prime-input placeholder="Search activity template"
+                     iconPos="p-input-icon-left"
+                     icon="pi pi-search"
+                     styleClass="p-inputtext p-component p-element  w-full lg:w-30rem"
+                     [delayEnabled]="true"
+                     [control]="searchFilterControl"
+                     (onDelayOver)="filterByName()"></prime-input>
+      </div>
+    </div>
+    <div class="flex flex-row flex-wrap align-items-center justify-content-start gap-2">
+      <p-button severity="success"
+                label="All"
+                [outlined]="selectedType?.id"
+                [rounded]="true"
+                (onClick)="onSelectActivityType(undefined)"/>
+      <p-button severity="success"
+                [label]="activityType.type"
+                [outlined]="activityType.id !== selectedType?.id"
+                [rounded]="true"
+                (onClick)="onSelectActivityType(activityType)"
+                *ngFor="let activityType of activityTypes"/>
+
+    </div>
+  </div>
+
+  <div class="w-full" *ngIf="activityTemplates && activityTemplates.data.length != 0">
+    <div class="grid">
+      <div class="col-12 md:col-6 mg:col-4 lg:col-3 mb-5 lg:mb-0"
+           *ngFor="let template of activityTemplates?.data">
+        <prime-template-card [template]="template"
+                             (onEditTemplate)="editTemplate($event)"
+                             (onCopyTemplate)="copyTemplate($event)"
+                             (onDeleteTemplate)="onDeleteTemplate($event)"></prime-template-card>
+      </div>
+
+      <div class="col-12">
+        <p-paginator styleClass="d-flex align-items-center justify-content-end bg-transparent px-0"
+                     (onPageChange)="onPageChange($event)"
+                     [rows]="activityTemplates?.size || 0"
+                     [totalRecords]="activityTemplates?.totalElements || 0"
+                     [rowsPerPageOptions]="defaultPageOptions()"></p-paginator>
+      </div>
+    </div>
+  </div>
+
+  <prime-no-data-placeholder *ngIf="activityTemplates && activityTemplates.data.length == 0"
+                             text="No templates found"
+                             description="We couldn't find any templates created">
+    <p-button label="Create custom template"
+              severity="success"
+              size="small"
+              icon="pi pi-plus"
+              routerLink="/app/activity/create"
+              (onClick)="onCreateCustomTemplate()"></p-button>
+  </prime-no-data-placeholder>
+
+</ng-template>

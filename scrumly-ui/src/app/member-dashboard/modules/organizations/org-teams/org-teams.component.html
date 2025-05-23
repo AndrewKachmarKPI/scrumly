@@ -1,0 +1,222 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Organization teams
+      </h1>
+      <p-badge severity="success"
+               [value]="teams?.totalElements"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your organization teams.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-button label="Create new team"
+              severity="success"
+              size="small"
+              icon="pi pi-plus"
+              *ngIf="currentMember?.role != OrganizationMemberRole.MEMBER"
+              (onClick)="openCreateTeamDialog()"></p-button>
+  </div>
+</div>
+
+<ng-container *ngTemplateOutlet="dataTable"></ng-container>
+
+<ng-template #dataTable>
+  <div class="w-full">
+    <p-table [value]="teams?.data!"
+             [scrollable]="true"
+             [rowHover]="true"
+             dataKey="teamId"
+             editMode="row"
+             styleClass="p-datatable-gridlines">
+      <ng-template pTemplate="caption">
+        <div class="flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
+          <div class="flex flex-row flex-wrap gap-3">
+            <prime-input placeholder="Search by team name"
+                         iconPos="p-input-icon-left"
+                         icon="pi pi-search"
+                         styleClass="w-full lg:w-20rem"
+                         [delayEnabled]="true"
+                         [control]="control(filtersGroup, 'searchField')"
+                         (onDelayOver)="onSearchChange()"></prime-input>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 5rem"></th>
+          <th pSortableColumn="name" class="text-left" style="width:20%">
+            Team name
+            <p-sortIcon field="name"/>
+          </th>
+          <th class="text-center" pSortableColumn="totalMembers">
+            Total members
+            <p-sortIcon field="created"/>
+          </th>
+          <th class="text-center" pSortableColumn="createdBy.firstName">
+            Creator
+            <p-sortIcon field="createdBy.firstName"/>
+          </th>
+          <th class="text-center" pSortableColumn="created">
+            Created date
+            <p-sortIcon field="created"/>
+          </th>
+          <th class="text-right" style="width:20%;">
+            Actions
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-team
+                   let-expanded="expanded"
+                   let-editing="editing"
+                   let-ri="rowIndex">
+        <tr [pEditableRow]="team">
+          <td>
+            <p-button type="button"
+                      [pRowToggler]="team"
+                      [text]="true"
+                      [rounded]="true"
+                      [plain]="true"
+                      [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"/>
+          </td>
+          <td class="text-left">
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <div class="flex align-items-center justify-content-between">
+                  <prime-input [control]="getEditTeamControl(team)"></prime-input>
+                  <div class="flex align-item-center justify-content-center ml-2">
+                    <p-button pTooltip="Cancel"
+                              tooltipPosition="left"
+                              severity="danger"
+                              icon="pi pi-times"
+                              iconPos="right"
+                              showDelay="1000"
+                              pCancelEditableRow
+                              (onClick)="onCancelTeamEdit(team)"
+                              [text]="true"></p-button>
+                    <p-button pTooltip="Accept"
+                              tooltipPosition="left"
+                              severity="success"
+                              icon="pi pi-check"
+                              iconPos="right"
+                              showDelay="1000"
+                              pCancelEditableRow
+                              [disabled]="team.name === getEditTeamControl(team).value"
+                              (onClick)="onAcceptTeamEdit(team)"
+                              [text]="true"></p-button>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="output">
+                <div class="flex align-items-center justify-content-between">
+                  <p>{{ team.name }}</p>
+                  <p-button pTooltip="Edit team"
+                            tooltipPosition="left"
+                            severity="success"
+                            icon="pi pi-pencil"
+                            iconPos="right"
+                            showDelay="1000"
+                            pInitEditableRow
+                            *ngIf="currentMember?.role != OrganizationMemberRole.MEMBER"
+                            (onClick)="onEditTeam(team)"
+                            [text]="true"></p-button>
+                </div>
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td class="text-center">
+            <div class="flex justify-content-center">
+              <div
+                pTooltip="Team members"
+                tooltipPosition="bottom"
+                class="border-1 p-1 px-2 border-round flex align-items-center w-min font-medium surface-100 text-600 surface-border">
+                <i class="pi pi-users mr-2"></i>
+                <span class="mr-2">Members</span>
+                <span>{{ team.totalMembers }}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="flex align-items-center justify-content-center">
+              <prime-user-header [profile]="team.createdBy"></prime-user-header>
+            </div>
+          </td>
+          <td class="text-center">
+            <p>{{ team.created | date: 'dd.MM.YYYY' }}</p>
+          </td>
+          <td class="text-right">
+            <p-button severity="success"
+                      icon="pi pi-eye"
+                      iconPos="right"
+                      label="Dashboard"
+                      (onClick)="openTeamDashboard(team)"
+                      [text]="true"></p-button>
+            <p-button pTooltip="Delete team"
+                      showDelay="1000"
+                      severity="danger"
+                      icon="pi pi-trash"
+                      iconPos="right"
+                      *ngIf="currentMember?.role != OrganizationMemberRole.MEMBER"
+                      (onClick)="confirmDeleteTeam(team)"
+                      [text]="true"></p-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="rowexpansion" let-team>
+        <tr>
+          <td colspan="6">
+            <org-team-members-table [team]="team"
+                                    [showCaption]="true"
+                                    [organizationMember]="currentMember"></org-team-members-table>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="summary">
+        <p-paginator (onPageChange)="onPageChange($event)"
+                     [rows]="teams?.size || 0"
+                     [totalRecords]="teams?.totalElements || 0"
+                     [rowsPerPageOptions]="defaultPageOptions()"></p-paginator>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [colSpan]="6" class="p-0">
+            <prime-no-data-placeholder *ngIf="!teams || teams.data.length == 0"
+                                       text="No teams invites found"
+                                       description="We couldn't find any teams created">
+              <p-button label="Create new team"
+                        severity="success"
+                        size="small"
+                        icon="pi pi-plus"
+                        (onClick)="openCreateTeamDialog()"></p-button>
+            </prime-no-data-placeholder>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+
+  </div>
+</ng-template>
+
+
+<ng-template #teamAccordion let-team="team">
+  <p-accordion>
+    <p-accordionTab #membersTab
+                    header="Team members"
+                    contentStyleClass="p-0"
+                    headerStyleClass="flex"
+                    [selected]="true">
+      <ng-template pTemplate="header">
+        <div class="flex flex-grow-0 ml-2 justify-content-end align-items-center">
+          <p-badge severity="success"
+                   [value]="team?.members.length"></p-badge>
+        </div>
+      </ng-template>
+      <org-team-members-table [team]="team"></org-team-members-table>
+    </p-accordionTab>
+  </p-accordion>
+</ng-template>

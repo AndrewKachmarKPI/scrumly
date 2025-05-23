@@ -1,0 +1,240 @@
+<p-table #dt
+         [value]="activities?.data!"
+         [tableStyle]="{'min-width': '50rem'}"
+         [scrollable]="true"
+         [scrollHeight]="'flex'"
+         [rowHover]="true"
+         [columns]="cols"
+         [exportHeader]="'customExportHeader'"
+         [exportFilename]="'Scheduled activities'"
+         (onPage)="onPageChange($event)">
+  <ng-template pTemplate="caption" [ngIf]="!hideFilter">
+    <div *ngIf="!hideFilter" class="flex flex-row gap-3 flex-wrap align-items-center justify-content-between">
+      <div class="flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
+        <div class="flex flex-row flex-wrap gap-3">
+          <prime-input placeholder="Search by activity title"
+                       iconPos="p-input-icon-left"
+                       icon="pi pi-search"
+                       styleClass="w-full lg:w-20rem"
+                       [delayEnabled]="true"
+                       [control]="control(filterGroup, 'searchField')"
+                       (onDelayOver)="onSearchChange()"></prime-input>
+        </div>
+        <div class="flex flex-row flex-wrap gap-3">
+          <prime-calendar placeholder="Event Start/End range"
+                          selectionMode="range"
+                          styleClass="w-full lg:w-10rem"
+                          iconDisplay="button"
+                          id="eventCalendar"
+                          [showClear]="true"
+                          (onSelectDateEmitter)="onSelectDate($event)"
+                          (onClearDateEmit)="onClearDate()"
+                          [control]="control(filterGroup, 'datePicker')"></prime-calendar>
+        </div>
+      </div>
+      <div class="flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
+        <p-button
+          icon="pi pi-download"
+          label="Export to csv"
+          severity="success"
+          size="small"
+          [outlined]="true"
+          (onClick)="dt.exportCSV({allValues:true})"/>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="scheduledEvent.title" class="text-start" style="width:20%">
+        Activity
+        <p-sortIcon field="scheduledEvent.title"/>
+      </th>
+      <th pSortableColumn="scheduledEvent.startDateTime" class="text-start" style="width:10%">
+        Date
+        <p-sortIcon field="scheduledEvent.startDateTime"/>
+      </th>
+      <th class="text-center" pSortableColumn="scheduledEvent.duration">
+        Duration
+        <p-sortIcon field="scheduledEvent.duration"/>
+      </th>
+      <th class="text-center" pSortableColumn="status" style="width:10%">
+        Status
+        <p-sortIcon field="status"/>
+      </th>
+      <th class="text-center" style="width:10%">
+        Attendees
+      </th>
+      <th class="text-center">
+        Activity workspace
+      </th>
+      <th class="text-center">
+        External event
+      </th>
+      <th class="text-right" *ngIf="!hideActions">
+        Actions
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-activity>
+    <tr [ngClass]="[activity.status]">
+      <td class="text-start">
+        <div class="flex flex-column">
+          <span>
+            {{ activity.scheduledEvent.title }}
+          </span>
+          <a class="text-green-500 no-underline"
+             *ngIf="activity.activityTemplate"
+             routerLink="/app/activity/{{ activity.activityTemplate.templateId }}/view">
+            <strong>Template:</strong> {{ activity.activityTemplate.name }}
+          </a>
+        </div>
+      </td>
+      <td class="text-start">
+        <div class="flex flex-column">
+          <span>{{ activity.scheduledEvent.startDateTime | date: 'mediumDate' }}</span>
+          <div class="flex flex-row font-light">
+            <span>{{ activity.scheduledEvent.startDateTime | date: 'shortTime' }}</span>
+            <span>-</span>
+            <span>{{ activity.scheduledEvent.endDateTime | date: 'shortTime' }}</span>
+          </div>
+        </div>
+      </td>
+      <td class="text-center">
+        {{ activity.scheduledEvent.duration | activityDuration }}
+      </td>
+      <td class="text-center">
+        <div class="flex flex-column gap-2">
+          <p-badge [severity]="getActivitySeverity(activity.status)" [value]="activity.status"></p-badge>
+          <div class="flex flex-row justify-content-center text-xs text-yellow-500 text-center"
+               *ngIf="activity.status === 'SCHEDULED' && activity.scheduledEvent.endDateTime && isPast(activity.scheduledEvent.endDateTime)">
+            <i class="pi pi-exclamation-triangle"></i>
+            <span class="ml-1">Past event</span>
+          </div>
+          <div class="flex flex-row justify-content-center align-items-center text-xs text-gray-500"
+               pTooltip="{{ activity.scheduledEvent.recurrence.recurrenceText }}"
+               *ngIf="activity.recurringEventId && activity.scheduledEvent.recurrence">
+            <i class="pi pi-refresh"></i>
+            <span class="ml-1">Recurrent</span>
+          </div>
+        </div>
+      </td>
+      <td class="text-center">
+        <div class="flex flex-row justify-content-start align-items-center cursor-pointer"
+             (click)="op.toggle($event)">
+          <div class="p-1 px-2 border-round flex align-items-center surface-border">
+            <i class="pi pi-users mr-2"></i>
+            <span class="mr-2">Invited</span>
+            <span>{{ activity.scheduledEvent.attendees.length }}</span>
+          </div>
+          <i class="pi pi-angle-down ml-2"></i>
+        </div>
+
+        <p-overlayPanel #op (mouseleave)="op.hide()">
+          <div class="flex flex-column gap-3 w-25rem">
+            <span class="font-medium text-900 block mb-2">Attendees</span>
+            <ul class="list-none p-0 m-0 flex flex-column gap-3">
+              <li *ngFor="let attendee of activity.scheduledEvent.attendees" class="flex align-items-center gap-2">
+                <prime-avatar [label]="attendee.displayName"></prime-avatar>
+                <div>
+                  <span class="font-medium">{{ attendee.displayName }}</span>
+                  <div class="text-sm text-color-secondary">{{ attendee.userEmailAddress }}</div>
+                </div>
+                <div class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm">
+                    <span *ngIf="attendee.userId === activity.scheduledEvent.createdBy">
+                      Organizer
+                    </span>
+                  <span *ngIf="attendee.userId !== activity.scheduledEvent.createdBy">
+                      Guest
+                    </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </p-overlayPanel>
+      </td>
+
+      <td class="text-center">
+        <div class="flex flex-column align-items-center justify-content-center">
+          <p-splitButton
+            severity="success"
+            appendTo="body"
+            [label]="activity.status !== 'FINISHED' ? 'Join conference' : 'View Report'"
+            *ngIf="activity.scheduledEvent.active"
+            (onClick)="onJoinRoom(activity)"
+            (onDropdownClick)="onSelectActivity(activity)"
+            [model]="joinMenuItems">
+            <ng-template pTemplate="content">
+              <prime-image-box path="../assets/img/logo-icon-white.png"
+                               height="1.5rem"
+                               width="1.5rem"
+                               styleClass="mr-2"></prime-image-box>
+              <span class="ml-2 font-bold">
+                {{activity.status !== 'FINISHED' ? 'Join conference' : 'View Report'}}
+              </span>
+            </ng-template>
+          </p-splitButton>
+          <span class="text-start text-sm" *ngIf="activity.workspace.conferenceId">
+            Conference: {{ activity.workspace.conferenceId }}
+          </span>
+        </div>
+      </td>
+      <td class="text-center">
+        <ng-template [ngIf]="activity.scheduledEvent.active">
+          <span *ngIf="!activity.scheduledEvent.eventMetadata">No event</span>
+          <div *ngIf="activity.scheduledEvent.eventMetadata as metadata">
+            <div class="flex flex-row gap-2 align-items-center justify-content-center">
+              <p-button
+                label="Open event"
+                severity="success"
+                size="small"
+                (onClick)="openLink(metadata.calendarEventLink)"
+                [outlined]="true"
+                *ngIf="metadata.calendarEventLink">
+                <prime-image-box path="../assets/img/icons/{{ metadata.calendarProvider }}.png"
+                                 height="1.5rem"
+                                 width="1.5rem"
+                                 styleClass="mr-2"></prime-image-box>
+              </p-button>
+            </div>
+          </div>
+        </ng-template>
+      </td>
+      <td class="text-right"
+          *ngIf="!hideActions">
+        <div class="flex flex-row flex-wrap align-items-center justify-content-end"
+             *ngIf="isCurrentUser(activity.scheduledEvent.createdBy) && getMenuItems(activity).length > 0">
+          <p-button icon="pi pi-ellipsis-v"
+                    (onClick)="menu.toggle($event)"
+                    [text]="true"
+                    [rounded]="true"/>
+          <p-menu #menu
+                  [model]="getMenuItems(activity)"
+                  [popup]="true"
+                  appendTo="body"/>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="summary">
+    <p-paginator (onPageChange)="onPageChange($event)"
+                 [rows]="activities?.size || 0"
+                 [totalRecords]="activities?.totalElements || 0"
+                 [rowsPerPageOptions]="defaultPageOptions()"
+                 *ngIf="showPagination"></p-paginator>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [colSpan]="10" class="p-0">
+        <prime-no-data-placeholder text="No scheduled activities found for today"
+                                   description="We couldn't find any scheduled activity for today">
+          <p-button label="Schedule Event"
+                    icon="pi pi-plus"
+                    severity="success"
+                    (onClick)="toggleScheduleSidebar()"/>
+        </prime-no-data-placeholder>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

@@ -1,0 +1,39 @@
+<div #scenary class="Scenary">
+  <div #conference class="Conference">
+    <div #screen class="Screen d-none">
+
+      <ng-template [ngIf]="layoutService.layoutType === 'screen' && selectedStream">
+        <prime-ov-stream [stream]="selectedStream"
+                         [displayActions]="true"
+                         [isPinned]="true"
+                         (onUnPinStreamEmit)="onUnPinStream()"></prime-ov-stream>
+      </ng-template>
+
+
+      <ng-template [ngIf]="layoutService.layoutType === 'workspace' && conferenceConfig?.showWorkspace">
+        <workspace-dashboard *ngIf="activityId"
+                             [workspaceId]="workspaceId"
+                             [activityId]="activityId"
+                             [redirectOnDestroy]="false"
+                             (onExitWorkspace)="onExitWorkspace.emit($event)"></workspace-dashboard>
+      </ng-template>
+
+    </div>
+    <div #dish class="Dish"
+         [ngClass]="[layoutService.layoutType === 'screen' || layoutService.layoutType === 'workspace' ? 'Sidebar': '']">
+      <div class="Camera"
+           [id]="stream.connectionId"
+           *ngFor="let stream of localParticipant | streams">
+        <prime-ov-stream [stream]="stream"
+                         [displayActions]="false"
+                         (onPinStreamEmit)="onPinStream(stream)"></prime-ov-stream>
+      </div>
+      <div class="Camera"
+           [id]="stream.connectionId"
+           *ngFor="let stream of remoteParticipants | streams">
+        <prime-ov-stream [stream]="stream"
+                         (onPinStreamEmit)="onPinStream(stream)"></prime-ov-stream>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<p-confirmDialog/>
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Organization Settings
+      </h1>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your organization settings.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-badge [value]="organization?.status"
+             [severity]="getOrgSeverity()"
+             badgeSize="large"></p-badge>
+  </div>
+</div>
+
+<p-divider></p-divider>
+
+
+<div class="grid gap-3">
+  <div class="col-12">
+    <div class="surface-card p-4 shadow-2 border-round">
+      <div class="m-0 font-medium text-900 text-xl line-height-3 mb-3">Organization info</div>
+      <ng-template [ngIf]="organizationFormGroup && organization"
+                   [ngIfThen]="organizationForm"
+                   [ngIfElse]="skeleton"></ng-template>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="isOrganizationAdmin()">
+    <div
+      class="surface-card border-round shadow-2 p-4 flex flex-column lg:flex-row align-items-center justify-content-between">
+      <div>
+        <div class="m-0 font-medium text-900 text-xl line-height-3">Archive organization</div>
+        <p class="mt-0 mb-4 lg:mb-0 p-0 line-height-3 text-base text-600">
+          Are you sure you want to archive this organization ?
+        </p>
+      </div>
+      <p-button label="Archive organization"
+                severity="danger"
+                styleClass="ml-0 lg:ml-5"
+                [disabled]="!organization?.isActive"
+                (onClick)="archiveOrganization()"
+                [outlined]="true"></p-button>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="isOrganizationAdmin()">
+    <div
+      class="surface-card border-round shadow-2 p-4 flex flex-column lg:flex-row align-items-center justify-content-between">
+      <div [ngClass]="[organization?.status != OrganizationStatus.ARCHIVED ? 'opacity-50' : '']">
+        <div class="m-0 font-medium text-900 text-xl line-height-3">Delete organization</div>
+        <p class="mt-0 mb-4 lg:mb-0 p-0 line-height-3 text-base text-600">
+          Are you sure you want to delete this organization ?
+        </p>
+      </div>
+      <p-button label="Delete organization"
+                severity="danger"
+                styleClass="ml-0 lg:ml-5"
+                pTooltip="To remove organization archive it first"
+                tooltipPosition="bottom"
+                showDelay="1000"
+                [disabled]="organization?.isActive"
+                (onClick)="deleteOrganization()"
+                [outlined]="true"></p-button>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #organizationForm>
+  <form [formGroup]="organizationFormGroup"
+        (ngSubmit)="updateOrganization()"
+        class="grid">
+
+    <div class="col-12 lg:col-6">
+      <div class="grid">
+        <div class="col-12">
+          <prime-input label="Organization name"
+                       placeholder="profile.firstName"
+                       [control]="control(organizationFormGroup,'name')"></prime-input>
+        </div>
+        <div class="col-12">
+          <prime-textarea label="profile.bio"
+                          placeholder="profile.bio"
+                          [rows]="4"
+                          [control]="control(organizationFormGroup,'about')"></prime-textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 lg:col-6 text-center">
+      <div class="flex flex-column align-items-center justify-content-center flex-or">
+        <span class="font-normal text-900 mb-2">Organization logo</span>
+        <prime-avatar styleClass="p-avatar-xxl"
+                      labelMode="prefix"
+                      [disabled]="!isOrganizationAdmin()"
+                      [editMode]="true"
+                      [label]="control(organizationFormGroup,'name').value"
+                      [fileId]="organization?.logo"
+                      (onRemoveFile)="onRemoveFile()"
+                      (onFileSelected)="onFileSelect($event)"></prime-avatar>
+      </div>
+    </div>
+
+    <div class="col-12 flex justify-content-start flex-order-0">
+      <button pButton
+              pRipple
+              severity="success"
+              [disabled]="!isOrganizationAdmin() || !organization?.isActive"
+              [label]="'profile.save'|translate"></button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #skeleton>
+</ng-template>

@@ -1,0 +1,33 @@
+<div *ngIf="control"
+     class="flex flex-column gap-2">
+  <div class="flex">
+    <label>
+      {{label | translate}}
+      <span *ngIf="isRequired" class="text-red-500">*</span>
+    </label>
+  </div>
+  <p-dropdown
+    [options]="data"
+    [formControl]="control"
+    [placeholder]="placeholder"
+    [showClear]="showClear"
+    [ngClass]="[hasError ? 'ng-invalid ng-dirty' : '']"
+    (onChange)="onChangeSelection($event)"
+    styleClass="w-full">
+    <ng-template pTemplate="selectedItem" let-selectedOption>
+      <ng-container *ngTemplateOutlet="issueStatusRow;context:{type: selectedOption}"></ng-container>
+    </ng-template>
+    <ng-template let-block pTemplate="item">
+      <ng-container *ngTemplateOutlet="issueStatusRow;context:{type: block}"></ng-container>
+    </ng-template>
+  </p-dropdown>
+
+  <ng-template #issueStatusRow let-type="type">
+    <issue-type-row [issueType]="type"></issue-type-row>
+  </ng-template>
+
+  <ng-template [ngIf]="hasError">
+    <prime-field-error-box [label]="label"
+                           [field]="control"></prime-field-error-box>
+  </ng-template>
+</div>

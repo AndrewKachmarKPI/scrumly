@@ -1,0 +1,158 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Organization invites
+      </h1>
+      <p-badge severity="success"
+               [value]="invites?.totalElements"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your organization invites.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-button label="Create invite"
+              severity="success"
+              size="small"
+              icon="pi pi-plus"
+              *ngIf="orgMember && orgMember.role != OrganizationMemberRole.MEMBER"
+              (onClick)="openInviteMemberDialog()"></p-button>
+  </div>
+</div>
+
+
+<ng-template [ngIf]="invites">
+  <ng-container *ngTemplateOutlet="pageContent"></ng-container>
+</ng-template>
+
+
+<ng-template #pageContent>
+  <div class="w-full">
+    <p-table [value]="invites.data"
+             [scrollable]="true"
+             [rowHover]="true"
+             (onPage)="onPageChange($event)"
+             styleClass="p-datatable-gridlines">
+      <ng-template pTemplate="caption">
+        <div class="flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
+          <div class="flex flex-row flex-wrap gap-3">
+            <p-dropdown
+              [options]="inviteService.getInviteStatusOptions()"
+              (onChange)="onStatusChange($event)"
+              [showClear]="true"
+              optionValue="value"
+              optionLabel="name"
+              styleClass="w-full lg:w-15rem"
+              placeholder="Select status"/>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="createBy.firstName" style="width:15%">
+            Created by
+            <p-sortIcon field="createBy.firstName"/>
+          </th>
+          <th class="text-center" pSortableColumn="created">
+            Created at
+            <p-sortIcon field="created"/>
+          </th>
+          <th pSortableColumn="createdFor.firstName" style="width:15%">
+            Invited user
+            <p-sortIcon field="createdFor.firstName"/>
+          </th>
+          <th class="text-center" pSortableColumn="accepted">
+            Last activity
+            <p-sortIcon field="accepted"/>
+          </th>
+          <th class="text-center" pSortableColumn="currentStatus">
+            Status
+            <p-sortIcon field="currentStatus"/>
+          </th>
+          <th class="text-center" pSortableColumn="expiresAt">
+            Expires at
+            <p-sortIcon field="expiresAt"/>
+          </th>
+          <th class="text-right"
+              *ngIf="orgMember?.role != OrganizationMemberRole.MEMBER"
+              style="width:10%;">
+            Actions
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-invite>
+        <tr [ngClass]="[invite.isExpired ? 'bg-white-alpha-50': '']">
+          <td>
+            <prime-user-header [profile]="invite.createBy"></prime-user-header>
+          </td>
+          <td class="text-center">
+            <p>{{ invite.created | date: 'dd.MM.YYYY' }}</p>
+          </td>
+          <td>
+            <prime-user-header [profile]="invite.createdFor"></prime-user-header>
+          </td>
+          <td class="text-center">
+            <p *ngIf="!invite.accepted">Not accepted yet</p>
+            <p *ngIf="invite.accepted">{{ invite.accepted | date: 'dd.MM.YYYY' }}</p>
+          </td>
+          <td class="text-center">
+            <p-tag
+              [value]="'organizations.members.INVITE_STATUS.'+invite.currentStatus | translate"
+              [styleClass]="getInviteSeverity(invite.currentStatus)"/>
+          </td>
+          <td class="text-center">
+            <p>{{ invite.expiresAt | date: 'dd.MM.YYYY' }}</p>
+          </td>
+
+          <td class="text-right"
+              *ngIf="orgMember?.role != OrganizationMemberRole.MEMBER">
+            <p-button
+              icon="pi pi-history"
+              class="mr-2"
+              severity="success"
+              pTooltip="Open log"
+              showDelay="1000"
+              [outlined]="true"
+              [text]="true"
+              [rounded]="true"
+              (onClick)="openInviteHistoryDialog(invite)"/>
+            <p-menu #menu
+                    appendTo="body"
+                    [model]="getInviteActions(invite)"
+                    [popup]="true"/>
+            <p-button *ngIf="getInviteActions(invite).length > 0"
+                      severity="secondary"
+                      icon="pi pi-ellipsis-v"
+                      iconPos="right"
+                      [outlined]="true"
+                      [text]="true"
+                      [rounded]="true"
+                      (onClick)="menu.toggle($event)"/>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+        <p-paginator (onPageChange)="onPageChange($event)"
+                     [rows]="invites?.size || 0"
+                     [totalRecords]="invites?.totalElements || 0"
+                     [rowsPerPageOptions]="defaultPageOptions()"></p-paginator>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [colSpan]="7" class="p-0">
+            <prime-no-data-placeholder text="No invites org invites found"
+                                       description="We couldn't find any invites created"></prime-no-data-placeholder>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</ng-template>
+
+
+<ng-template #skeleton>
+
+</ng-template>

@@ -1,0 +1,87 @@
+<ng-template [ngIf]="block">
+  <div *ngIf="block.blockType === ActivityBlockType.QUESTION_BLOCK">
+    <div class="flex flex-column wrap gap-3"
+         [ngClass]="[blockStyle]"
+         *ngIf="block.blockDto|cast as blockDto">
+      <div class="flex flex-row wrap gap-2 pl-3" *ngFor="let question of blockDto['questions']">
+        <i class="pi pi-question-circle"></i>
+        <div class="flex flex-column">
+          <span class="text-sm text-left font-medium mb-1">{{ question.question }}</span>
+          <div class="flex flex-wrap gap-2">
+            <p-chip *ngFor="let option of question.answerOptions!"
+                    [label]="option"
+                    styleClass="text-xs font-medium"></p-chip>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="block.blockType === ActivityBlockType.REFLECT_BLOCK">
+    <div class="flex flex-column wrap gap-3"
+         [ngClass]="[blockStyle]"
+         *ngIf="block.blockDto|cast as blockDto">
+      <div class="flex flex-row wrap gap-2 pl-3" *ngFor="let column of blockDto['reflectColumns']">
+        <i class="pi pi-circle-fill" [style]="{color: column.color}"></i>
+        <div class="flex flex-column">
+          <span class="text-sm text-left font-medium">{{ column.title }}</span>
+          <span class="text-xs text-left font-medium">{{ column.instruction }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="block.blockType === ActivityBlockType.ITEM_BOARD_BLOCK">
+    <div class="flex flex-row wrap gap-1"
+         [ngClass]="[blockStyle]"
+         *ngIf="block.blockDto|cast as blockDto">
+      <div class="flex flex-row flex-wrap gap-1 pl-3"
+           *ngFor="let column of blockDto['boardColumns']">
+        <div class="flex flex-column surface-card border-round p-2 shadow-2 gap-3 w-10rem">
+          <div class="flex flex-column border-bottom-3" [style]="{'border-color': column.color}">
+            <span class="text-sm text-left font-medium">{{ column.title }}</span>
+            <span class="text-xs text-left font-medium">{{ column.instruction }}</span>
+          </div>
+
+          <div class="flex flex-row flex-wrap gap-3">
+            <div class="flex flex-row gap-3 bg-gray-200 p-2 border-round-3xl align-items-center text-700 text-xs"
+                 *ngFor="let status of column.statusMapping">
+              <i class="pi pi-circle-fill" *ngIf="status.color"
+                 [ngStyle]="{'color': status.color}">
+              </i>
+              {{status.status}}
+            </div>
+            <span *ngIf="!column.statusMapping || column.statusMapping.length === 0">
+              [no status mapping]
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="block.blockType === ActivityBlockType.ESTIMATE_BLOCK">
+    <div class="flex flex-column wrap gap-3"
+         [ngClass]="[blockStyle]"
+         *ngIf="block.blockDto|cast as blockDto">
+      <div class="flex flex-column gap-2 pl-3">
+        <div class="flex flex-row wrap gap-2">
+          <i class="pi pi-sort-numeric-down"></i>
+          <span class="text-sm text-left font-medium mb-1">{{ blockDto.scale.name }}</span>
+        </div>
+        <span
+          class="text-sm text-left font-medium mb-1">
+          Method: {{ 'templates.estimation.' + blockDto.estimateMethod | translate }}
+        </span>
+        <div class="flex flex-row flex-wrap gap-1">
+          <p-chip *ngFor="let  scale of blockDto.scale.scale"
+                  [label]="scale"
+                  styleClass="text-xs font-medium"></p-chip>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-template>

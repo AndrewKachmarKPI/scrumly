@@ -1,0 +1,29 @@
+<form [formGroup]="scheduleCalendarEventForm">
+  <div class="grid mt-0 mb-3">
+    <div class="col-12">
+      <prime-image-name-dropdown label="Select calendar providers"
+                                 placeholder="Calendar providers"
+                                 optionValue="type"
+                                 optionLabel="name"
+                                 [showClear]="true"
+                                 [dropdownControl]="control(scheduleCalendarEventForm,'calendarProvider')"
+                                 [options]="calendarProviders">
+      </prime-image-name-dropdown>
+    </div>
+    <div class="col-12">
+      <prime-image-name-dropdown label="Select conference provider"
+                                 placeholder="Conference provider"
+                                 optionValue="type"
+                                 optionLabel="name"
+                                 [disabled]="!control(scheduleCalendarEventForm,'calendarProvider').value"
+                                 [showClear]="true"
+                                 [dropdownControl]="control(scheduleCalendarEventForm,'conferenceProvider')"
+                                 [options]="conferenceProviders"></prime-image-name-dropdown>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancel" severity="secondary" [outlined]="true" (onClick)="closeDialog()"/>
+    <p-button label="Create" severity="success" (onClick)="onSubmitForm()"/>
+  </div>
+</form>

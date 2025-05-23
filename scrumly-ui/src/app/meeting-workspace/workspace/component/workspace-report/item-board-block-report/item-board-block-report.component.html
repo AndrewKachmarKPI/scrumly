@@ -1,0 +1,84 @@
+<ng-template [ngIf]="block.boardColumnIssues.length > 0">
+  <h3 class="text-700">Item Board report ({{block.boardColumnIssues.length}})</h3>
+
+
+  <team-capacity-table [teamLoadMetadata]="block.teamLoadMetadata"></team-capacity-table>
+
+  <p-table
+    [value]="data"
+    [scrollable]="true"
+    [tableStyle]="{'min-width': '60rem'}"
+    styleClass="p-datatable-gridlines"
+    sortField="representative.name"
+    sortMode="single"
+    rowGroupMode="subheader"
+    groupRowsBy="title">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Items</th>
+        <th style="width: 40%">Assignees</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="groupheader" let-card>
+      <tr pRowGroupHeader>
+        <td colspan="2">
+          <div class="flex flex-column">
+          <span class="font-bold">
+          {{card.title}}
+          </span>
+            <span class="text-sm">
+            {{card.instruction}}
+          </span>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="groupfooter" let-card>
+      <tr>
+        <td colspan="2" class="text-right font-bold pr-6">
+          Total Items: {{calculateTotalReflect(card.id)}}
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-card let-rowIndex="rowIndex">
+      <tr>
+        <td>
+          <div class="flex flex-column gap-3 justify-content-center">
+            <estimate-item-row [issue]="card.issueMetadata"></estimate-item-row>
+            <div class="flex flex-row gap-3 align-items-center"
+                 data-html2canvas-ignore="true"
+                 *ngIf="!isGeneratingReport">
+              <p-chip [label]="card?.statusMetadata.statusName">
+                <i class="pi pi-circle-fill mr-2" *ngIf="card.statusMetadata.color"
+                   [ngStyle]="{'color': card.statusMetadata.color}">
+                </i>
+              </p-chip>
+              <p-chip label="{{card?.issueMetadata?.estimate|| '[no estimate]'}}"
+                      icon="pi pi-sort-numeric-down"/>
+            </div>
+            <div class="flex flex-row gap-2 align-items-center"
+                 *ngIf="isGeneratingReport">
+              <div class="flex flex-row gap-3 bg-gray-200 p-2 border-round-3xl align-items-center">
+                <i class="pi pi-circle-fill" *ngIf="card.statusMetadata.color"
+                   [ngStyle]="{'color': card.statusMetadata.color}">
+                </i>
+                {{card?.statusMetadata.statusName}}
+              </div>
+              <div class="flex flex-row gap-3 bg-gray-200 p-2 border-round-3xl align-items-center">
+                <i class="pi pi-sort-numeric-down"></i>
+                {{card?.issueMetadata?.estimate || '[no estimate]'}}
+              </div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="flex flex-row flex-wrap gap-3">
+            <prime-user-header *ngFor="let user of card.users"
+                               [profile]="user"></prime-user-header>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+</ng-template>

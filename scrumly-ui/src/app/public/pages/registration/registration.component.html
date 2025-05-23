@@ -1,0 +1,61 @@
+<p-toast position="top-center"/>
+
+<div class="container-dotted register-container h-full">
+  <div class="register-form">
+    <div class="register-form-header">
+      <prime-logo [height]="52"></prime-logo>
+    </div>
+
+    <div class="register-form-card">
+      <div class="card-content">
+        <form *ngIf="registerFormGroup"
+              [formGroup]="registerFormGroup"
+              (ngSubmit)="register()"
+              class="grid">
+          <div class="col-12">
+            <prime-input label="auth.email"
+                         placeholder="auth.email"
+                         [control]="control(registerFormGroup,'email')"></prime-input>
+          </div>
+          <div class="col-12 md:col-6">
+            <prime-input label="auth.firstName"
+                         placeholder="auth.firstName"
+                         [control]="control(registerFormGroup,'firstName')"></prime-input>
+          </div>
+          <div class="col-12 md:col-6">
+            <prime-input label="auth.lastName"
+                         placeholder="auth.lastName"
+                         [control]="control(registerFormGroup,'lastName')"></prime-input>
+          </div>
+          <div class="col-12">
+            <prime-password-input label="auth.password"
+                                  placeholder="auth.password"
+                                  [control]="control(registerFormGroup,'password')"></prime-password-input>
+          </div>
+          <div class="col-12">
+            <prime-password-input label="auth.confirmPassword"
+                                  placeholder="auth.confirmPassword"
+                                  [control]="control(registerFormGroup,'confirmPassword')"></prime-password-input>
+            <prime-field-error-box [validationErrors]="registerFormGroup.errors!"></prime-field-error-box>
+          </div>
+          <div class="col-12">
+            <prime-calendar label="auth.dob"
+                            placeholder="auth.dob"
+                            [maxDate]="maxDate"
+                            [control]="control(registerFormGroup,'dateOfBirth')"></prime-calendar>
+          </div>
+
+          <div class="col-12">
+            <button pButton
+                    pRipple
+                    severity="success"
+                    class="w-full"
+                    [label]="'auth.register'|translate"></button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+  </div>
+</div>

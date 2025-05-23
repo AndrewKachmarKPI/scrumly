@@ -1,0 +1,101 @@
+server:
+  port: 8072
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay=
+        - RemoveRequestHeader=Cookie
+      routes:
+        - id: user-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/users/**
+          filters:
+            - RewritePath=/users/(?<path>.*), /$\{path}
+            - RemoveRequestHeader=Cookie,Set-Cookie
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+        - id: integration-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/integrations/**
+          filters:
+            - RewritePath=/integrations/(?<path>.*), /$\{path}
+            - RemoveRequestHeader=Cookie,Set-Cookie
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+        - id: event-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/events/**
+          filters:
+            - RewritePath=/events/(?<path>.*), /$\{path}
+            - RemoveRequestHeader=Cookie,Set-Cookie
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+        - id: conference-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/conference/**
+          filters:
+            - RewritePath=/conference/(?<path>.*), /$\{path}
+            - RemoveRequestHeader=Cookie,Set-Cookie
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+        - id: activity-room-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/room/**
+          filters:
+            - RewritePath=/room/(?<path>.*), /$\{path}
+            - RemoveRequestHeader=Cookie,Set-Cookie
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      discovery:
+        locator:
+          enabled: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTIONS
+              - PATCH
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+        primaryName: API Gateway Service
+      - url: /users/v3/api-docs
+        name: User Service
+        primaryName: User Service
+      - url: /events/v3/api-docs
+        name: Event Service
+        primaryName: Event Service
+      - url: /conference/v3/api-docs
+        name: Conference Service
+        primaryName: Conference Service
+      - url: /room/v3/api-docs
+        name: Activity Room Service
+        primaryName: Activity Room Service

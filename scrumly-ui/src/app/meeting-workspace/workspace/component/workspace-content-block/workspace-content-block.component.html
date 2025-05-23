@@ -1,0 +1,35 @@
+<ng-template [ngIf]="activityBlock?.metadata?.type === ActivityBlockType.QUESTION_BLOCK">
+  <question-block [block]="activityBlock!"
+                  [activityId]="activityId"
+                  [userMetadata]="userMetadata"
+                  [activityRoomStatus]="activityRoomStatus"></question-block>
+</ng-template>
+
+<ng-template [ngIf]="activityBlock?.metadata?.type === ActivityBlockType.REFLECT_BLOCK">
+  <reflect-block [block]="activityBlock!"
+                 [activityId]="activityId"
+                 [userMetadata]="userMetadata"
+                 [activityRoomStatus]="activityRoomStatus"></reflect-block>
+</ng-template>
+
+<ng-template [ngIf]="activityBlock?.metadata?.type === ActivityBlockType.ESTIMATE_BLOCK">
+  <estimate-block [block]="activityBlock!"
+                  [activityId]="activityId"
+                  [userMetadata]="userMetadata"
+                  [isFacilitator]="isFacilitator"
+                  [teamMetadata]="teamMetadata"
+                  [numberOfUsers]="numberOfUsers"
+                  [nestedBlockId]="nestedBlockId"
+                  [activityRoomStatus]="activityRoomStatus"></estimate-block>
+</ng-template>
+
+<ng-template [ngIf]="activityBlock?.metadata?.type === ActivityBlockType.ITEM_BOARD_BLOCK">
+  <item-board-block [block]="activityBlock!"
+                    [activityId]="activityId"
+                    [userMetadata]="userMetadata"
+                    [isFacilitator]="isFacilitator"
+                    [teamMetadata]="teamMetadata"
+                    [numberOfUsers]="numberOfUsers"
+                    [nestedBlockId]="nestedBlockId"
+                    [activityRoomStatus]="activityRoomStatus"></item-board-block>
+</ng-template>

@@ -1,0 +1,99 @@
+<p-confirmDialog></p-confirmDialog>
+<ng-container *ngTemplateOutlet="dataTable"></ng-container>
+
+<ng-template #dataTable>
+  <div>
+    <div class="page-cover"></div>
+    <div class="px-4 py-5 md:px-6 lg:px-8 surface-section">
+      <div class="flex flex-column lg:flex-row lg:align-items-center lg:justify-content-between relative"
+           style="margin-top: -2rem; top: -70px; margin-bottom: -70px;">
+        <div>
+          <div class="mb-3 surface-card shadow-2 flex align-items-center justify-content-center"
+               style="width: 140px; height: 140px; border-radius: 10px;">
+            <prime-image-box width="70px"
+                             height="70px"
+                             defaultImage="assets/img/templates/{{ activityTemplateDto?.type?.type!.toUpperCase()! }}.png"
+                             [src]="activityTemplateDto?.previewImageId"></prime-image-box>
+          </div>
+          <div class="text-900 text-3xl font-medium mb-3">
+            {{ activityTemplateDto?.name }}
+          </div>
+          <p class="mt-0 mb-3 text-700 text-xl">
+            {{ activityTemplateDto?.type?.type }}
+          </p>
+        </div>
+        <div class="mt-3 lg:mt-0 flex flex-row flex-wrap align-items-center gap-2">
+          <p-button label="Schedule Event"
+                    severity="success"
+                    size="large"
+                    icon="pi pi-calendar"
+                    (onClick)="onScheduleActivity()"></p-button>
+<!--          <p-button label="Start activity"-->
+<!--                    severity="success"-->
+<!--                    size="large"-->
+<!--                    icon="pi pi-play"-->
+<!--                    [outlined]="true"-->
+<!--                    (onClick)="onStartActivity()"></p-button>-->
+          <p-button icon="pi pi-ellipsis-v"
+                    severity="success"
+                    size="large"
+                    (onClick)="menu.toggle($event)"
+                    [text]="true"
+                    [rounded]="true"/>
+          <p-menu #menu
+                  [model]="getMenuItems()"
+                  [popup]="true"
+                  appendTo="body"/>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="px-4 py-5 md:px-6 lg:px-8">
+      <div class="grid">
+        <div class="col-12 lg:col-8">
+          <div class="text-xl text-900 font-medium mb-4">Template Agenda</div>
+          <div class="surface-ground">
+            <div class="mb-5 flex" *ngFor="let block of activityTemplateDto?.blocks | activityBlockSort">
+              <div class="flex flex-column align-items-center" style="width: 2rem;">
+                <span class="p-2 border-circle flex align-items-center justify-content-center"
+                      [ngClass]="getBlockColor(block.blockType)">
+                  <i [ngClass]="getBlockIcon(block.blockType)" class="text-xl"></i>
+                </span>
+                <div class="h-full"
+                     [ngClass]="getBlockColor(block.blockType)"
+                     style="width: 2px; min-height: 4rem;">
+                </div>
+              </div>
+              <div class="ml-5 surface-card shadow-2 border-round p-3 mr-5 flex-auto">
+                <div class="mb-3">
+                  <span class="text-900 font-medium inline-block mr-3">
+                    {{ 'templates.blocks.' + block.blockType | translate }}
+                  </span>
+                </div>
+                <prime-template-block-info [block]="block!"></prime-template-block-info>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-12 lg:col-4">
+          <div class="flex flex-column flex-wrap gap-2 mb-4">
+            <div class="text-xl text-900 font-medium mb-2">About</div>
+            <div class="line-height-3 text-600 w-full overflow-hidden text-overflow-ellipsis">
+              <prime-text-editor [value]="activityTemplateDto?.description!"></prime-text-editor>
+            </div>
+          </div>
+          <div class="flex flex-column flex-wrap gap-2 mb-4">
+            <div class="text-xl text-900 font-medium mb-2">Tags</div>
+            <div class="line-height-3 text-600 flex flex-row flex-wrap gap-3">
+              <p-chip *ngFor="let tag of activityTemplateDto?.tags" [label]="tag"></p-chip>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</ng-template>

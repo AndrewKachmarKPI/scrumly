@@ -1,0 +1,174 @@
+<div class="flex flex-row gap-3">
+  <div *ngFor="let column of block.columnMetadata | activityBlockSort; trackBy: trackById"
+       class="surface-card shadow-2 border-round w-25rem border-2 flex flex-column"
+       [style.border-color]="column.color">
+
+    <div class="p-3 border-bottom-1"
+         [style.background]="column.color"
+         [style.border-color]="column.color">
+      <div class="flex flex-row justify-content-between gap-3">
+        <div class="flex flex-column">
+          <h3 class="text-900 font-medium m-0">
+            {{column.title}}
+          </h3>
+          <p class="text-600 text-sm m-0 mt-1">
+            {{column.instruction}}
+          </p>
+        </div>
+
+        <p class="text-600 text-sm"
+           *ngIf="columnCardsMap.get(column.id)?.length">
+          {{columnCardsMap.get(column.id)?.length}}
+        </p>
+      </div>
+    </div>
+
+    <div class="p-3 flex flex-column justify-content-between h-full gap-3">
+      <div class="flex flex-column align-items-center gap-3 h-full w-full">
+        <ng-container *ngTemplateOutlet="reflectCard;context:{column: column}"></ng-container>
+      </div>
+      <div>
+        <p-button icon="pi pi-plus"
+                  severity="success"
+                  size="small"
+                  label="Add card"
+                  styleClass="w-full"
+                  *ngIf="!columnGroupControl(column.id, 'isEditing').value &&
+                   !columnGroupControl(column.id, 'isCreate').value &&
+                   activityRoomStatus?.isActive"
+                  (onClick)="columnGroupControl(column.id, 'isCreate').setValue(true)"
+                  [outlined]="true"></p-button>
+        <ng-template [ngIf]="columnGroupControl(column.id, 'isCreate').value">
+          <ng-container *ngTemplateOutlet="createCardForm;context:{column: column}"></ng-container>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex flex-row gap-3 mt-2">
+  <p-button icon="pi pi-times"
+            severity="secondary"
+            size="small"
+            label="Clear board"
+            *ngIf="activityRoomStatus?.isActive"
+            [text]="true"
+            (onClick)="onClearReflectColumns()"
+            [outlined]="true"></p-button>
+</div>
+
+<ng-template #reflectCard let-column="column">
+  <div dndDropzone
+       dndEffectAllowed="copyMove"
+       [dndDisableDropIf]="!activityRoomStatus?.isActive"
+       [dndDisableIf]="!activityRoomStatus?.isActive"
+       (dndDrop)="onDrop($event, column)"
+       class="flex flex-column w-full h-full gap-3 reflect-column"
+       #columnBox>
+    <div class="shadow-2 border-round bg-gray-50 p-3 border-dashed border-1 h-7rem reflect-card w-full"
+         dndPlaceholderRef>
+    </div>
+    <ng-template [ngIf]="!columnCardsMap.get(column.id) || columnCardsMap.get(column.id)?.length == 0">
+      <p class="text-center text-500">
+        Add your ideas and thoughts
+      </p>
+    </ng-template>
+    <div #cardBox
+         *ngFor="let card of columnCardsMap.get(column.id)|activityBlockSort; trackBy: trackByCardId"
+         [dndDraggable]="card"
+         (dndStart)="onDragStart($event, column)"
+         (dndEnd)="onDragEnd($event, card, columnCardsMap.get(column.id)!)"
+         (dndCopied)="onDragged(card, columnCardsMap.get(column.id)!, 'copy')"
+         (dndMoved)="onDragged(card, columnCardsMap.get(column.id)!, 'move')"
+         (dndCanceled)="onDragged(card, columnCardsMap.get(column.id)!, 'none')"
+         [dndDisableDragIf]="!activityRoomStatus?.isActive"
+         [dndDisableIf]="!activityRoomStatus?.isActive"
+         class="flex flex-column w-full gap-3"
+         dndEffectAllowed="copyMove">
+      <div class="shadow-2 border-round p-3 reflect-card w-full cursor-move"
+           dndHandle
+           [style.border-color]="column.color"
+           [style.background]="'rgba(' + getRGB(column.color) + ', 0.3)'">
+        <div class="flex flex-column w-full">
+          <p>
+            {{card.cardContent}}
+          </p>
+          <div class="flex flex-row align-items-center justify-content-between">
+            <div class="flex flex-row align-items-center text-sm text-600 gap-2">
+              <i class="pi pi-user"></i>
+              <p class="m-0">{{card.userMetadata.firstName}} {{card.userMetadata.lastName}} </p>
+            </div>
+            <div class="flex flex-row align-items-center text-sm text-600 gap-3"
+                 *ngIf="authService.isCurrentUser(card.userMetadata.userId) && activityRoomStatus?.isActive">
+              <p-button icon="pi pi-pencil"
+                        [text]="true"
+                        [rounded]="true"
+                        size="small"
+                        severity="success"
+                        styleClass="p-0 d-contents"
+                        (click)="onEditColumnCard(card)"></p-button>
+              <p-button icon="pi pi-trash"
+                        [text]="true"
+                        [rounded]="true"
+                        size="small"
+                        severity="danger"
+                        styleClass="p-0 d-contents"
+                        (click)="onRemoveColumnCard(card)"></p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template [ngIf]="columnGroupControl(column.id, 'isEditing').value &&
+                         columnGroupControl(column.id, 'cardId').value === card.cardId">
+        <ng-container *ngTemplateOutlet="createCardForm;context:{column: column}"></ng-container>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #createCardForm let-column="column">
+  <div class="flex flex-column gap-2 w-full">
+    <prime-textarea placeholder="Reflect your opinion..."
+                    styleClass="w-full"
+                    class="w-full"
+                    [hideValidation]="true"
+                    [rows]="3"
+                    [control]="columnGroupControl(column.id, 'cardContent')"></prime-textarea>
+    <div class="absolute" style="width: 318px; height:78px"
+         *ngIf="columnGroupControl(column.id, 'isGenerating').value">
+      <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)"
+                   size="medium" color="#fff"
+                   type="ball-beat"
+                   [name]="column.title"
+                   [fullScreen]="false">
+      </ngx-spinner>
+    </div>
+    <div class="flex flex-row align-items-center justify-content-between gap-2">
+      <div class="flex flex-row align-items-center justify-content-end gap-2">
+        <p-button icon="pi pi-sparkles"
+                  size="small"
+                  pTooltip="Generate reflection"
+                  showDelay="500"
+                  styleClass="text-indigo-500"
+                  (onClick)="onGenerateReflection(column)"
+                  [rounded]="true"
+                  [outlined]="true"></p-button>
+      </div>
+      <div class="flex flex-row align-items-center justify-content-end gap-2">
+        <p-button icon="pi pi-times"
+                  severity="secondary"
+                  size="small"
+                  label="Cancel"
+                  (onClick)="onCancelColumnCard(column.id)"
+                  [outlined]="true"></p-button>
+        <p-button icon="pi pi-check"
+                  severity="success"
+                  size="small"
+                  label="Submit"
+                  (onClick)="onSubmitColumnCard(column.id)"
+                  [outlined]="true"></p-button>
+      </div>
+    </div>
+  </div>
+</ng-template>

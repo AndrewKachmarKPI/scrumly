@@ -1,0 +1,11 @@
+.templateTagBtn .p-highlight {
+  background-color: transparent !important;
+  color: var(--green-500) !important;
+  border: 1px solid !important;
+}
+
+::ng-deep.templateTagBtn.p-togglebutton.p-button.p-highlight {
+  background: var(--green-500) !important;
+  color: var(--surface-overlay) !important;
+  border: 1px solid !important;
+}

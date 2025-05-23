@@ -1,0 +1,144 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between align-items-center mb-0">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 text-900 text-xl line-height-3">
+        <span class="font-semibold">
+          {{team?.name}} / Dashboard
+        </span>
+      </h1>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your team.</p>
+  </div>
+
+
+  <div class="flex flex-row gap-3">
+    <div class="surface-card shadow-2 border-round p-3 w-10rem">
+      <div class="flex flex-row justify-content-center align-items-center gap-3">
+        <i class="pi pi-calendar text-xl text-green-600"></i>
+        <div class="text-900 font-bold text-xl mb-1 line-height-3">
+          {{pendingEvents?.length}}
+        </div>
+      </div>
+      <p class="text-700 m-0 text-center">
+        Pending events
+      </p>
+    </div>
+    <div class="surface-card shadow-2 border-round p-3 w-10rem">
+      <div class="flex flex-row justify-content-center align-items-center gap-3">
+        <i class="pi pi-calendar-minus text-xl text-yellow-600"></i>
+        <div class="text-900 font-bold text-xl mb-1 line-height-3">
+          {{pastEvents?.length}}
+        </div>
+      </div>
+      <p class="text-700 m-0 text-center">
+        Past events
+      </p>
+    </div>
+    <div class="surface-card shadow-2 border-round p-3 w-10rem">
+      <div class="flex flex-row justify-content-center align-items-center gap-3">
+        <i class="pi pi-users text-xl text-blue-600"></i>
+        <div class="text-900 font-bold text-xl mb-1 line-height-3">
+          {{team?.members?.length}}
+        </div>
+      </div>
+      <p class="text-700 m-0 text-center">
+        Active members
+      </p>
+    </div>
+  </div>
+</div>
+
+<p-divider></p-divider>
+
+
+<div class="grid">
+  <div class="col-12">
+    <div class="surface-card shadow-2 border-round p-4 h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <div class="text-700 font-semibold text-xl">Pending Events</div>
+      </div>
+      <prime-event-table [activities]="pendingEvents!"></prime-event-table>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="surface-card shadow-2 border-round p-4 h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <div class="text-700 font-semibold text-xl">Past Events</div>
+      </div>
+      <prime-event-table [activities]="pastEvents!"></prime-event-table>
+    </div>
+  </div>
+  <div class="col-12 lg:col-6">
+    <div class="surface-card shadow-2 border-round p-4 h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <div class="text-700 font-semibold text-xl">Team Members</div>
+      </div>
+      <ng-container *ngTemplateOutlet="membersTable"></ng-container>
+    </div>
+  </div>
+</div>
+
+
+
+<ng-template #membersTable>
+  <div class="w-full">
+    <p-table #dt
+             [value]="team?.members!"
+             [scrollable]="true"
+             [scrollHeight]="'400px'"
+             [rowHover]="true"
+             styleClass="p-datatable-gridlines">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="profile.firstName">
+            Profile
+            <p-sortIcon field="profile.firstName"/>
+          </th>
+          <th class="text-center" pSortableColumn="role">
+            Role
+            <p-sortIcon field="role"/>
+          </th>
+          <th class="text-center" pSortableColumn="badge">
+            Badge
+            <p-sortIcon field="badge"/>
+          </th>
+          <th class="text-center" pSortableColumn="joinDateTime">
+            Join date
+            <p-sortIcon field="joinDateTime"/>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-member>
+        <tr>
+          <td>
+            <prime-user-header [profile]="member.profile"></prime-user-header>
+          </td>
+          <td class="text-center">
+            <p-tag
+              [value]="'organizations.members.TEAM_MEMBER_ROLE.'+member.role | translate"
+              [styleClass]="getTeamMemberRoleSeverity(member.role)"/>
+          </td>
+          <td class="text-center">
+            <div class="flex align-items-center justify-content-center">
+              <p *ngIf="member.badge">{{ member.badge }}</p>
+              <p *ngIf="!member.badge">[No badge]</p>
+            </div>
+          </td>
+          <td class="text-center">
+            <p>{{ member.joinDateTime | date: 'dd.MM.YYYY' }}</p>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [colSpan]="4">No members found!</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+</ng-template>

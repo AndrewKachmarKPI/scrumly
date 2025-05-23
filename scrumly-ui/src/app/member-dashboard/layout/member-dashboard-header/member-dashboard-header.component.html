@@ -1,0 +1,41 @@
+<div
+  class="flex justify-content-between align-items-center px-5 surface-section border-bottom-1 surface-border relative lg:static"
+  style="height: 60px;">
+  <div class="flex align-items-center">
+    <p-button icon="pi pi-bars text-2xl"
+              pTooltip="Toggle sidebar"
+              tooltipPosition="bottom"
+              showDelay="1000"
+              severity="secondary"
+              styleClass="flex mr-3 lg:hidden"
+              (onClick)="toggleSidebar.emit()"
+              [rounded]="true"
+              [text]="true"/>
+
+    <div
+      class="flex flex-row align-items-center justify-content-center surface-100 border-1 border-round-2xl surface-border hidden lg:flex">
+      <div class="flex flex-row align-items-center justify-content-center text-lg px-2 text-700 font-medium">
+        Team
+      </div>
+      <org-team-dropdown
+        style="width:100%"
+        styleClass="w-full lg:w-20rem border-0 focus:border-0 focus:shadow-none team-dropdown border-round-2xl"
+        placeholder="Select organization team"
+        [selectedTeamId]="selectedGroup?.team?.teamId"
+        [showOrganization]="true"
+        [control]="control(searchGroup, 'teamId')"
+        (onSelect)="onSelectOrganizationGroup($event)"></org-team-dropdown>
+    </div>
+  </div>
+  <a class="p-ripple p-element cursor-pointer block lg:hidden text-700">
+    <i class="pi pi-ellipsis-v text-2xl"></i>
+  </a>
+
+  <div
+    class="list-none p-0 m-0 hidden lg:flex lg:align-items-center select-none lg:flex-row surface-section border-1 lg:border-none surface-border right-0 top-100 z-1 shadow-2 lg:shadow-none absolute lg:static">
+    <div class="flex flex-row gap-3 align-items-center">
+      <prime-theme-toggle></prime-theme-toggle>
+      <prime-profile-menu [showFullInfo]="true"></prime-profile-menu>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<form [formGroup]="createOrganizationGroup">
+  <div class="grid mt-0 mb-3">
+    <div class="col-12 lg:col-8">
+      <prime-input label="organizations.create.name"
+                   placeholder="organizations.create.name"
+                   [control]="control(createOrganizationGroup,'organizationName')"></prime-input>
+    </div>
+    <div class="col-12 lg:col-4">
+      <div *ngIf="control" class="flex flex-column gap-2">
+        <label>Organization logo</label>
+        <div class="flex flex-row gap-3">
+          <ng-template
+            [ngIf]="control(createOrganizationGroup,'organizationName').value || control(createOrganizationGroup,'selectedLogo').value"
+            [ngIfThen]="avatar"
+            [ngIfElse]="preview"></ng-template>
+          <ng-template #preview>
+            <p-skeleton size="3rem"/>
+          </ng-template>
+          <ng-template #avatar
+                       [ngIf]="control(createOrganizationGroup,'selectedLogo').value"
+                       [ngIfThen]="imageAvatar"
+                       [ngIfElse]="textAvatar">
+          </ng-template>
+          <ng-template #imageAvatar>
+            <img alt="Organization image"
+                 class="h-3rem w-3rem"
+                 [src]="control(createOrganizationGroup,'selectedLogo').value">
+          </ng-template>
+          <ng-template #textAvatar>
+            <prime-avatar size="large"
+                          labelMode="prefix"
+                          [label]="control(createOrganizationGroup,'organizationName').value"></prime-avatar>
+          </ng-template>
+          <prime-file-upload label="Choose logo"
+                             [styleClass]="'p-button-outlined'"
+                             [accept]="'image/*'"
+                             (onFileChange)="onLogoUpload($event)"
+                             [uploadMenu]="false"></prime-file-upload>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <prime-input label="teams.create.name"
+                   placeholder="teams.create.name"
+                   [control]="control(createOrganizationGroup,'teamName')"></prime-input>
+    </div>
+    <div class="col-12">
+      <prime-user-autocomplete label="Invite members"
+                               placeholder="Search by username, full name, or email"
+                               [excludeMe]="true"
+                               [control]="control(createOrganizationGroup, 'inviteMembers')"></prime-user-autocomplete>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancel" severity="secondary" [outlined]="true" (onClick)="closeDialog()"/>
+    <p-button label="Create" severity="success" (onClick)="onSubmitForm()"/>
+  </div>
+</form>

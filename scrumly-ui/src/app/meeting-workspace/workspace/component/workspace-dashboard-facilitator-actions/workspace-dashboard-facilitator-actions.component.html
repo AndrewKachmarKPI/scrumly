@@ -1,0 +1,103 @@
+<p-confirmPopup/>
+
+<p-toolbar styleClass="workspace-toolbar">
+  <div class="p-toolbar-group-start">
+    <p-buttonGroup>
+      <p-button severity="success"
+                [text]="true"
+                (onClick)="timerPanel.toggle($event)">
+        <div class="flex flex-column align-items-center justify-content-center gap-2">
+          <i class="pi pi-clock"></i>
+          <h5 class="m-0 font-bold">
+            Timer
+          </h5>
+        </div>
+      </p-button>
+      <p-button severity="secondary"
+                [text]="true"
+                (onClick)="onToggleSync()">
+        <div class="flex flex-column align-items-center justify-content-center gap-2">
+          <i class="pi pi-sync"></i>
+          <h5 class="m-0 font-bold">
+            Sync
+          </h5>
+        </div>
+      </p-button>
+      <p-button severity="secondary"
+                [text]="true"
+                (onClick)="onToggleMeetingNotes()">
+        <div class="flex flex-column align-items-center justify-content-center gap-2 text-indigo-500">
+          <i class="pi pi-sparkles"></i>
+          <h5 class="m-0 font-bold">
+            AI Notes
+          </h5>
+        </div>
+      </p-button>
+      <p-button severity="secondary"
+                [text]="true"
+                (onClick)="onPreviousBlock()">
+        <div class="flex flex-column align-items-center justify-content-center gap-2">
+          <i class="pi pi-arrow-left"></i>
+          <h5 class="m-0 font-bold">
+            Previous block
+          </h5>
+        </div>
+      </p-button>
+      <p-button severity="secondary"
+                [text]="true"
+                (onClick)="onNextBlock()">
+        <div class="flex flex-column align-items-center justify-content-center gap-2">
+          <i class="pi pi-arrow-right"></i>
+          <h5 class="m-0 font-bold">
+            Next block
+          </h5>
+        </div>
+      </p-button>
+      <p-button severity="success"
+                [text]="true"
+                (onClick)="onFinishMeeting($event)">
+        <div class="flex flex-column align-items-center justify-content-center gap-2">
+          <i class="pi pi-flag-fill"></i>
+          <h5 class="m-0 font-bold">
+            Finish meeting
+          </h5>
+        </div>
+      </p-button>
+    </p-buttonGroup>
+    <p-button icon="pi pi-chevron-down"
+              pTooltip="Close actions"
+              tooltipPosition="top"
+              showDelay="500"
+              severity="secondary"
+              *ngIf="showFacilitatorActions"
+              (onClick)="toggleFacilitatorActions()"
+              [rounded]="true"
+              [text]="true"/>
+  </div>
+</p-toolbar>
+
+<p-overlayPanel #timerPanel>
+  <div class="flex flex-column gap-3">
+    <prime-dropdown placeholder="Timer duration"
+                    optionValue="value"
+                    optionLabel="label"
+                    [control]="timerDurationControl"
+                    [options]="timerDurationOptions"/>
+    <p-button severity="success"
+              icon="pi pi-play"
+              iconPos="right"
+              styleClass="w-full"
+              label="Start timer"
+              *ngIf="!activityTimerState?.state"
+              (onClick)="onStartTimer()"/>
+    <p-button severity="warning"
+              icon="pi pi-pause"
+              iconPos="right"
+              styleClass="w-full"
+              label="Stop timer"
+              *ngIf="activityTimerState?.state"
+              [outlined]="true"
+              (onClick)="onStopTimer()"/>
+  </div>
+</p-overlayPanel>
+

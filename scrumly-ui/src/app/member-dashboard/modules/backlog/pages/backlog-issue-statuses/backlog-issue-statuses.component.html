@@ -1,0 +1,178 @@
+<p-toast position="top-center"/>
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Issue statuses
+      </h1>
+      <p-badge severity="success"
+               [value]="statuses.length"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your backlog statuses.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-button label="Create new status"
+              severity="success"
+              size="small"
+              icon="pi pi-plus"
+              (onClick)="op.toggle($event)"></p-button>
+    <p-overlayPanel #op>
+      <div class="flex flex-column gap-3 w-25rem">
+        <div class="grid">
+          <div class="col-12 lg:col-9">
+            <prime-input label="Status"
+                         placeholder="Status"
+                         [control]="control(formGroup,'status')"></prime-input>
+          </div>
+          <div class="col-12 lg:col-3">
+            <prime-color-picker label="Color"
+                                [control]="control(formGroup,'color')"></prime-color-picker>
+          </div>
+          <div class="col-12 flex justify-content-end">
+            <p-button label="Submit"
+                      severity="success"
+                      size="small"
+                      (onClick)="onCreateNewIssueStatus(op)"></p-button>
+          </div>
+        </div>
+      </div>
+    </p-overlayPanel>
+
+  </div>
+</div>
+
+
+<p-confirmDialog/>
+
+
+<ng-template [ngIf]="statuses"
+             [ngIfThen]="content"
+             [ngIfElse]="skeleton">
+</ng-template>
+
+<ng-template #content>
+  <div class="w-full">
+    <div class="grid">
+
+      <div class="col-12">
+        <p-table #dt
+                 [value]="statuses"
+                 [tableStyle]="{'min-width': '50rem'}"
+                 [scrollable]="true"
+                 [scrollHeight]="'flex'"
+                 [rowHover]="true"
+                 editMode="row"
+                 dataKey="id"
+                 styleClass="p-datatable-gridlines">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="status">
+                Status
+                <p-sortIcon field="status"/>
+              </th>
+              <th class="text-center" style="width: 10%">
+                Actions
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-status let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="status">
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <div class="flex flex-row gap-3">
+                      <input
+                        pInputText
+                        type="text"
+                        [(ngModel)]="status.status"/>
+                      <prime-color-picker [value]="status.color"></prime-color-picker>
+                    </div>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    <div class="flex flex-row gap-2">
+                      <i class="pi pi-circle-fill" [style]="{color: status.color}"></i>
+                      {{status.status}}
+                    </div>
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td class="text-center">
+
+                <div class="flex flex-row align-items-end justify-content-end gap-2">
+                  <p-button severity="warning"
+                            label="Edit"
+                            icon="pi pi-pencil"
+                            pInitEditableRow
+                            *ngIf="!editing"
+                            [text]="true"
+                            [outlined]="true"
+                            (onClick)="onRowEditInit(status)"></p-button>
+                  <p-button severity="danger"
+                            label="Delete"
+                            icon="pi pi-trash"
+                            *ngIf="!editing"
+                            [text]="true"
+                            [outlined]="true"
+                            (onClick)="deleteIssueStatus(status)"></p-button>
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pSaveEditableRow
+                    icon="pi pi-check"
+                    (click)="onRowEditSave(status)"
+                    class="p-button-rounded p-button-text p-button-success mr-2">
+                  </button>
+                  <button
+                    *ngIf="editing"
+                    pButton pRipple
+                    type="button"
+                    pCancelEditableRow
+                    icon="pi pi-times"
+                    (click)="onRowEditCancel(status, ri)"
+                    class="p-button-rounded p-button-text p-button-danger">
+                  </button>
+                </div>
+
+
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [colSpan]="7" class="p-0">
+                <prime-no-data-placeholder text="No backlogs found"
+                                           description="We couldn't find any backlogs created">
+                </prime-no-data-placeholder>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #skeleton>
+  <div class="w-full">
+    <div class="grid">
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-skeleton width="100%" height="10rem"/>
+      </div>
+      <div class="col-12">
+        <p-skeleton width="100%" height="4rem"/>
+      </div>
+    </div>
+  </div>
+</ng-template>

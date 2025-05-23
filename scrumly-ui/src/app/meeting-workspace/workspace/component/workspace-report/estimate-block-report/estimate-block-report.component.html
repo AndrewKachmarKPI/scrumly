@@ -1,0 +1,80 @@
+<ng-template [ngIf]="block.estimateIssues.length > 0">
+
+  <h3 class="text-700">
+    Estimation report ({{block.estimateIssues.length}})
+  </h3>
+  <p-table
+    [value]="block.estimateIssues"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    dataKey="id"
+    styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 5rem"></th>
+        <th pSortableColumn="issueMetadata.issueKey" class="text-start">
+          Issue
+          <p-sortIcon field="issueMetadata.issueKey"/>
+        </th>
+        <th pSortableColumn="finalEstimate" class="text-center">
+          Estimate
+          <p-sortIcon field="finalEstimate"/>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-issue let-expanded="expanded">
+      <tr>
+        <td>
+          <p-button type="button"
+                    [pRowToggler]="issue"
+                    [text]="true"
+                    [rounded]="true"
+                    [plain]="true"
+                    [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"/>
+        </td>
+        <td>
+          <estimate-item-row [issue]="issue.issueMetadata"></estimate-item-row>
+        </td>
+        <td class="text-center">
+          {{issue.finalEstimate}}
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="rowexpansion" let-issue>
+      <tr>
+        <td colspan="3">
+          <p-table
+            [value]="issue.userEstimateMetadata"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            styleClass="p-datatable-gridlines">
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="userMetadata.firstName" class="text-start">
+                  Participant
+                  <p-sortIcon field="userMetadata.firstName"/>
+                </th>
+                <th pSortableColumn="estimate" class="text-center">
+                  Estimate
+                  <p-sortIcon field="estimate"/>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-userIssue>
+              <tr>
+                <td>
+                  <prime-user-header avatarSize="normal"
+                                     textSize="text-xs"
+                                     [profile]="userIssue.userMetadata"></prime-user-header>
+                </td>
+                <td class="text-center">
+                  {{userIssue.estimate}}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</ng-template>

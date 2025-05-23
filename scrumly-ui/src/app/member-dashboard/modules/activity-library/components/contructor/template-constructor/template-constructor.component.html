@@ -1,0 +1,129 @@
+<div class="flex flex-column gap-3 align-items-center justify-content-center template-constructor">
+  <p-stepper [(activeStep)]="activeTab"
+             (activeStepChange)="onActiveStepChange()"
+             orientation="vertical">
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <ng-container
+          *ngTemplateOutlet="stepperHeaderTemplate; context: { onClick: onClick, index: index, label: 'Information', icon: 'pi pi-file-edit'}"></ng-container>
+      </ng-template>
+      <ng-template pTemplate="content" let-nextCallback="nextCallback">
+        <template-details-form #templateDetailsForm
+                               [isEditMode]="isEditMode"></template-details-form>
+        <ng-container *ngTemplateOutlet="stepperActionsTemplate; context: {nextCallback: nextCallback}"></ng-container>
+      </ng-template>
+    </p-stepperPanel>
+
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <ng-container
+          *ngTemplateOutlet="stepperHeaderTemplate; context: { onClick: onClick, index: index, label: 'Tags', icon: 'pi pi-tags'}"></ng-container>
+      </ng-template>
+      <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
+        <template-tags #templateTagsForm></template-tags>
+        <ng-container
+          *ngTemplateOutlet="stepperActionsTemplate; context: {nextCallback: nextCallback, prevCallback: prevCallback}"></ng-container>
+      </ng-template>
+    </p-stepperPanel>
+
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <ng-container
+          *ngTemplateOutlet="stepperHeaderTemplate; context: { onClick: onClick, index: index, label: 'Agenda', icon: 'pi pi-th-large'}"></ng-container>
+      </ng-template>
+      <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
+        <template-agenda-form #templateAgendaFormComponent
+                              [isEditMode]="isEditMode"
+                              [ownerId]="ownerId"></template-agenda-form>
+        <ng-container
+          *ngTemplateOutlet="stepperActionsTemplate; context: {nextCallback: nextCallback, prevCallback: prevCallback}"></ng-container>
+      </ng-template>
+    </p-stepperPanel>
+
+
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <ng-container
+          *ngTemplateOutlet="stepperHeaderTemplate; context: { onClick: onClick, index: index, label: 'Activity Review', icon: 'pi pi-check'}"></ng-container>
+      </ng-template>
+
+      <ng-template pTemplate="content" let-prevCallback="prevCallback">
+
+        <template-details-card *ngIf="activityTemplateDto"
+                               [activityTemplateDto]="activityTemplateDto"></template-details-card>
+
+        <div class="flex pt-4 justify-content-between">
+          <div>
+            <p-button label="Back"
+                      severity="secondary"
+                      icon="pi pi-arrow-left"
+                      *ngIf="prevCallback"
+                      [text]="true"
+                      (onClick)="prevCallback.emit()"/>
+          </div>
+          <div>
+            <p-button label="Create template"
+                      icon="pi pi-plus"
+                      iconPos="right"
+                      severity="success"
+                      *ngIf="!isEditMode"
+                      (onClick)="onCreateActivityTemplate()"/>
+            <p-button label="Save activity template"
+                      icon="pi pi-file-edit"
+                      iconPos="right"
+                      severity="success"
+                      *ngIf="isEditMode"
+                      (onClick)="onEditActivityTemplate()"/>
+          </div>
+        </div>
+
+      </ng-template>
+
+    </p-stepperPanel>
+  </p-stepper>
+</div>
+
+
+<ng-template #stepperHeaderTemplate
+             let-onClick="onClick"
+             let-index="index"
+             let-label="label"
+             let-icon="icon">
+  <div class="flex flex-row align-items-center justify-content-start gap-2"
+       [ngClass]="[!isPreviousStepValid(index) ? 'opacity-50' : '']"
+       (click)="onNextAction(onClick)">
+    <button class="bg-transparent border-none inline-flex flex-column gap-2"
+            [disabled]="!isPreviousStepValid(index)">
+      <span class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+            [ngClass]="{ 'bg-green-500 border-primary': index <= activeTab, 'surface-border': index > activeTab}">
+        <i [ngClass]="icon"></i>
+      </span>
+    </button>
+    <p class="m-0 font-semibold text-900 text-lg line-height-3">{{ label | translate }}</p>
+  </div>
+</ng-template>
+
+<ng-template #stepperActionsTemplate
+             let-prevCallback="prevCallback"
+             let-nextCallback="nextCallback">
+  <div class="flex pt-4 justify-content-between">
+    <div>
+      <p-button label="Back"
+                severity="secondary"
+                icon="pi pi-arrow-left"
+                *ngIf="prevCallback"
+                [text]="true"
+                (onClick)="prevCallback.emit()"/>
+    </div>
+    <div>
+      <p-button label="Next"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                severity="success"
+                *ngIf="nextCallback"
+                [text]="true"
+                (onClick)="onNextAction(nextCallback)"/>
+    </div>
+  </div>
+</ng-template>
+

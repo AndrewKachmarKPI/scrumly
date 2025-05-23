@@ -1,0 +1,388 @@
+.container-dotted {
+  position: relative;
+  z-index: 0;
+}
+
+.container-dotted::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(to bottom, rgba(34, 197, 94, 0.09), rgba(221, 226, 228, 0.09)),
+  radial-gradient(var(--green-500) 0.1rem, transparent 0px);
+  background-repeat: repeat, repeat;
+  background-size: 100% 100%, 1.5rem 1.5rem;
+  opacity: 0.5;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.p-avatar.p-avatar-xxl {
+  width: 8rem;
+  height: 8rem;
+  font-size: 4rem;
+}
+
+.p-avatar.p-avatar-xs {
+  width: 2rem !important;
+  height: 2rem !important;
+}
+
+.avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
+.edit-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 0.8rem;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
+
+.profile-tab-card .p-card-content {
+  padding: 0;
+}
+
+.p-chips-multiple-container {
+  width: 100%;
+}
+
+
+.icon-sidebar {
+  height: 100vh !important;
+}
+
+.icon-sidebar .logo-box {
+  height: 60px;
+}
+
+.icon-sidebar .navigation-panel {
+  width: 250px;
+}
+
+.integration-service-icon {
+  height: 40px;
+  width: 40px
+}
+
+.estimate-service-icon {
+  height: 20px;
+  width: 20px
+}
+
+.p-autocomplete .p-autocomplete-multiple-container {
+  width: 100% !important;
+}
+
+.p-selectbutton .p-button.p-highlight {
+  background: var(--green-500);
+}
+
+.p-panel .p-panel-header {
+  background: var(--surface-0);
+  border-bottom: 0;
+}
+
+.p-colorpicker-panel .p-colorpicker-hue {
+  background: transparent url(../media/custom_hue.png) no-repeat left top !important;
+}
+
+.p-colorpicker-panel .p-colorpicker-color {
+  background: transparent url(../media/custom_color.png) no-repeat left top !important;
+}
+
+::ng-deep .p-calendar-w-btn .p-datepicker-trigger {
+  background: var(--green-500) !important;
+}
+
+::ng-deep p-calendar button .p-calendar-w-btn .p-datepicker-trigger {
+  background: var(--green-500) !important;
+}
+
+#eventCalendar .p-calendar-w-btn .p-datepicker-trigger {
+  background: var(--green-500) !important;
+}
+
+::ng-deep .e-calendar .e-content td.e-selected.e-focused-date span.e-day {
+  background-color: var(--green-500) !important;
+}
+
+.e-calendar .e-content td.e-today.e-selected span.e-day {
+  background-color: var(--green-500) !important;
+  border: 1px solid var(--green-500) !important;
+}
+
+.e-btn.e-flat.e-primary, .e-css.e-btn.e-flat.e-primary {
+  color: var(--green-500) !important;
+}
+
+.e-calendar .e-content td.e-today.e-selected:hover span.e-day, .e-calendar .e-content td.e-selected:hover span.e-day, .e-calendar .e-content td.e-selected.e-focused-date span.e-day, .e-bigger.e-small .e-calendar .e-content td.e-today.e-selected:hover span.e-day, .e-bigger.e-small .e-calendar .e-content td.e-selected:hover span.e-day, .e-bigger.e-small .e-calendar .e-content td.e-selected.e-focused-date span.e-day {
+  background-color: var(--green-500) !important;
+  border: 1px solid var(--green-500) !important;
+}
+
+.e-calendar .e-content td.e-today span.e-day, .e-calendar .e-content td.e-focused-date.e-today span.e-day, .e-bigger.e-small .e-calendar .e-content td.e-today span.e-day, .e-bigger.e-small .e-calendar .e-content td.e-focused-date.e-today span.e-day {
+  border: 1px solid var(--green-500) !important;
+  color: var(--green-500) !important;
+}
+
+.e-calendar .e-content td.e-selected span.e-day, .e-bigger.e-small .e-calendar .e-content td.e-selected span.e-day {
+  background-color: var(--green-500) !important;
+}
+
+.e-input:focus:not(.e-success):not(.e-warning):not(.e-error), .e-float-input:not(.e-success):not(.e-warning):not(.e-error):not(.e-input-group) input:focus, .e-float-input:not(.e-success):not(.e-warning):not(.e-error):not(.e-input-group) textarea:focus, .e-float-input.e-control-wrapper:not(.e-success):not(.e-warning):not(.e-error):not(.e-input-group) input:focus, .e-float-input.e-control-wrapper:not(.e-success):not(.e-warning):not(.e-error):not(.e-input-group) textarea:focus, .e-float-input:not(.e-success):not(.e-warning):not(.e-error):not(.e-input-group).e-input-focus input, .e-float-input.e-control-wrapper:not(.e-success):not(.e-warning):not(.e-error):not(.e-input-group).e-input-focus input {
+  border-color: var(--green-500) !important;
+}
+
+.e-input-group:not(.e-float-icon-left):not(.e-float-input)::before, .e-input-group:not(.e-float-icon-left):not(.e-float-input)::after, .e-input-group.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::before, .e-input-group.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::after, .e-input-group.e-control-wrapper:not(.e-float-icon-left):not(.e-float-input)::before, .e-input-group.e-control-wrapper:not(.e-float-icon-left):not(.e-float-input)::after, .e-input-group.e-control-wrapper.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::before, .e-input-group.e-control-wrapper.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::after {
+  background: var(--green-500) !important;
+}
+
+.e-date-wrapper span.e-input-group-icon.e-date-icon.e-icons.e-active {
+  color: var(--green-500) !important;
+}
+
+.scrollable-container {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Full viewport height */
+  overflow: auto; /* Enables scrolling when content is too large */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.prime-dot-bg {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(to bottom, rgba(34, 197, 94, 0.09), rgba(221, 226, 228, 0.00)),
+  radial-gradient(var(--green-500) 0.1rem, transparent 0px);
+  background-repeat: repeat, repeat;
+  background-size: 100% 100%, 2rem 2rem;
+  opacity: 0.5;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.prime-dot-bg-white {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  background-image: linear-gradient(to bottom, rgba(34, 197, 94, 0.09), rgba(221, 226, 228, 0.00)),
+  radial-gradient(var(--green-500) 0.1rem, transparent 0px);
+  background-repeat: repeat, repeat;
+  background-size: 100% 100%, 2rem 2rem;
+  opacity: 0.5;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  padding: 5% 0% !important;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+@media screen and (min-width: 992px) {
+  .centered {
+    padding: 0 20% !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.aligned {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  padding: 5% 0% !important;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+@media screen and (min-width: 992px) {
+  .aligned {
+    padding: 1% 20% !important;
+  }
+}
+
+.users-block p-divider {
+  width: 100%;
+}
+
+::ng-deep #branding-logo img[src*="../img/logo-icon-green.png"] {
+  background-image: url("../img/logo-icon-green.png") !important;
+}
+
+#branding-logo {
+  content: url("../img/logo-icon-green.png") !important;
+  padding: 5px !important;
+}
+
+
+#workspace-sidebar, #workspace-content {
+  height: 100%;
+  width: 85%;
+  overflow: hidden;
+  float: left;
+  transition: width .10s;
+}
+
+
+#workspace-sidebar {
+  width: 15%;
+}
+
+#workspace-sidebar.collapsed {
+  width: 0;
+  border: 0;
+}
+
+#workspace-sidebar.collapsed + #workspace-content {
+  width: 100%;
+}
+
+.workspace-toolbar {
+  padding: 0.5rem 1rem;
+  max-width: 50rem;
+  background: var(--surface-0);
+}
+
+
+.avatar-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-group-child {
+  position: relative;
+  transition: .2s;
+}
+
+.avatar-group-child:not(:first-child) {
+  margin-left: -0.8rem;
+}
+
+.d-contents {
+  display: contents;
+}
+
+.reflect-card {
+  min-height: 5rem;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  text-align: start;
+  vertical-align: center;
+}
+
+
+.estimate-card-deck {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 250px;
+}
+
+.estimate-card {
+  width: 100px;
+  height: 140px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s;
+}
+
+.flip-container {
+  display: inline-block;
+  perspective: 1000px;
+}
+
+.top-75 {
+  top: 75%;
+}
+
+.meeting-notes-container {
+  height: calc(100% - 42px) !important;
+}
+
+.p-datatable .p-datatable-footer {
+  padding: 0;
+}
+
+.p-datatable .p-datatable-footer .p-paginator {
+  justify-content: end;
+}
+
+.team-dropdown.p-focus {
+  box-shadow: none;
+}
+
+.nav-container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+  .nav-container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .nav-container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .nav-container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .nav-container {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .nav-container {
+    max-width: 1320px;
+  }
+}

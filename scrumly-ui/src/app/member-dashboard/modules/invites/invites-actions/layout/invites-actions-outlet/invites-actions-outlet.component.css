@@ -1,0 +1,72 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-form body {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  background-image: none;
+  position: relative;
+  z-index: 0;
+}
+
+.register-form {
+  padding-top: 20px;
+}
+
+.register-form .register-form-header {
+  color: #ededed;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+
+.register-form-card {
+  border-radius: 6px;
+  background: #fff;
+  height: fit-content;
+  max-width: 500px;
+  border-top: 4px solid var(--green-500);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.03), 0px 0px 2px rgba(0, 0, 0, 0.06), 0px 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.card-header h1 {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+
+@media (min-width: 768px) {
+  .register-form .register-form-header {
+    margin-bottom: 40px;
+  }
+
+  .register-form .register-form-card {
+    padding: 30px 30px 30px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .register-form .register-form-header {
+    margin-bottom: 20px;
+  }
+
+  .container-dotted:before {
+    background: white;
+    background-image: none !important;
+  }
+
+  .register-form-card {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 10px 20px 30px 20px;
+    border-top: 0;
+    box-shadow: 0 0;
+  }
+}

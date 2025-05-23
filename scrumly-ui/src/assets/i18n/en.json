@@ -1,0 +1,196 @@
+{
+  "common": {
+  },
+  "validation": {
+    "errors": {
+      "required": "Field is required",
+      "email": "Enter valid email address",
+      "minlength": "Enter enough length",
+      "maxlength": "Max length exceeded",
+      "passwordMismatch": "Passwords should match",
+      "strongPassword": "Enter strong password",
+      "specialCharacter": "Field should not have special chars"
+    }
+  },
+  "messages": {
+    "error": {
+      "invalidForm": {
+        "summary": "Invalid form",
+        "detail": "Check form validity!"
+      },
+      "registration": {
+        "summary": "Failed registration"
+      },
+      "profile": {
+        "summary": "Failed update",
+        "detail": "Check form validity!"
+      },
+      "disconnection": {
+        "summary": "Disconnect failed",
+        "detail": "Failed to disconnect service!"
+      },
+      "refresh": {
+        "summary": "Refresh failed",
+        "detail": "Failed to refresh service access!"
+      },
+      "GOOGLE_CALENDAR": {
+        "connection": {
+          "summary": "Connection failed",
+          "detail": "Failed to connect your Google calendar account"
+        }
+      },
+      "JIRA_CLOUD": {
+        "connection": {
+          "summary": "Connection failed",
+          "detail": "Failed to connect your Jira account"
+        }
+      }
+    },
+    "success": {
+      "registration": {
+        "summary": "Successful registration!",
+        "detail": "User {{username}} registered"
+      },
+      "profile": {
+        "summary": "Profile updated",
+        "detail": "Profile {{username}} successfully updated"
+      },
+      "disconnection": {
+        "summary": "Disconnect success",
+        "detail": "Service successfully disconnected!"
+      },
+      "refresh": {
+        "summary": "Refresh success",
+        "detail": "Service access refreshed!"
+      },
+      "GOOGLE_CALENDAR": {
+        "connection": {
+          "summary": "Connection successful",
+          "detail": "You successfully connected your Google calendar account"
+        }
+      },
+      "JIRA_CLOUD": {
+        "connection": {
+          "summary": "Connection successful",
+          "detail": "You successfully connected your Jira account"
+        }
+      }
+    }
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Sign up",
+    "createAccount": "Create your account",
+    "email": "Email address",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "dob": "Date of birth",
+    "password": "Password",
+    "confirmPassword": "Confirm password"
+  },
+  "profile": {
+    "save": "Save changes",
+    "email": "Email address",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "dob": "Date of birth",
+    "phoneNumber": "Phone number",
+    "bio": "About",
+    "loadAvatar": "Choose avatar",
+    "deleteAvatar": "Remove",
+    "skills": "Skills list"
+  },
+  "settings": {
+    "profile": "Personal details",
+    "integrations": "Integrations",
+    "invites": "My invites"
+  },
+  "integrations": {
+    "GOOGLE_CALENDAR": {
+      "title": "Google Calendar",
+      "description": "Add events to your calendar and create conference rooms"
+    },
+    "JIRA_CLOUD": {
+      "title": "Atlassian Jira",
+      "description": "Use Jira issues when estimating, create tasks from action items"
+    }
+  },
+  "organizations": {
+    "list": {
+      "title": "My organizations"
+    },
+    "create": {
+      "name": "Organization name",
+      "members": "Invite members"
+    },
+    "members": {
+      "title": "Members",
+      "noInvite": "No invite",
+      "MEMBER_STATUS": {
+        "PENDING": "Pending",
+        "ACTIVE": "Active",
+        "BLOCKED": "Blocked",
+        "LEFT": "Left"
+      },
+      "TEAM_MEMBER_ROLE": {
+        "MEMBER": "Member",
+        "SCRUM_MASTER": "Scrum Master",
+        "TEAM_LEAD": "Team Lead",
+        "TEAM_ADMIN": "Team Admin"
+      },
+      "MEMBER_ROLE": {
+        "MEMBER": "Member",
+        "ORGANIZATION_LEAD": "Organization Lead",
+        "ORGANIZATION_ADMIN": "Organization Admin"
+      },
+      "INVITE_STATUS": {
+        "NEW": "New",
+        "REJECTED": "Rejected",
+        "ACCEPTED": "Accepted",
+        "REVOKED": "Revoked",
+        "RESENT": "Resent",
+        "EXPIRED": "Expired"
+      },
+      "CHANGE_ACTION": {
+        "MEMBER_CREATED": "Member Created",
+        "MEMBER_INVITED": "Member Invited",
+        "MEMBER_JOINED": "Member Joined",
+        "MEMBER_BLOCKED": "Member Blocked",
+        "MEMBER_ACTIVATED": "Member Activated",
+        "MEMBER_LEFT": "Member Left",
+        "MEMBER_ROLE_CHANGED": "Member Role Changed"
+      }
+    },
+    "invites": {
+      "title": "Invites",
+      "InviteChangeAction": {
+        "INVITATION_CREATED": "Invitation Created",
+        "INVITATION_VIEWED": "Invitation Viewed",
+        "INVITATION_ACCEPTED": "Invitation Accepted",
+        "INVITATION_REJECTED": "Invitation Rejected",
+        "INVITATION_REVOKED": "Invitation Revoked",
+        "INVITATION_EXPIRED": "Invitation Expired"
+      }
+    }
+  },
+  "templates": {
+    "blocks": {
+      "QUESTION_BLOCK": "Question Block",
+      "REFLECT_BLOCK": "Reflect Block",
+      "PREPARE_ESTIMATE_BLOCK": "Prepare Estimate Block",
+      "ESTIMATE_BLOCK": "Estimate Block",
+      "FEEDBACK_BLOCK": "Feedback Block",
+      "ITEM_BOARD_BLOCK": "Item Board Block"
+    },
+    "estimation": {
+      "PLANNING_POKER": "Planning Poker",
+      "BUCKET_SYSTEM": "Bucket System"
+    }
+  },
+  "teams": {
+    "create": {
+      "name": "Team name"
+    }
+  }
+}

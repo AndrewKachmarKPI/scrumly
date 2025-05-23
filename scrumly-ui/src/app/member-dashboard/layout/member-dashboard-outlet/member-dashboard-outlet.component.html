@@ -1,0 +1,21 @@
+<p-toast position="top-center"/>
+<div class="block-content">
+  <div class="min-h-screen flex relative lg:static surface-ground">
+    <member-dashboard-sidebar [(isSideBarOpened)]="isSideBarOpened"></member-dashboard-sidebar>
+
+    <div class="min-h-screen flex flex-column relative flex-auto w-10rem">
+      <member-dashboard-header (toggleSidebar)="isSideBarOpened = !isSideBarOpened"></member-dashboard-header>
+      <div class="content-wrapper p-5 flex flex-column flex-auto overflow-auto" id="main-content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>
+
+<schedule-event-sidebar [id]="'createEventSidebar'"
+                        [eventPreSelection]="preSelectedTemplate"
+                        [(sidebarState)]="scheduleEventState"></schedule-event-sidebar>
+<schedule-event-sidebar [id]="'editEventSidebar'"
+                        [editMode]="true"
+                        [activityDto]="activityDto"
+                        [(sidebarState)]="editEventState"></schedule-event-sidebar>

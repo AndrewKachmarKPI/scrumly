@@ -1,0 +1,169 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Organization members
+      </h1>
+      <p-badge severity="success"
+               [value]="members?.totalElements"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your organization members.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-button label="Invite new members"
+              severity="success"
+              size="small"
+              icon="pi pi-plus"
+              routerLink="/app/org/{{ orgId }}/invites"
+              [queryParams]="{invite:orgId}"></p-button>
+  </div>
+</div>
+
+<ng-template [ngIf]="members">
+  <ng-container *ngTemplateOutlet="dataTable"></ng-container>
+</ng-template>
+
+<ng-template #dataTable>
+  <div class="w-full">
+    <p-table #dt
+             [value]="members.data"
+             [tableStyle]="{'min-width': '50rem'}"
+             [scrollable]="true"
+             [scrollHeight]="'flex'"
+             [rowHover]="true"
+             [columns]="cols"
+             [exportHeader]="'customExportHeader'"
+             [exportFilename]="'Organization members'"
+             styleClass="p-datatable-gridlines">
+      <ng-template pTemplate="caption">
+        <div class="flex flex-row gap-3 flex-wrap align-items-center justify-content-between">
+          <div class="flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
+            <div class="flex flex-row flex-wrap gap-3">
+              <prime-input placeholder="Member name or email"
+                           iconPos="p-input-icon-left"
+                           icon="pi pi-search"
+                           styleClass="w-full lg:w-20rem"
+                           [delayEnabled]="true"
+                           [control]="control(filtersGroup, 'searchField')"
+                           (onDelayOver)="onSearchChange()"></prime-input>
+            </div>
+            <div class="flex flex-row flex-wrap gap-3">
+              <p-dropdown
+                [options]="organizationMemberService.getMemberRoleOptions()"
+                (onChange)="onMemberRoleChange($event)"
+                [showClear]="true"
+                optionValue="value"
+                optionLabel="name"
+                styleClass="w-full lg:w-15rem"
+                placeholder="Select role"/>
+            </div>
+          </div>
+          <div class="flex flex-row flex-wrap gap-3 justify-content-start align-items-center">
+            <p-button
+              icon="pi pi-download"
+              label="Export to csv"
+              severity="success"
+              size="small"
+              [outlined]="true"
+              (onClick)="dt.exportCSV({allValues:true})"/>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="profile.firstName" style="width:20%">
+            User
+            <p-sortIcon field="profile.firstName"/>
+          </th>
+          <th class="text-center" pSortableColumn="role">
+            Role
+            <p-sortIcon field="role"/>
+          </th>
+          <th class="text-center" pSortableColumn="status">
+            Status
+            <p-sortIcon field="status"/>
+          </th>
+          <th class="text-center" pSortableColumn="joinDateTime">
+            Last action
+            <p-sortIcon field="joinDateTime"/>
+          </th>
+          <th class="text-center" *ngIf="currentMember?.role != OrganizationMemberRole.MEMBER"
+              style="width:15%">
+            Actions
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-member>
+        <tr>
+          <td>
+            <prime-user-header [profile]="member.profile"></prime-user-header>
+          </td>
+          <td class="text-center">
+            <p-tag
+              [value]="'organizations.members.MEMBER_ROLE.'+member.role | translate"
+              [styleClass]="getMemberRoleSeverity(member.role)"/>
+          </td>
+          <td class="text-center">
+            <p class="text-normal">{{ 'organizations.members.MEMBER_STATUS.' + member.status | translate }}</p>
+          </td>
+          <td class="text-center">
+            <p>{{ member.joinDateTime | date: 'dd.MM.YYYY' }}</p>
+          </td>
+          <td class="text-right" *ngIf="currentMember?.role != OrganizationMemberRole.MEMBER">
+            <p-button
+              icon="pi pi-history"
+              styleClass="font-normal"
+              severity="success"
+              pTooltip="Open log"
+              showDelay="1000"
+              [text]="true"
+              [rounded]="true"
+              (onClick)="openMemberHistory(member)"/>
+
+            <ng-template [ngIf]="canModifyMember(member)">
+              <p-menu #menu
+                      appendTo="body"
+                      styleClass="w-20rem"
+                      [model]="getMemberActions(member)"
+                      [popup]="true"/>
+              <p-button *ngIf="getMemberActions(member).length > 0"
+                        severity="secondary"
+                        icon="pi pi-ellipsis-v"
+                        iconPos="right"
+                        [outlined]="true"
+                        [text]="true"
+                        [rounded]="true"
+                        (onClick)="menu.toggle($event)"/>
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="summary">
+        <p-paginator (onPageChange)="onPageChange($event)"
+                     [rows]="members?.size || 0"
+                     [totalRecords]="members?.totalElements || 0"
+                     [rowsPerPageOptions]="defaultPageOptions()"></p-paginator>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [colSpan]="6" class="p-0">
+            <prime-no-data-placeholder text="No members found"
+                                       description="We couldn't find any members created">
+            </prime-no-data-placeholder>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</ng-template>
+
+
+<ng-template #skeleton>
+  <prime-no-data-placeholder *ngIf="!members || members?.data?.length == 0"
+                             text="No members found"
+                             description="We couldn't find any members withing organization"></prime-no-data-placeholder>
+</ng-template>

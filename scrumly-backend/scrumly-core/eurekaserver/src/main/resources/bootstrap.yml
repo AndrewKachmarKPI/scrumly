@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: eurekaserver
+  profiles:
+    active: dev
+  cloud:
+    config:
+      uri: http://localhost:8888
+      username: DEV_CONFIG_USERNAME
+      password: DEV_CONFIG_PASSWORD

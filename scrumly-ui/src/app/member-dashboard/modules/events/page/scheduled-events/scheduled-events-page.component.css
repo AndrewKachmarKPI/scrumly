@@ -1,0 +1,17 @@
+::ng-deep .p-tabview .p-tabview-panels {
+  padding: 0 !important;
+  background: none !important;
+}
+
+::ng-deep.p-tabview .p-tabview-nav {
+  background: none !important;
+}
+
+::ng-deep .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background: none !important;
+}
+
+::ng-deep .p-datatable .p-datatable-header {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}

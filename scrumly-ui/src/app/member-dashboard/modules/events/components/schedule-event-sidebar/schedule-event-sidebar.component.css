@@ -1,0 +1,13 @@
+::ng-deep.p-sidebar-right {
+  width: 100rem !important;
+}
+
+@media screen and (max-width: 1440px) {
+  ::ng-deep.p-sidebar-right {
+    width: 100% !important;
+  }
+}
+
+p-inputGroup prime-input {
+  width: 100% !important;
+}

@@ -1,0 +1,24 @@
+<div *ngIf="control"
+     class="flex flex-column gap-2">
+  <div class="flex">
+    <label>
+      {{label | translate}}
+      <span *ngIf="isRequired" class="text-red-500">*</span>
+    </label>
+  </div>
+  <p-dropdown
+    [options]="groupedTemplates"
+    [formControl]="control"
+    [placeholder]="placeholder"
+    [group]="true"
+    [showClear]="showClear"
+    [ngClass]="[hasError ? 'ng-invalid ng-dirty' : '']"
+    (onChange)="onChangeSelection($event)"
+    styleClass="w-full">
+  </p-dropdown>
+
+  <ng-template [ngIf]="hasError">
+    <prime-field-error-box [label]="label"
+                           [field]="control"></prime-field-error-box>
+  </ng-template>
+</div>

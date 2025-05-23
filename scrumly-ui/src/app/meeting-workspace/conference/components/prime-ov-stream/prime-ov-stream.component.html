@@ -1,0 +1,21 @@
+<div class="stream-container"
+     *ngIf="stream"
+     (mouseenter)="isActionsShown = true"
+     (mouseleave)="isActionsShown = false">
+  <ov-stream [stream]="stream"
+             [displayAudioDetection]="true"></ov-stream>
+  <ng-template [ngIf]="displayActions && isActionsShown">
+    <p-button icon="pi pi-eye"
+              styleClass="pin-btn"
+              *ngIf="!isPinned"
+              [text]="true"
+              [rounded]="true"
+              (click)="onPinStream()"></p-button>
+    <p-button icon="pi pi-eye-slash"
+              styleClass="pin-btn off"
+              *ngIf="isPinned"
+              [text]="true"
+              [rounded]="true"
+              (click)="onUnPinStream()"></p-button>
+  </ng-template>
+</div>

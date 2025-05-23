@@ -1,0 +1,157 @@
+<div
+  id="sidebar"
+  class="icon-sidebar h-full lg:h-auto lg:block flex-shrink-0 absolute lg:static left-0 top-0 z-1 border-right-1 surface-border w-full md:w-auto"
+  [ngClass]="[isSideBarOpened?'':'hidden']">
+
+  <div class="flex h-full">
+    <div class="flex flex-column h-full max-w-6rem bg-green-500 flex-shrink-0 select-none">
+      <div class="flex align-items-center justify-content-center flex-shrink-0 bg-green-600 logo-box">
+        <prime-logo srcLight="assets/img/logo-icon-white.png"
+                    srcDark="assets/img/logo-icon-white.png"
+                    [height]="30"></prime-logo>
+      </div>
+      <div class="overflow-y-auto" style="scrollbar-width: thin;">
+        <ng-container *ngTemplateOutlet="iconItems;context: {items: menuItems}"></ng-container>
+      </div>
+      <div class="mt-auto">
+        <hr class="border-top-1 border-none border-green-300">
+        <ul class="list-none py-3 px-2 m-0">
+          <li class="mb-2">
+            <a pRipple
+               tooltipPosition="right"
+               showDelay="200"
+               [pTooltip]="isIconsMenuOpened?'Hide menu':'Open menu'"
+               (click)="toggleIconMenu()"
+               class="p-ripple p-element no-underline hidden lg:flex align-items-center cursor-pointer p-3 lg:justify-content-center hover:bg-green-400 border-round text-green-100 hover:text-green-50 transition-duration-150 transition-colors">
+              <i class="text-lg text-base lg:text-xl"
+                 [ngClass]="[isIconsMenuOpened? 'pi pi-chevron-left':'pi pi-chevron-right']"></i>
+            </a>
+            <a pRipple
+               tooltipPosition="right"
+               showDelay="200"
+               [pTooltip]="isSideBarOpened?'Hide menu':'Open menu'"
+               (click)="toggleSideBarMenu()"
+               class="flex lg:hidden p-ripple p-element no-underline align-items-center cursor-pointer p-3 lg:justify-content-center hover:bg-green-400 border-round text-green-100 hover:text-green-50 transition-duration-150 transition-colors">
+              <i class="text-lg text-base lg:text-xl"
+                 [ngClass]="[isSideBarOpened? 'pi pi-chevron-left':'pi pi-chevron-right']"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div *ngIf="activeTab"
+         [ngClass]="[isIconsMenuOpened?'flex':'lg:hidden']"
+         class="flex-column surface-0 w- p-4 pt-0 overflow-y-auto flex-shrink-0 flex-grow-1 md:flex-grow-0 navigation-panel">
+      <div class="justify-content-between align-items-center hidden lg:flex" style="height: 60px">
+        <div class="p-3 text-700 font-medium">{{ activeTab.label | uppercase }}</div>
+        <p-button icon="pi pi-times"
+                  pTooltip="Close sidebar"
+                  tooltipPosition="bottom"
+                  showDelay="1000"
+                  severity="secondary"
+                  (onClick)="toggleIconMenu()"
+                  [rounded]="true"
+                  [text]="true"/>
+      </div>
+      <div class="justify-content-between align-items-center flex lg:hidden" style="height: 60px">
+        <div class="p-3 text-700 font-medium">{{ activeTab.label | uppercase }}</div>
+        <p-button icon="pi pi-times"
+                  pTooltip="Close sidebar"
+                  tooltipPosition="bottom"
+                  showDelay="1000"
+                  severity="secondary"
+                  (onClick)="toggleSideBarMenu()"
+                  [rounded]="true"
+                  [text]="true"/>
+      </div>
+      <div class="surface-0 flex-auto py-3" *ngIf="activeTab.items">
+        <div class="w-full lg:w-auto select-none">
+          <ng-container *ngTemplateOutlet="textItems;context: {activeTab: activeTab}"></ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #iconItems let-items="items">
+  <ul class="list-none py-3 px-2 m-0">
+    <ng-container *ngFor="let item of items; trackBy: trackByLabel">
+      <ng-template [ngIf]="item.icon">
+        <li class="mb-2">
+          <a pRipple
+             tooltipPosition="right"
+             showDelay="500"
+             [ngClass]="[isActiveTab(item)?'bg-green-700 text-white':'']"
+             [pTooltip]="item.label"
+             (click)="onIconItemClick(item, $event)"
+             (mouseover)="onIconItemHover(subItemsMenu, $event)"
+             class="p-ripple p-element no-underline flex align-items-center cursor-pointer p-3 lg:justify-content-center hover:bg-green-400 border-round text-green-100 hover:text-green-50 transition-duration-150 transition-colors">
+            <div class="flex flex-column gap-2 justify-content-center align-items-center text-white">
+              <i class="text-lg text-base lg:text-xl" [ngClass]="[item.icon]"></i>
+              <span class="text-xs text-center overflow-hidden text-overflow-ellipsis">{{ item.label }}</span>
+            </div>
+          </a>
+          <p-menu #subItemsMenu
+                  styleClass="w-auto"
+                  [ngClass]="[item.items ? '' : 'hidden']"
+                  (mouseleave)="subItemsMenu.hide()"
+                  [id]="item.name"
+                  [model]="item.items"
+                  [popup]="true">
+            <ng-template pTemplate="item" let-item>
+              <ng-container *ngTemplateOutlet="subMenuItem;context: {subItem: item}"></ng-container>
+            </ng-template>
+          </p-menu>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="item.separator">
+        <hr class="my-3 border-top-1 border-none border-green-300">
+      </ng-template>
+    </ng-container>
+  </ul>
+</ng-template>
+
+<ng-template #textItems let-activeTab="activeTab">
+  <ul *ngIf="activeTab.items" class="list-none py-0 px-0 m-0">
+    <li *ngFor="let subItem of activeTab.items; trackBy: trackByLabel">
+      <ng-container *ngTemplateOutlet="subMenuItem;context: {subItem: subItem}"></ng-container>
+    </li>
+  </ul>
+</ng-template>
+
+<ng-template #subMenuItem let-subItem="subItem">
+  <ng-container *ngIf="subItem.id === customMenuItems.ORG_LIST.id">
+    <org-list-picker [showCreateButton]="true"></org-list-picker>
+  </ng-container>
+  <ng-container *ngIf="subItem.id === customMenuItems.SCHEDULE_ACTIVITY.id">
+    <p-button severity="success"
+              label="Schedule Event"
+              icon="pi pi-plus"
+              styleClass="w-full mb-3"
+              (onClick)="onCreateMeeting()"></p-button>
+  </ng-container>
+  <ng-container *ngIf="subItem.id === customMenuItems.CREATE_TEMPLATE.id">
+    <p-button severity="success"
+              label="Create Template"
+              icon="pi pi-plus"
+              styleClass="w-full mb-3"
+              routerLink="/app/activity/create"
+              [outlined]="true"></p-button>
+  </ng-container>
+  <ng-container *ngIf="selectedBacklog && subItem.id === customMenuItems.BACKLOG_NAME.id">
+    <p class="text-700 font-medium text-center border-1 p-2 border-round border-green-500">{{selectedBacklog?.name}}</p>
+  </ng-container>
+
+  <ng-container *ngIf="!isCustomMenuElement(subItem.id)">
+    <a pRipple
+       *ngIf="subItem.label"
+       [routerLink]="subItem.routerLink"
+       [queryParams]="subItem.queryParams"
+       [ngClass]="[isActiveTab(subItem)?'border-left-3 border-green-500 surface-ground':'', subItem.disabled?'p-disabled':'']"
+       class="p-ripple p-element no-underline flex align-items-center cursor-pointer p-3 hover:surface-100 border-round transition-colors transition-duration-150">
+      <i class="mr-2 text-700" [ngClass]="subItem.icon"></i>
+      <span class="font-medium text-700">{{subItem.label}}</span>
+    </a>
+  </ng-container>
+</ng-template>

@@ -1,0 +1,115 @@
+<p-toast position="top-center"/>
+
+<prime-load-spinner [isShowSpinnerSync]="showLoadSpinner">
+  <h2 class="text-500 font-medium" *ngIf="!isFacilitator && !activityRoom">
+    Waiting for facilitator to start this activity!
+  </h2>
+  <h2 class="text-500 font-medium" *ngIf="isLostConnection">
+    Connection is lost check your internet!
+  </h2>
+</prime-load-spinner>
+
+<p-messages *ngIf="messages && messages.length > 0"
+            [(value)]="messages"
+            [enableService]="false"
+            [closable]="false"/>
+
+<ng-template [ngIf]="viewMode === 'workspace' && (activityRoom || activityRoomReport)">
+  <ng-container *ngTemplateOutlet="workspaceLayout"></ng-container>
+</ng-template>
+
+<ng-template [ngIf]="viewMode === 'report' && (activityRoomReport)">
+  <ng-container *ngTemplateOutlet="workspaceReportLayout"></ng-container>
+</ng-template>
+
+<ng-template #workspaceLayout>
+  <div id="workspace-sidebar" class="surface-card shadow-2 border-right-1 surface-border"
+       [ngClass]="[!sideBarState ? 'collapsed' : '']">
+    <workspace-dashboard-sidebar [activityRoom]="activityRoom"
+                                 [(sideBarState)]="sideBarState"
+                                 [(selectedBlockId)]="selectedBlockId"
+                                 [(nestedBlockId)]="selectedNestedBlockId"
+                                 [isFacilitator]="isFacilitator"></workspace-dashboard-sidebar>
+  </div>
+
+  <div id="workspace-content">
+    <div class="prime-dot-bg-white">
+    </div>
+    <div class="p-3 pb-0">
+      <workspace-dashboard-content-header [activityRoom]="activityRoom"
+                                          [(sideBarState)]="sideBarState"
+                                          [(zoomLevel)]="zoomLevel"
+                                          [selectedBlockId]="selectedBlockId"
+                                          [isFacilitator]="isFacilitator"
+                                          (onKickUser)="onKickUser($event)"
+                                          (onExitRoom)="exitRoom()"
+                                          (onViewReport)="changeViewMode('report')"></workspace-dashboard-content-header>
+    </div>
+    <div class="p-0 workspace-dashboard-container">
+      <div class="workspace-container">
+        <ng-template [ngIf]="activityRoom?.statusMetadata?.isActive">
+          <div class="workspace-timer"
+               *ngIf="activityTimerState?.state">
+            <div class="p-3 w-7rem border-round text-center shadow-2 bg-white text-green-500 text-xl text-500">
+              <div class="flex flex-row gap-2 justify-content-center align-items-center">
+                <i class="pi pi-stopwatch"></i>
+                <prime-timer [seconds]="activityTimerState?.timeout!"
+                             [rawText]="true"
+                             [isFormattedTime]="true"
+                             (timerCompleted)="onActivityTimerEnd()"
+                             label="Time for activity"></prime-timer>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+
+        <div class="content-container">
+          <workspace-dashboard-content [activityRoom]="activityRoom"
+                                       [selectedBlockId]="selectedBlockId"
+                                       [(zoomLevel)]="zoomLevel"
+                                       [(sideBarState)]="sideBarState"
+                                       [isFacilitator]="isFacilitator"
+                                       [nestedBlockId]="selectedNestedBlockId">
+          </workspace-dashboard-content>
+        </div>
+
+        <ng-template [ngIf]="activityRoom?.statusMetadata?.isActive">
+          <div class="open-facilitator-btn">
+            <p-button icon="pi pi-chevron-up"
+                      pTooltip="Oepn actions"
+                      tooltipPosition="top"
+                      showDelay="500"
+                      severity="secondary"
+                      styleClass="open-facilitator-btn"
+                      *ngIf="!showFacilitatorActions"
+                      (onClick)="toggleFacilitatorActions()"
+                      [rounded]="true"
+                      [text]="true"/>
+          </div>
+
+
+          <workspace-dashboard-facilitator-actions *ngIf="showFacilitatorActions && isFacilitator"
+                                                   [activityRoom]="activityRoom"
+                                                   [activityTimerState]="activityTimerState"
+                                                   [(showFacilitatorActions)]="showFacilitatorActions"
+                                                   [(meetingNotesState)]="meetingNotesState"
+                                                   class="facilitator-actions">
+          </workspace-dashboard-facilitator-actions>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #workspaceReportLayout>
+  <workspace-report [activityId]="activityId"
+                    [roomReport]="activityRoomReport"
+                    [isFacilitator]="isFacilitator"
+                    [(meetingNotesState)]="meetingNotesState"
+                    (onViewWorkspace)="onViewWorkspace()"></workspace-report>
+</ng-template>
+
+<workspace-meeting-notes-sidebar [activityId]="activityId"
+                                 [activityRoom]="activityRoom"
+                                 [(meetingNotesState)]="meetingNotesState"></workspace-meeting-notes-sidebar>

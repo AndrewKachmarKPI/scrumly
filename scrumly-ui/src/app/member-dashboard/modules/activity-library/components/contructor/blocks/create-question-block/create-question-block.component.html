@@ -1,0 +1,65 @@
+<form [formGroup]="questionBlockForm"
+      class="grid">
+  <div class="col-12">
+    <div class="flex flex-column gap-3">
+      <div class="flex flex-row align-items-center justify-content-between">
+        <label>
+          Questions
+          <span class="text-red-500">*</span>
+        </label>
+        <p-button label="Add question"
+                  icon="pi pi-plus"
+                  severity="success"
+                  size="small"
+                  [text]="true"
+                  (onClick)="addQuestion()"/>
+      </div>
+
+
+      <div *ngFor="let group of questionsArray.controls; let i = index">
+        <ng-container *ngTemplateOutlet="questionBlock;context: {group: group, index: i}"></ng-container>
+      </div>
+    </div>
+  </div>
+</form>
+
+<ng-template #questionBlock
+             let-group="group"
+             let-index="index">
+  <div class="flex flex-column gap-3">
+    <p-inputGroup>
+      <prime-input styleClass="w-full border-noround-right"
+                   [hideValidation]="true"
+                   [control]="control(group, 'question')"
+                   [placeholder]="'Question #'+(index+1)+' ...'">
+      </prime-input>
+      <button type="button"
+              pButton icon="pi pi-times"
+              class="p-button-danger p-button-outlined"
+              [disabled]="questionsArray.length == 1"
+              (click)="removeQuestion(index)"></button>
+    </p-inputGroup>
+    <div class="flex flex-column gap-3 ml-4">
+      <ng-container *ngFor="let option of questionOptionsArray(index).controls; let answerOption = index">
+        <p-inputGroup>
+          <prime-input styleClass="w-full border-noround-right"
+                       [hideValidation]="true"
+                       [control]="asControl(option)"
+                       [placeholder]="'Answer option #'+(answerOption+1)+' ...'">
+          </prime-input>
+          <button type="button"
+                  pButton icon="pi pi-times"
+                  class="p-button-danger p-button-outlined"
+                  (click)="removeQuestionOption(index, answerOption)"></button>
+        </p-inputGroup>
+      </ng-container>
+
+      <p-button label="Add answer options"
+                icon="pi pi-plus"
+                severity="success"
+                size="small"
+                [text]="true"
+                (onClick)="addAnswerOption(index)"/>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,94 @@
+<form [formGroup]="searchSlotGroup">
+  <div class="grid mt-0 mb-3">
+    <div class="col-4">
+      <prime-calendar label="Day start hour"
+                      placeholder="Day start hour"
+                      [timeOnly]="true"
+                      [control]="control(searchSlotGroup,'dayStart')"></prime-calendar>
+    </div>
+    <div class="col-4">
+      <prime-calendar label="Day end hour"
+                      placeholder="Day end hour"
+                      [timeOnly]="true"
+                      [control]="control(searchSlotGroup,'dayEnd')"></prime-calendar>
+    </div>
+    <div class="col-4">
+      <prime-input label="Duration (min)"
+                   placeholder="Duration (min)"
+                   type="number"
+                   [control]="control(searchSlotGroup,'duration')"></prime-input>
+    </div>
+
+    <div class="col-12">
+      <div *ngIf="loading"
+           class="p-overlay p-absolute w-full h-full z-5 load-spinner flex align-items-center justify-content-center bg-white-alpha-70">
+        <p-progressSpinner
+          styleClass="w-10rem h-10rem"
+          strokeWidth="4"
+          fill="var(--surface-ground)"
+          animationDuration=".5s"/>
+      </div>
+
+      <ng-container *ngFor="let group of timeSlotGroups">
+        <p-divider align="center" type="dotted">
+          <b>{{ group.date | date: 'mediumDate'  }}</b>
+        </p-divider>
+        <div
+          class="flex flex-row align-items-center max-h-20rem justify-content-center flex-wrap gap-2 overflow-x-auto whitespace-nowrap"
+          style="scrollbar-width: thin;" *ngIf="group.timeSlotDto && group.timeSlotDto.length > 0">
+          <ng-container *ngFor="let slot of group.timeSlotDto">
+            <p-button *ngIf="slot.isOccupied"
+                      [label]="slot.label"
+                      (onClick)="onSelectTimeSlot(slot)"
+                      [text]="true"
+                      [plain]="true"
+                      (mouseover)="op.toggle($event)"
+                      (mouseleave)="op.hide()"
+                      icon="pi pi-exclamation-triangle"
+                      severity="warning"/>
+            <p-overlayPanel #op>
+              <div class="flex flex-column justify-content-start align-items-start gap-3 w-25rem">
+                <span class="font-medium text-900 block mb-2">Conflict events</span>
+                <ul class="list-none p-0 m-0 flex flex-column justify-content-start align-items-start gap-3">
+                  <li *ngFor="let conflict of slot.conflicts"
+                      class="flex flex-wrap flex-column justify-content-start align-items-start gap-2">
+                    <div>
+                      <span class="font-medium">{{ conflict.title }}</span>
+                      <div class="flex flex-row font-light text-sm">
+                        <span>{{ conflict.startTime | date: 'shortTime' }}</span>
+                        <span>-</span>
+                        <span>{{ conflict.endTime | date: 'shortTime' }}</span>
+                      </div>
+                    </div>
+                    <div class="ml-3 flex flex-wrap flex-column justify-content-start gap-2">
+                      <prime-user-header *ngFor="let profile of conflict.conflictingUsers"
+                                         [profile]="profile"
+                                         avatarSize="normal"
+                                         textSize="text-xs"></prime-user-header>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </p-overlayPanel>
+
+            <p-button *ngIf="!slot.isOccupied"
+                      [label]="slot.label"
+                      (onClick)="onSelectTimeSlot(slot)"
+                      [text]="true"
+                      [plain]="true"/>
+          </ng-container>
+        </div>
+        <prime-no-data-placeholder *ngIf="!group.timeSlotDto || group.timeSlotDto.length == 0"
+                                   text="No time slots found"
+                                   description="Try to search for different duration or date"/>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Search time slots"
+              icon="pi pi-search"
+              severity="success"
+              (onClick)="findTimeSlots()"/>
+  </div>
+</form>

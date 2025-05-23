@@ -1,0 +1,113 @@
+<form [formGroup]="reflectBlockForm" class="grid">
+<!--  <div class="col-12 md:col-4">-->
+<!--    <prime-input styleClass="w-full"-->
+<!--                 label="Max Reflections per Column per User"-->
+<!--                 type="number"-->
+<!--                 [control]="control(reflectBlockForm, 'maxReflectionsPerColumnPerUser')">-->
+<!--    </prime-input>-->
+<!--  </div>-->
+<!--  <div class="col-12 md:col-4">-->
+<!--    <prime-input styleClass="w-full"-->
+<!--                 label="Time per Column (minutes)"-->
+<!--                 type="number"-->
+<!--                 [control]="control(reflectBlockForm, 'timePerColumn')">-->
+<!--    </prime-input>-->
+<!--  </div>-->
+<!--  <div class="col-12 md:col-4">-->
+<!--    <prime-input styleClass="w-full"-->
+<!--                 label="Reflect Time Limit (minutes)"-->
+<!--                 type="number"-->
+<!--                 [control]="control(reflectBlockForm, 'reflectTimeLimit')">-->
+<!--    </prime-input>-->
+<!--  </div>-->
+
+  <div class="col-12">
+    <div class="flex flex-column gap-3">
+      <div class="flex flex-row align-items-center justify-content-between">
+        <label>
+          Reflect columns
+          <span class="text-red-500">*</span>
+        </label>
+        <p-button label="Add column"
+                  icon="pi pi-plus"
+                  severity="success"
+                  size="small"
+                  [text]="true"
+                  (onClick)="addColumn()"/>
+      </div>
+
+      <div class="flex overflow-x-auto whitespace-nowrap gap-3 p-2" style="scrollbar-width: thin;">
+        <div class="flex-none w-full lg:w-40rem" *ngFor="let group of columnsArray.controls; let i = index">
+          <ng-container *ngTemplateOutlet="reflectColumn;context: {group: group, index: i}"></ng-container>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</form>
+
+<ng-template #reflectColumn let-group="group" let-index="index">
+  <div class="shadow-2 surface-card p-4 border-top-3 h-full relative"
+       [style.border-top-color]="control(group, 'color').value"
+       style="border-radius: 10px;">
+
+    <div class="text-center font-bold text-lg mb-3">
+      Column #{{ index + 1 }}
+    </div>
+
+    <div class="grid">
+      <div class="col-12 lg:col-9">
+        <prime-input styleClass="w-full"
+                     label="Column title"
+                     placeholder="Column title"
+                     [control]="control(group, 'title')">
+        </prime-input>
+      </div>
+      <div class="col-12 lg:col-3">
+        <prime-color-picker label="Column color"
+                            [control]="control(group, 'color')"></prime-color-picker>
+      </div>
+      <div class="col-12">
+        <prime-textarea label="Column instruction"
+                        placeholder="Explain what this column is created for"
+                        [rows]="3"
+                        [control]="control(group, 'instruction')"></prime-textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="col-12 flex justify-content-between mt-2">
+        <div class="flex gap-2">
+          <p-button pTooltip="Move column left"
+                    icon="pi pi-arrow-left"
+                    severity="success"
+                    size="small"
+                    showDelay="500"
+                    [outlined]="true"
+                    [rounded]="true"
+                    (onClick)="moveColumn(index, -1)"
+                    [disabled]="index === 0"/>
+          <p-button pTooltip="Move column right"
+                    icon="pi pi-arrow-right"
+                    severity="success"
+                    size="small"
+                    showDelay="500"
+                    [outlined]="true"
+                    [rounded]="true"
+                    (onClick)="moveColumn(index, 1)"
+                    [disabled]="index === columnsArray.length - 1"/>
+        </div>
+        <p-button pTooltip="Remove column"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  showDelay="500"
+                  [outlined]="true"
+                  [rounded]="true"
+                  [disabled]="columnsArray.length == 1"
+                  (click)="removeColumn(index)"/>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+

@@ -1,0 +1,7 @@
+::ng-deep .dndDraggingSource {
+  display: none !important;
+}
+
+.reflect-column {
+  min-height: 5rem;
+}

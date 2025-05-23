@@ -1,0 +1,46 @@
+server:
+  port: 8085
+
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    url: jdbc:mysql://localhost:3307/activity_room_service_db
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+  cloud:
+    openfeign:
+      oauth2:
+        enabled: true
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: DEV_RABBIT_USERNAME
+    password: DEV_RABBIT_PASSWORD
+    listener:
+      simple:
+        default-requeue-rejected: false
+
+
+keycloak:
+  url: http://localhost:9999
+  realm: scrumly
+  token-path: /realms/master/protocol/openid-connect/token
+  master-username: SCRUMLY_DEV_ADMIN
+  master-password: SCRUMLY_DEV_ADMIN
+
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html

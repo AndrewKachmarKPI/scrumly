@@ -1,0 +1,47 @@
+server:
+  port: 8081
+
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    url: jdbc:mysql://localhost:3307/user_service_db
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+
+  cloud:
+    openfeign:
+      oauth2:
+        enabled: true
+
+  servlet:
+    multipart:
+      max-file-size: 4GB
+      max-request-size: 4GB
+      enabled: true
+
+keycloak:
+  url: http://localhost:9999
+  realm: scrumly
+  token-path: /realms/master/protocol/openid-connect/token
+  master-username: admin
+  master-password: admin
+
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+invite:
+  expiration-days: 30
+  base-url: http://localhost:4200/app/invites

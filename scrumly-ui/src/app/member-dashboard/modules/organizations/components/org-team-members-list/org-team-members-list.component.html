@@ -1,0 +1,41 @@
+<div *ngIf="control"
+     class="flex flex-column gap-2">
+  <div class="flex">
+    <label *ngIf="label">
+      {{label | translate}}
+      <span *ngIf="isRequired" class="text-red-500">*</span>
+    </label>
+  </div>
+  <p-pickList
+    [source]="members"
+    [target]="targetMembers"
+    (onMoveToTarget)="onChanged()"
+    (onMoveAllToTarget)="onChanged()"
+    (onMoveToSource)="onChanged()"
+    (onMoveAllToSource)="onChanged()"
+    [dragdrop]="true"
+    [responsive]="true"
+    [sourceStyle]="{ height: '30rem' }"
+    [targetStyle]="{ height: '30rem' }"
+    [showSourceControls]="false"
+    [showTargetControls]="false"
+    sourceHeader="Team Members"
+    targetHeader="Activity Attendees"
+    styleClass="w-full">
+    <ng-template let-member pTemplate="item">
+      <prime-user-header [profile]="member.profile"></prime-user-header>
+    </ng-template>
+    <ng-template pTemplate="emptymessagesource">
+      No users found
+    </ng-template>
+    <ng-template pTemplate="emptymessagetarget">
+      No users found
+    </ng-template>
+  </p-pickList>
+
+
+  <ng-template [ngIf]="hasError">
+    <prime-field-error-box [label]="label"
+                           [field]="control"></prime-field-error-box>
+  </ng-template>
+</div>

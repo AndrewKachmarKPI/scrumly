@@ -1,0 +1,50 @@
+<div *ngIf="control"
+     class="flex flex-column gap-2">
+  <div class="flex" *ngIf="label">
+    <label>
+      {{label | translate}}
+      <span *ngIf="isRequired" class="text-red-500">*</span>
+    </label>
+  </div>
+
+  <ng-container *ngTemplateOutlet="dropdownWithOrg"></ng-container>
+
+  <ng-template [ngIf]="hasError">
+    <prime-field-error-box [label]="label"
+                           [field]="control"></prime-field-error-box>
+  </ng-template>
+</div>
+
+<ng-template #dropdownWithOrg>
+  <p-dropdown #dropdown
+              [options]="groupedOrganizations"
+              [formControl]="control"
+              [placeholder]="placeholder"
+              [group]="true"
+              [showClear]="showClear"
+              [readonly]="readonly"
+              [ngClass]="[hasError ? 'ng-invalid ng-dirty' : '']"
+              (onChange)="onSelectTeamChange($event)"
+              appendTo="body"
+              styleClass="w-full {{ styleClass }}">
+    <ng-template let-group pTemplate="group">
+      <div class="flex align-items-center">
+        <prime-avatar labelMode="prefix"
+                      styleClass="p-avatar-xs"
+                      [fileId]="group.value.logo"
+                      [label]="group.value.name"></prime-avatar>
+        <span class="ml-2">{{ group.label }}</span>
+      </div>
+    </ng-template>
+    <ng-template let-item pTemplate="selectedItem"
+                 [ngIf]="showOrganization && selectedOrganization && selectedTeam">
+      <div class="flex align-items-center">
+        <prime-avatar labelMode="prefix"
+                      styleClass="p-avatar-xs"
+                      [fileId]="selectedOrganization?.logo!"
+                      [label]="selectedOrganization?.name!"></prime-avatar>
+        <span class="ml-2">{{ selectedTeam?.name }}</span>
+      </div>
+    </ng-template>
+  </p-dropdown>
+</ng-template>

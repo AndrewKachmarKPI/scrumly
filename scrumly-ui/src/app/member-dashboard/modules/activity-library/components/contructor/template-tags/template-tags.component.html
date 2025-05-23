@@ -1,0 +1,17 @@
+<form [formGroup]="templateTagsFormGroup" class="grid template-tags">
+  <div class="col-12">
+    <div class="text-center mt-3 mb-3 text-xl font-semibold">Choose template tags</div>
+    <div class="flex flex-wrap justify-content-center gap-3">
+      <p-toggleButton *ngFor="let tag of tags"
+                      (onChange)="onSelectTag(tag, $event)"
+                      [offLabel]="tag"
+                      [onLabel]="tag"
+                      styleClass="templateTagBtn"/>
+    </div>
+  </div>
+  <div class="col-12">
+    <prime-chips label="Template tags"
+                 placeholder="Template tags"
+                 [control]="control(templateTagsFormGroup,'tags')"></prime-chips>
+  </div>
+</form>

@@ -1,0 +1,266 @@
+<p-sidebar [(visible)]="sidebarState"
+           [id]="id"
+           (onHide)="onSidebarHide()"
+           (onShow)="onSidebarShow()"
+           position="right"
+           styleClass="w-50rem">
+  <ng-template pTemplate="header">
+    <span class="font-bold text-xl">Schedule Event</span>
+  </ng-template>
+
+
+  <div class="grid grid-nogutter">
+    <div class="col-12 lg:col-6 mb-3">
+      <div class="flex flex-row align-items-center justify-content-start gap-2 font-bold mb-2">
+        <i class="pi pi-building-columns text-xl"></i>
+        <span class="text-lg pl-1">Organization & Team</span>
+      </div>
+      <div class="ml-5">
+        <form [formGroup]="eventFormGroup"
+              class="grid">
+          <div class="col-12">
+            <org-team-dropdown label="Select team"
+                               placeholder="Select team"
+                               [disabled]="editMode"
+                               [showClear]="true"
+                               [selectedTeamId]="eventPreSelection?.teamId || control(eventFormGroup,'createdFor').value"
+                               (onSelect)="onSelectTeam($event)"
+                               [control]="control(eventFormGroup,'createdFor')"></org-team-dropdown>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="col-12 lg:col-6 mb-3">
+      <div class="flex flex-row align-items-center justify-content-start gap-2 font-bold mb-2">
+        <i class="pi pi-objects-column text-xl"></i>
+        <span class="text-lg pl-1">Activity Template</span>
+      </div>
+      <div class="ml-5">
+        <form [formGroup]="eventFormGroup"
+              class="grid">
+          <div class="col-12">
+            <activity-template-dropdown label="Select activity template"
+                                        placeholder="Select activity template"
+                                        (onSelectTemplate)="onActivityTemplateSelect($event)"
+                                        [showClear]="true"
+                                        [disabled]="!control(eventFormGroup,'createdFor').value || editMode"
+                                        [ownerId]="control(eventFormGroup,'createdFor').value"
+                                        [control]="control(eventFormGroup,'templateId')"></activity-template-dropdown>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="col-12 mb-3">
+
+      <div class="grid">
+        <div class="col-12 lg:col-6">
+          <div class="flex flex-row align-items-center justify-content-start gap-2 font-bold mb-2">
+            <i class="pi pi-calendar text-xl"></i>
+            <span class="text-lg pl-1">Event details</span>
+          </div>
+
+          <div class="ml-5">
+            <form [formGroup]="eventFormGroup"
+                  class="grid">
+              <div class="col-12">
+                <prime-input label="Event title"
+                             placeholder="Event title"
+                             [control]="control(eventFormGroup,'title')"></prime-input>
+              </div>
+
+              <div class="col-12">
+                <prime-text-editor label="Description"
+                                   placeholder="Event description"
+                                   height="200px"
+                                   [control]="control(eventFormGroup,'description')"></prime-text-editor>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-12 lg:col-6">
+          <div class="grid">
+            <div class="col-12 mb-3">
+              <div class="flex flex-row align-items-center justify-content-start gap-2 font-bold mb-2">
+                <i class="pi pi-map-marker text-xl"></i>
+                <span class="text-lg pl-1">Time & Location</span>
+              </div>
+
+              <div class="ml-5">
+                <form [formGroup]="eventFormGroup"
+                      class="grid">
+                  <div class="col-12">
+                    <prime-input label="Location"
+                                 placeholder="Location"
+                                 styleClass="w-full"
+                                 [control]="control(eventFormGroup,'location')"></prime-input>
+                  </div>
+                  <div class="col-12">
+                    <div class="flex flex-row justify-content-start align-items-end gap-3">
+                      <prime-calendar label="Activity date"
+                                      placeholder="Activity date"
+                                      style="width: 100%"
+                                      [id]="'sideBarCalendar'"
+                                      [minDate]="minDate"
+                                      [control]="control(eventFormGroup,'startDate')"></prime-calendar>
+                      <p-button label="Find time slot"
+                                severity="success"
+                                styleClass="w-full w-11rem"
+                                icon="pi pi-clock"
+                                (onClick)="onSelectTimeSlot()"/>
+                    </div>
+                  </div>
+                  <div class="col-12 lg:col-6">
+                    <prime-calendar label="Start time"
+                                    placeholder="Start time"
+                                    [timeOnly]="true"
+                                    [control]="control(eventFormGroup,'startTime')"></prime-calendar>
+                  </div>
+                  <div class="col-12 lg:col-6">
+                    <prime-calendar label="End time"
+                                    placeholder="End time"
+                                    [timeOnly]="true"
+                                    [control]="control(eventFormGroup,'endTime')"></prime-calendar>
+                  </div>
+                  <div class="col-12"
+                       *ngIf="eventFormGroup.hasError('startBeforeEnd') ||
+                              eventFormGroup.hasError('minDuration')">
+                    <small class="text-red-500" *ngIf="eventFormGroup.hasError('startBeforeEnd')">
+                      Start date must be before the end date. <br>
+                    </small>
+                    <small class="text-red-500" *ngIf="eventFormGroup.hasError('minDuration')">
+                      Event should last at least 1 minute <br>
+                    </small>
+                  </div>
+                  <div class="col-12" *ngIf="(editMode && activityDto?.recurringEventId) || !editMode">
+                    <p-inputGroup>
+                      <prime-input styleClass="w-full border-noround-right"
+                                   placeholder="Select recurrence"
+                                   (click)="onSelectEventRecurrence()"
+                                   [readonly]="true"
+                                   [hideValidation]="true"
+                                   [control]="control(eventFormGroup, 'recurrenceText')">
+                      </prime-input>
+                      <button type="button"
+                              pButton icon="pi pi-clock"
+                              class="p-button-success p-button-outlined"
+                              [disabled]="editMode"
+                              (click)="onSelectEventRecurrence()"></button>
+                      <button type="button"
+                              pButton icon="pi pi-times"
+                              class="p-button-danger p-button-outlined"
+                              [disabled]="editMode"
+                              (click)="onClearEventRecurrence()"></button>
+                    </p-inputGroup>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-12" *ngIf="editMode && activityDto?.recurringEventId &&
+            activityDto?.scheduledEvent && isSameDay(control(eventFormGroup,'startDate').value,
+             activityDto?.scheduledEvent?.startDateTime!)">
+              <div class="ml-5">
+                <form class="flex align-items-center gap-1">
+                  <p-checkbox [binary]="true"
+                              [formControl]="control(eventFormGroup,'modifyRecurrentEvents')"/>
+                  <label class="ml-2">Modify recurrent events</label>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-12 lg:col-6 mb-3">
+          <div class="flex flex-row align-items-center justify-content-start gap-2 font-bold mb-2">
+            <i class="pi pi-calendar-plus text-xl"></i>
+            <span class="text-lg pl-1">Calendar event</span>
+          </div>
+
+          <div class="ml-5">
+            <form [formGroup]="eventFormGroup"
+                  class="grid">
+              <div class="col-12">
+                <prime-image-name-dropdown label="Calendar providers"
+                                           placeholder="Calendar providers"
+                                           optionValue="type"
+                                           optionLabel="name"
+                                           [showClear]="true"
+                                           [dropdownControl]="control(eventFormGroup,'calendarProvider')"
+                                           [options]="calendarProviders">
+                </prime-image-name-dropdown>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-12 lg:col-6 mb-3">
+          <div class="flex flex-row align-items-center justify-content-start gap-2 font-bold mb-2">
+            <i class="pi pi-video text-xl"></i>
+            <span class="text-lg pl-1">Conference</span>
+          </div>
+
+          <div class="ml-5">
+            <form [formGroup]="eventFormGroup"
+                  class="grid">
+              <div class="col-12">
+                <prime-image-name-dropdown label="Conference provider"
+                                           placeholder="Conference provider"
+                                           optionValue="type"
+                                           optionLabel="name"
+                                           [disabled]="!control(eventFormGroup,'calendarProvider').value"
+                                           [showClear]="true"
+                                           [dropdownControl]="control(eventFormGroup,'conferenceProvider')"
+                                           [options]="conferenceProviders"></prime-image-name-dropdown>
+              </div>
+            </form>
+          </div>
+        </div>
+
+
+      </div>
+
+    </div>
+
+    <div class="col-12 mb-3">
+      <div class="flex flex-row align-items-center justify-content-start gap-2 font-bold mb-2">
+        <i class="pi pi-users text-xl"></i>
+        <span class="text-lg pl-1">Attendees</span>
+      </div>
+
+      <div class="ml-5">
+        <org-team-members-list [preSelectedMembersIds]="selectedMembers"
+                               [excludeList]="excludeUsersList"
+                               [teamId]="control(eventFormGroup,'createdFor').value"
+                               [control]="control(eventFormGroup,'attendees')"></org-team-members-list>
+      </div>
+    </div>
+
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-row flex-wrap gap-3 justify-content-end align-items-center">
+      <p-button label="Cancel"
+                severity="secondary"
+                (onClick)="toggleSidebarState()"
+                [outlined]="true"/>
+      <p-button label="Create activity"
+                severity="success"
+                icon="pi pi-check"
+                *ngIf="!editMode"
+                (onClick)="onSubmitForm()"/>
+      <p-button label="Update activity"
+                severity="success"
+                icon="pi pi-check"
+                *ngIf="editMode"
+                (onClick)="onSubmitForm()"/>
+    </div>
+  </ng-template>
+  <div>
+
+  </div>
+</p-sidebar>

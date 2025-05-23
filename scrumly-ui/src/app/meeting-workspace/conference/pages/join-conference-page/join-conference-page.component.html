@@ -1,0 +1,99 @@
+<div class="prime-dot-bg" *ngIf="showJoin">
+</div>
+
+<div *ngIf="showLoadSpinner"
+     class="p-overlay p-absolute w-full h-full z-5 load-spinner flex align-items-center justify-content-center bg-white-alpha-70">
+  <p-progressSpinner
+    styleClass="w-10rem h-10rem"
+    strokeWidth="4"
+    fill="var(--surface-ground)"
+    animationDuration=".5s"/>
+</div>
+
+<div class="centered w-full" *ngIf="showJoin">
+  <div class="grid">
+    <div class="col-12 mb-4">
+      <div class="flex flex-column justify-content-center align-items-center gap-3">
+        <prime-image-box path="../assets/img/logo-icon-green.png"
+                         height="2.5rem"
+                         width="2.5rem"></prime-image-box>
+        <div class="text-900 text-3xl font-medium">
+          {{ activity?.scheduledEvent?.title }}
+        </div>
+        <div class="flex flex-row font-light text-xl">
+          <span class="font-normal">{{ activity?.scheduledEvent?.startDateTime | date: 'mediumDate' }}</span>
+          <span class="ml-2">{{ activity?.scheduledEvent?.startDateTime | date: 'shortTime' }}</span>
+          <span> - </span>
+          <span>{{ activity?.scheduledEvent?.endDateTime | date: 'shortTime' }}</span>
+          <span class="ml-3" *ngIf="activity?.scheduledEvent?.duration">
+              <span class="font-medium">Duration:</span> {{ activity!.scheduledEvent!.duration! | activityDuration }}
+            </span>
+        </div>
+        <p-messages *ngIf="messages"
+                    [(value)]="messages"
+                    [enableService]="false"
+                    [closable]="false"/>
+      </div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="col-12 lg:col-7">
+      <div class="surface-card p-4 shadow-2 border-round flex-grow-1">
+        <pre-join-video-configure #preJoinConfigurator></pre-join-video-configure>
+      </div>
+    </div>
+    <div class="col-12 lg:col-5 flex">
+      <div class="surface-card p-4 shadow-2 border-round flex-grow-1 align-items-between">
+        <div class="flex flex-column align-items-center justify-content-center gap-3 h-full">
+          <div class="flex flex-column align-items-center justify-content-center w-full gap-3 text-center">
+            <div class="text-900 text-3xl font-medium">
+              Join workspace now
+            </div>
+            <a class="text-green-500 no-underline"
+               *ngIf="activity?.activityTemplate"
+               routerLink="/app/activity/{{ activity?.activityTemplate?.templateId! }}/view">
+              <strong>Template:</strong> {{ activity?.activityTemplate?.name! }}
+            </a>
+          </div>
+          <div class="flex flex-column align-items-center justify-content-center w-full gap-3 users-block"
+               *ngIf="activeSessions && activeSessions.length > 0">
+            <p-divider styleClass="w-full"
+                       align="center">
+              <b> Already joined <span>({{ activeSessions.length }})</span></b>
+            </p-divider>
+            <div class="flex flex-row flex-wrap gap-3">
+              <small *ngFor="let profile of activeSessions">
+                <prime-user-header avatarSize="normal"
+                                   [profile]="profile"
+                                   [background]="true"></prime-user-header>
+              </small>
+            </div>
+            <p-divider styleClass="w-full"></p-divider>
+          </div>
+          <div class="flex flex-row align-items-center justify-content-center gap-3 p-2">
+            <p-button label="Return back"
+                      severity="secondary"
+                      styleClass="w-full"
+                      [outlined]="true"
+                      (onClick)="onReturnBackClick()"/>
+            <p-button icon="pi pi-sign-in"
+                      iconPos="right"
+                      label="Join conference"
+                      severity="success"
+                      styleClass="w-full"
+                      (onClick)="onJoinClick()"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<prime-ov-video-conference *ngIf="showConference"
+                           [conferenceId]="conferenceId"
+                           [workspaceId]="workspaceId"
+                           [activityId]="activityId"
+                           [deviceSetup]="deviceSetup"
+                           (onSessionCreatedEmit)="onSessionCreated()"
+                           (onSessionRemovedEmit)="onSessionRemoved()"></prime-ov-video-conference>

@@ -1,0 +1,54 @@
+<ov-videoconference
+  #videoconferenceComponent
+  *ngIf="!loading && messages.length == 0 && conferenceRoom"
+  [tokens]="tokens!"
+  [prejoin]="false"
+  [activitiesPanelRecordingActivity]="false"
+  [activitiesPanelBroadcastingActivity]="false"
+  [broadcastingActivity]="false"
+  [recordingActivity]="false"
+  [toolbarActivitiesPanelButton]="false"
+  [toolbarRecordingButton]="conferenceRoom.recordingEnabled"
+  [toolbarBroadcastingButton]="conferenceRoom.broadcastingEnabled"
+  (onSessionCreated)="onSessionCreated($event)"
+  (onToolbarLeaveButtonClicked)="onLeaveButtonClicked()"
+  (onNodeCrashed)="onNodeCrashed()"
+  [ngClass]="[conferenceConfig?.showWorkspace ? 'workspace-conference' : '']">
+
+  <div *ovToolbarAdditionalButtons>
+    <button id="more-options-btn"
+            class="mat-mdc-menu-trigger bg-green-500 mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base"
+            (click)="menu.toggle($event)">
+      <span class="mat-mdc-button-persistent-ripple"></span>
+      <mat-icon role="img"
+                class="mat-icon notranslate mat-mdc-tooltip-trigger material-icons mat-ligature-font mat-icon-no-color">
+        dashboard
+      </mat-icon>
+    </button>
+    <p-menu #menu
+            [model]="menuItems"
+            [popup]="true"/>
+  </div>
+
+  <div *ovLayout class="custom-ov-layout">
+    <ng-container *ngTemplateOutlet="conferenceLayout"></ng-container>
+  </div>
+</ov-videoconference>
+
+<ng-template #conferenceLayout>
+  <prime-ov-video-layout [workspaceId]="workspaceId"
+                         [activityId]="activityId"
+                         [conferenceId]="conferenceId"
+                         [conferenceConfig]="conferenceConfig"
+                         [remoteParticipants]="remoteParticipants"
+                         [localParticipant]="localParticipant"
+                         (onExitWorkspace)="closeWorkspace()"></prime-ov-video-layout>
+</ng-template>
+
+
+<div *ngIf="!loading && messages.length > 0"
+     class="error">
+  <p-messages [(value)]="messages"
+              [enableService]="false"
+              [closable]="false"/>
+</div>

@@ -1,0 +1,9 @@
+<prime-load-spinner
+  *ngIf="isLoadIssues"
+  [isShowSpinnerSync]="true"></prime-load-spinner>
+<select-estimate-items
+  [teamMetadata]="teamMetadata"
+  [blockId]="blockId"
+  [activityId]="activityId"
+  (onSelectIssuesSubmit)="onSelectIssues($event)"
+  styleClass="w-full"></select-estimate-items>

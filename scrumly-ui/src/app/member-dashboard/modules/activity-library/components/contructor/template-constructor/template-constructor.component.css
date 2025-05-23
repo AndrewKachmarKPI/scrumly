@@ -1,0 +1,17 @@
+.template-constructor p-panel {
+  width: 100%;
+}
+
+.template-constructor p-stepper {
+  width: 100%;
+}
+
+.template-constructor {
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--surface-0) !important;
+}
+
+::ng-deep .p-stepper.p-stepper-vertical .p-stepper-panel .p-stepper-content {
+  overflow: hidden; !important;
+}

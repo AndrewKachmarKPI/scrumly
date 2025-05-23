@@ -1,0 +1,21 @@
+.backlog-board {
+  max-width: 90rem;
+  min-width: 90rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-backlog-accordion {
+  min-width: 60rem;
+}
+
+.backlog-container {
+  width: 40rem;
+}
+
+.custom-chip .p-chip-icon {
+  color: var(--icon-color);
+}

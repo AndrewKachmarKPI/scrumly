@@ -1,0 +1,111 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between align-items-center mb-0">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 text-900 text-xl line-height-3">
+        <span class="font-semibold">
+          Scrumly dashboard
+        </span>
+      </h1>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your events and workprocess.</p>
+  </div>
+
+
+  <div class="flex flex-row gap-3">
+    <prime-week-scroller (onWeekUpdate)="onWeekUpdate($event)"></prime-week-scroller>
+  </div>
+
+  <div class="flex flex-row gap-3">
+    <div class="surface-card shadow-2 border-round p-3 w-10rem">
+      <div class="flex flex-row justify-content-center align-items-center gap-3">
+        <i class="pi pi-calendar text-xl text-green-600"></i>
+        <div class="text-900 font-bold text-xl mb-1 line-height-3">
+          {{statistic?.totalEventsThisWeek}}
+        </div>
+      </div>
+      <p class="text-700 m-0 text-center">
+        Total events
+      </p>
+    </div>
+    <div class="surface-card shadow-2 border-round p-3 w-10rem">
+      <div class="flex flex-row justify-content-center align-items-center gap-3">
+        <i class="pi pi-calendar-minus text-xl text-yellow-600"></i>
+        <div class="text-900 font-bold text-xl mb-1 line-height-3">
+          {{statistic?.totalPastEvents}}
+        </div>
+      </div>
+      <p class="text-700 m-0 text-center">
+        Past events
+      </p>
+    </div>
+    <div class="surface-card shadow-2 border-round p-3 w-10rem">
+      <div class="flex flex-row justify-content-center align-items-center gap-3">
+        <i class="pi pi-sort-up-fill text-xl text-green-600"></i>
+        <div class="text-900 font-bold text-xl mb-1 line-height-3">
+          {{statistic?.eventDurationBreakdown?.longestEventDuration! | activityDuration}}
+        </div>
+      </div>
+      <p class="text-700 m-0 text-center">
+        Longest event
+      </p>
+    </div>
+    <div class="surface-card shadow-2 border-round p-3 w-10rem">
+      <div class="flex flex-row justify-content-center align-items-center gap-3">
+        <i class="pi pi-sort-down-fill text-xl text-red-600"></i>
+        <div class="text-900 font-bold text-xl mb-1 line-height-3">
+          {{statistic?.eventDurationBreakdown?.shortestEventDuration! | activityDuration}}
+        </div>
+      </div>
+      <p class="text-700 m-0 text-center">
+        Shortest event
+      </p>
+    </div>
+  </div>
+</div>
+
+<p-divider></p-divider>
+
+<div class="grid">
+  <div class="col-12">
+    <div class="surface-card shadow-2 border-round p-4 h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <div class="text-700 font-semibold text-xl">Events today</div>
+        <p-button severity="success"
+                  label="Schedule Event"
+                  icon="pi pi-plus"
+                  styleClass="w-full"
+                  size="small"
+                  (onClick)="onScheduleEvent()"></p-button>
+      </div>
+      <prime-event-table [activities]="activities!"></prime-event-table>
+    </div>
+  </div>
+
+  <div class="col-12 lg:col-3">
+    <div class="surface-card shadow-2 border-round p-4 h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <div class="text-700 font-semibold text-xl">Event status breakdown</div>
+      </div>
+      <p-chart type="doughnut"
+               [data]="statusPieChartData"
+               [options]="statusPieChartOptions"/>
+
+    </div>
+  </div>
+
+  <div class="col-12 lg:col-9">
+    <div class="surface-card shadow-2 border-round p-4 h-full">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <div class="text-700 font-semibold text-xl">Weekly activity</div>
+      </div>
+      <p-chart type="bar"
+               (onDataSelect)="onWeeklyLoadDataSelect($event)"
+               [data]="weeklyLoadLineChartData"
+               [options]="weeklyLoadLineChartOptions"/>
+    </div>
+  </div>
+
+</div>

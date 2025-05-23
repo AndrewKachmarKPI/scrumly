@@ -1,0 +1,68 @@
+<p-confirmDialog/>
+
+
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        <ng-container *ngIf="activityViewMode === 'table'">
+          <span *ngIf="profile && !team"> Your events list</span>
+          <span *ngIf="profile && team"> {{ team.name }} events list</span>
+        </ng-container>
+        <ng-container *ngIf="activityViewMode === 'calendar'">
+          <span *ngIf="profile && !team"> Your events calendar</span>
+          <span *ngIf="profile && team"> {{ team.name }} events calendar</span>
+        </ng-container>
+      </h1>
+      <p-badge severity="success"
+               *ngIf="activities?.totalElements && activities?.totalElements! > 0"
+               [value]="activities?.totalElements"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Explore your scheduled events and meetings.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-selectButton
+      [options]="activityViewModes"
+      [(ngModel)]="activityViewMode"
+      optionLabel="label"
+      optionValue="value"/>
+  </div>
+</div>
+
+<ng-container *ngTemplateOutlet="dataTable"></ng-container>
+
+<ng-template #dataTable>
+  <ng-container *ngTemplateOutlet="scheduledActivities"></ng-container>
+</ng-template>
+
+
+<ng-template #scheduledActivities>
+  <div class="w-full">
+    <scheduled-events-table *ngIf="activityViewMode === 'table'"
+                            [teamId]="teamId"
+                            [userId]="userId"
+                            [activities]="activities"
+                            (onFilterChange)="onFilterChange($event)"
+                            (onJoinWorkspace)="joinWorkspace($event)"
+                            (onCreateAndJoinWorkspace)="createAndJoinWorkspace($event)"
+                            (onOpenWorkspace)="openWorkspace($event)"
+                            (onEditActivity)="editActivity($event)"
+                            (onCancelActivity)="cancelActivity($event)"
+                            (onCancelRecurrentActivity)="cancelActivity($event)"
+                            (onScheduleExternalEvent)="scheduleExternalEvent($event)"></scheduled-events-table>
+    <scheduled-calendar-events *ngIf="activityViewMode === 'calendar'"
+                               [teamId]="teamId"
+                               [userId]="userId"
+                               [activities]="activities?.data"
+                               (onFilterChange)="onFilterChange($event)"
+                               (onJoinWorkspace)="joinWorkspace($event)"
+                               (onOpenWorkspace)="openWorkspace($event)"
+                               (onEditActivity)="editActivity($event)"
+                               (onCancelActivity)="cancelActivity($event)"
+                               (onCancelRecurrentActivity)="cancelActivity($event)"
+                               (onScheduleExternalEvent)="scheduleExternalEvent($event)"
+                               (onCreateActivity)="openCreateActivity($event)"></scheduled-calendar-events>
+  </div>
+</ng-template>
+
+

@@ -1,0 +1,10 @@
+<div class="flex flex-row align-items-center gap-2"
+     [ngClass]="styleClass">
+  <img *ngIf="issueType?.iconUrl"
+       [src]="getImageUrl(issueType?.iconUrl)"
+       [alt]="issueType?.iconUrl"
+       loading="lazy"
+       class="mr-1 text-center"
+       style="width: 20px;">
+  {{issueType?.type}}
+</div>

@@ -1,0 +1,41 @@
+<p-toast position="top-center"/>
+
+<ng-template [ngIf]="invite"
+             [ngIfThen]="inviteCard"
+             [ngIfElse]="skeleton">
+</ng-template>
+
+<ng-template #inviteCard>
+  <div class="grid">
+    <div class="col-12 lg:col-6">
+      <prime-avatar size="xlarge"
+                    [label]="joinBy(' ', invite?.createdFor?.firstName!, ' ', invite?.createdFor?.lastName!)"
+                    [fileId]="invite?.createdFor?.avatarId"></prime-avatar>
+    </div>
+    <div class="col-12">
+      <div class="gap-3 flex flex-row">
+        <p-button pTooltip="Reject invitation"
+                  tooltipPosition="bottom"
+                  showDelay="1000"
+                  severity="secondary"
+                  label="Reject"
+                  styleClass="flex"
+                  [outlined]="true"
+                  (onClick)="rejectInvitation()"/>
+        <p-button icon="pi pi-arrow-right"
+                  iconPos="right"
+                  pTooltip="Accept invitation"
+                  tooltipPosition="bottom"
+                  showDelay="1000"
+                  severity="success"
+                  label="Accept invitation"
+                  styleClass="flex flex-grow-1"
+                  (onClick)="acceptInvitation()"/>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #skeleton>
+
+</ng-template>

@@ -1,0 +1,47 @@
+<div class="grid">
+  <div class="col-12 video-wrapper">
+    <video #videoElement autoplay></video>
+    <div class="controls">
+      <div class="flex flex-row align-items-center justify-content-center gap-2 mb-2">
+        <p-button
+          icon="pi pi-microphone"
+          size="large"
+          styleClass="text-xl"
+          [rounded]="true"
+          [severity]="!isMicrophoneOn ? 'danger' : 'success'"
+          (click)="toggleMicrophone()"
+          [ngClass]="{ 'icon-disabled': !isMicrophoneOn }">
+        </p-button>
+        <p-button
+          icon="pi pi-video"
+          size="large"
+          styleClass="text-xl"
+          [rounded]="true"
+          [severity]="!isCameraOn ? 'danger' : 'success'"
+          (click)="toggleCamera()"
+          [ngClass]="{ 'icon-disabled': !isCameraOn }">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 lg:col-6" *ngIf="cameras && cameras.length > 0">
+    <p-dropdown
+      [options]="cameras"
+      optionLabel="label"
+      placeholder="Select Camera"
+      styleClass="w-full"
+      [(ngModel)]="selectedCamera"
+      (onChange)="changeCamera()">
+    </p-dropdown>
+  </div>
+  <div class="col-12 lg:col-6" *ngIf="microphones && microphones.length > 0">
+    <p-dropdown
+      [options]="microphones"
+      optionLabel="label"
+      placeholder="Select Microphone"
+      styleClass="w-full"
+      [(ngModel)]="selectedMicrophone">
+    </p-dropdown>
+  </div>
+</div>

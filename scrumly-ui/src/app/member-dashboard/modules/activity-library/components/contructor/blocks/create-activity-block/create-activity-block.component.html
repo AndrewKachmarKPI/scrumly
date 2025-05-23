@@ -1,0 +1,24 @@
+<ng-template [ngIf]="block?.type === ActivityBlockType.QUESTION_BLOCK">
+  <create-question-block [block]="block!"
+                         [isEditMode]="isEditMode"
+                         (onBlockUpdate)="onBlockUpdate.emit($event)"></create-question-block>
+</ng-template>
+
+<ng-template [ngIf]="block?.type === ActivityBlockType.REFLECT_BLOCK">
+  <create-reflect-block [block]="block!"
+                        [isEditMode]="isEditMode"
+                        (onBlockUpdate)="onBlockUpdate.emit($event)"></create-reflect-block>
+</ng-template>
+
+<ng-template [ngIf]="block?.type === ActivityBlockType.ESTIMATE_BLOCK">
+  <create-estimate-block [block]="block!"
+                         [isEditMode]="isEditMode"
+                         (onBlockUpdate)="onBlockUpdate.emit($event)"></create-estimate-block>
+</ng-template>
+
+<ng-template [ngIf]="block?.type === ActivityBlockType.ITEM_BOARD_BLOCK">
+  <create-items-board-block [block]="block!"
+                            [isEditMode]="isEditMode"
+                            [ownerId]="ownerId"
+                            (onBlockUpdate)="onBlockUpdate.emit($event)"></create-items-board-block>
+</ng-template>

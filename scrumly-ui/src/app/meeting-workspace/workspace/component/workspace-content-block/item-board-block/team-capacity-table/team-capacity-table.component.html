@@ -1,0 +1,73 @@
+<p-table
+  *ngIf="teamLoadMetadata"
+  [value]="teamLoadMetadata?.membersLoadMetadata!"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  dataKey="id"
+  styleClass="p-datatable-gridlines">
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="userMetadata.firstName" class="text-start">
+        Member
+        <p-sortIcon field="userMetadata.firstName"/>
+      </th>
+      <th pSortableColumn="totalItems" class="text-center">
+        Items
+        <p-sortIcon field="totalItems"/>
+      </th>
+      <th pSortableColumn="totalCapacity" class="text-center">
+        Capacity
+        <p-sortIcon field="totalCapacity"/>
+      </th>
+      <th pSortableColumn="committedLoad" class="text-center">
+        Todo
+        <p-sortIcon field="committedLoad"/>
+      </th>
+      <th pSortableColumn="loadInProgress" class="text-center">
+        Progress
+        <p-sortIcon field="loadInProgress"/>
+      </th>
+      <th pSortableColumn="doneLoad" class="text-center">
+        Done
+        <p-sortIcon field="doneLoad"/>
+      </th>
+      <th pSortableColumn="progress" class="text-center" style="width: 40%">
+        Progress
+        <p-sortIcon field="progress"/>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-memberLoad>
+    <tr>
+      <td>
+        <prime-user-header [profile]="memberLoad.userMetadata"
+                           [hideEmail]="true"
+                           textSize="text-xs"
+                           avatarSize="normal"></prime-user-header>
+      </td>
+      <td class="text-center">
+        <ng-container *ngTemplateOutlet="tableBadge;context:{data: memberLoad.totalItems || '0'}"/>
+      </td>
+      <td class="text-center">
+        <ng-container *ngTemplateOutlet="tableBadge;context:{data: memberLoad.totalCapacity || '0'}"/>
+      </td>
+      <td class="text-center">
+        <ng-container *ngTemplateOutlet="tableBadge;context:{data: memberLoad.committedLoad || '0'}"/>
+      </td>
+      <td class="text-center">
+        <ng-container *ngTemplateOutlet="tableBadge;context:{data: memberLoad.loadInProgress || '0'}"/>
+      </td>
+      <td class="text-center">
+        <ng-container *ngTemplateOutlet="tableBadge;context:{data: memberLoad.doneLoad || '0'}"/>
+      </td>
+      <td class="text-center">
+        <p-meterGroup [value]="getMeterGroup(memberLoad.meterProgressMetadata)"/>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<ng-template #tableBadge let-data="data">
+  <span class="bg-gray-200 p-2 border-round-3xl text-center w-min px-3">
+    {{data}}
+  </span>
+</ng-template>

@@ -1,0 +1,99 @@
+<div class="flex flex-column lg:flex-row gap-3 justify-content-between lg:align-items-center mb-4">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center gap-2">
+      <h1 class="m-0 font-semibold text-900 text-xl line-height-3">
+        Your Invites
+      </h1>
+      <p-badge severity="success"
+               [value]="invites.length"></p-badge>
+    </div>
+    <p class="mb-0 mt-0 text-base text-600">Manage your organization and teams invites.</p>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-selectButton
+      [options]="inviteTypeOptions"
+      [formControl]="control(filtersGroup, 'inviteType')"
+      (onChange)="onInviteTypeSelect()"
+      optionLabel="label"
+      optionValue="value">
+      <ng-template let-item pTemplate>
+        <span class="mr-2">{{ item.label  }}</span>
+        <i [class]="item.icon"></i>
+      </ng-template>
+    </p-selectButton>
+  </div>
+</div>
+
+<p-divider></p-divider>
+
+<ng-template [ngIf]="invites.length > 0"
+             [ngIfThen]="invitesList"
+             [ngIfElse]="noInvites"></ng-template>
+
+<ng-template #noInvites>
+  <prime-no-data-placeholder text="No invites found"
+                             description="We couldn't find any pending invites"></prime-no-data-placeholder>
+</ng-template>
+
+<ng-template #invitesList>
+
+  <div class="w-full">
+    <div class="grid">
+      <div class="col-12 lg:col-6" *ngFor="let invite of invites">
+        <div class="shadow-2 surface-card p-4 border-2 border-transparent h-full"
+             style="border-radius: 10px;">
+
+          <div class="grid">
+            <div class="col gap-2">
+              <div class="flex flex-row gap-2 align-items-center justify-content-start">
+          <span
+            class="inline-flex justify-content-center align-items-center w-2rem h-2rem border-circle border-1 border-gray-200">
+            <i class="pi text-700"
+               [ngClass]="[invite.inviteType === InviteType.ORGANIZATION ? 'pi-building-columns': 'pi-users']"></i>
+          </span>
+                <span class="text-700 font-bold ml-2" *ngIf="invite.inviteType === InviteType.ORGANIZATION">
+            {{ invite.orgInfoDto?.name }}
+          </span>
+                <span class="text-700 font-bold ml-2" *ngIf="invite.inviteType === InviteType.TEAM">
+          </span>
+                <p-badge severity="success"
+                         [value]="invite.currentStatus"/>
+              </div>
+              <p class="text-700 mt-2 mb-0">
+                Invited by:
+                <span class="font-medium">
+            {{ invite.createBy?.firstName }} {{ invite.createBy?.lastName }}
+          </span>
+              </p>
+              <p class="text-700 mt-2 mb-0">
+                Expires at:
+                <span class="font-medium">
+            {{ invite.expiresAt | date: 'dd.MM.YYYY'  }}
+          </span>
+              </p>
+            </div>
+            <div class="col flex align-items-end justify-content-end">
+              <div class="flex flex-row align-items-end justify-content-end gap-2">
+                <p-button severity="danger"
+                          label="Reject"
+                          [text]="true"
+                          [outlined]="true"
+                          (onClick)="rejectInvite(invite, $event)"></p-button>
+                <p-button label="Accept Invite"
+                          severity="success"
+                          icon="pi pi-check"
+                          (onClick)="acceptInvite(invite, $event)"></p-button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-12">
+
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<p-confirmPopup/>

@@ -1,0 +1,24 @@
+<div class="flex flex-row w-full justify-content-start align-items-center gap-3">
+  <img *ngIf="issue?.imgPath"
+       [src]="issue?.imgPath"
+       loading="lazy"
+       class="mr-1 text-center" style="width: 15px;">
+  <div class="flex flex-column justify-content-start align-items-start">
+    <div class="font-medium flex-grow text-600">
+      {{issue?.title}}
+    </div>
+    <div class="flex flex-row align-items-center justify-content-start">
+      <a class="text-500 no-underline" *ngIf="issue?.projectName">
+        {{issue?.projectName}}
+      </a>
+      <span *ngIf="issue?.projectName" class="mx-1">
+        /
+      </span>
+      <a class="flex flex-grow text-green-500 no-underline"
+         [href]="getIssueUrl(issue?.issueUrl!)"
+         target="_blank">
+        {{issue?.issueKey}}
+      </a>
+    </div>
+  </div>
+</div>

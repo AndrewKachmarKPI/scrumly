@@ -1,0 +1,25 @@
+<p-timeline *ngIf="memberHistory"
+            [value]="changeLog()">
+  <ng-template pTemplate="content" let-action>
+    <div class="flex flex-column gap-2">
+      <small class="p-text-secondary">
+        {{ action.dateTime|date:'dd.MM.YYYY hh:mm' }}
+      </small>
+      <small class="p-text-secondary">
+        <prime-user-header avatarSize="normal"
+                           [profileId]="action.performedBy"
+                           [background]="true"></prime-user-header>
+      </small>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="opposite" let-action>
+    <div class="flex flex-column gap-2">
+      {{ 'organizations.members.CHANGE_ACTION.' + action.changeAction | translate }}
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="marker" let-action>
+    <div class="p-timeline-event-marker border"
+         [ngClass]="['border-'+getSeverity(action.changeAction)]"></div>
+  </ng-template>
+</p-timeline>

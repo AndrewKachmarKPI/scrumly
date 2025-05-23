@@ -1,0 +1,120 @@
+<form [formGroup]="formGroup" class="grid">
+  <div class="col-12" *ngIf="statuses">
+    <div class="grid">
+      <div class="col-12 lg:col-6">
+        <prime-status-autocomplete label="Issue done statuses"
+                                   placeholder="Select issue statuses for done"
+                                   [statusOptions]="statuses"
+                                   [selectedStatuses]="control(formGroup, 'doneStatuses').value || []"
+                                   [control]="control(formGroup, 'doneStatuses')"></prime-status-autocomplete>
+      </div>
+      <div class="col-12 lg:col-6">
+        <prime-status-autocomplete label="Issue in progress statuses"
+                                   placeholder="Select issue statuses for in progress"
+                                   [statusOptions]="statuses"
+                                   [selectedStatuses]="control(formGroup, 'inProgressStatuses').value || []"
+                                   [control]="control(formGroup, 'inProgressStatuses')"></prime-status-autocomplete>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="flex flex-column gap-3">
+      <div class="flex flex-row align-items-center justify-content-between">
+        <label>
+          Board columns
+          <span class="text-red-500">*</span>
+        </label>
+        <p-button label="Add column"
+                  icon="pi pi-plus"
+                  severity="success"
+                  size="small"
+                  [text]="true"
+                  (onClick)="addColumn()"/>
+      </div>
+
+      <div class="grid">
+        <div class="col-12 lg:col-4" *ngFor="let group of columnsArray.controls; let i = index">
+          <ng-container *ngTemplateOutlet="reflectColumn;context: {group: group, index: i}"></ng-container>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</form>
+
+<ng-template #reflectColumn let-group="group" let-index="index">
+  <div class="shadow-2 surface-card p-4 border-top-3 h-full relative"
+       [style.border-top-color]="control(group, 'color').value"
+       style="border-radius: 10px;">
+
+    <div class="grid">
+      <div class="col-12 lg:col-12">
+        <prime-input styleClass="w-full"
+                     label="Column title"
+                     placeholder="Column title"
+                     [control]="control(group, 'title')">
+        </prime-input>
+      </div>
+      <div class="col-12 lg:col-6">
+        <prime-input styleClass="w-full"
+                     label="Max Items"
+                     type="number"
+                     [control]="control(group, 'maxItems')">
+        </prime-input>
+      </div>
+      <div class="col-12 lg:col-6">
+        <prime-color-picker label="Column color"
+                            [control]="control(group, 'color')"></prime-color-picker>
+      </div>
+      <div class="col-12">
+        <prime-textarea label="Column instruction"
+                        placeholder="Explain what this column is created for"
+                        [rows]="3"
+                        [control]="control(group, 'instruction')"></prime-textarea>
+      </div>
+
+      <div class="col-12">
+        <prime-status-autocomplete label="Mapped statuses"
+                                   placeholder="Map statuses with this column"
+                                   [selectedStatuses]="control(group, 'statusMapping').value || []"
+                                   [statusOptions]="statuses!"
+                                   [control]="control(group, 'statusMapping')"></prime-status-autocomplete>
+      </div>
+
+      <div class="col-12 flex justify-content-between mt-2">
+        <div class="flex gap-2">
+          <p-button pTooltip="Move column left"
+                    icon="pi pi-arrow-left"
+                    severity="success"
+                    size="small"
+                    showDelay="500"
+                    [outlined]="true"
+                    [rounded]="true"
+                    (onClick)="moveColumn(index, -1)"
+                    [disabled]="index === 0"/>
+          <p-button pTooltip="Move column right"
+                    icon="pi pi-arrow-right"
+                    severity="success"
+                    size="small"
+                    showDelay="500"
+                    [outlined]="true"
+                    [rounded]="true"
+                    (onClick)="moveColumn(index, 1)"
+                    [disabled]="index === columnsArray.length - 1"/>
+        </div>
+        <p-button pTooltip="Remove column"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  showDelay="500"
+                  [outlined]="true"
+                  [rounded]="true"
+                  [disabled]="columnsArray.length == 1"
+                  (click)="removeColumn(index)"/>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+

@@ -1,0 +1,174 @@
+<div class="flex flex-column gap-3 w-full estimate-workspace">
+  <prime-load-spinner
+    *ngIf="isShowSpinner"
+    [isShowSpinnerSync]="true"></prime-load-spinner>
+
+  <!--  ISSUE INFO-->
+  <p-accordion class="w-full mb-5">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <div class="flex flex-row w-full justify-content-between align-items-center">
+          <estimate-item-row [issue]="issue?.issueMetadata"></estimate-item-row>
+          <div class="flex flex-row align-items-center justify-content-center" *ngIf="activityRoomStatus?.isActive">
+            <p-button icon="pi pi-refresh"
+                      severity="success"
+                      [text]="true"
+                      [rounded]="true"
+                      (click)="onRefreshEstimateIssue()"></p-button>
+            <p-button icon="pi pi-trash"
+                      severity="danger"
+                      [text]="true"
+                      [rounded]="true"
+                      (click)="onRemoveEstimateIssue()"></p-button>
+          </div>
+        </div>
+      </ng-template>
+      <p class="m-0">
+        <prime-html-box [htmlContent]="issue?.issueMetadata?.description!"></prime-html-box>
+      </p>
+    </p-accordionTab>
+  </p-accordion>
+
+
+  <div class="flex flex-column gap-3 justify-content-center">
+
+    <div class="surface-card p-4 shadow-2 border-round">
+      <div class="flex flex-row justify-content-between align-items-center">
+        <div class="flex flex-column justify-content-start align-items-start">
+          <h3 class="text-900 font-medium m-0">
+            Provided estimates
+          </h3>
+          <span class="text-500">
+            Voted ({{issue?.userEstimateMetadata?.length}}) / All ({{numberOfUsers}})
+          </span>
+        </div>
+
+        <div *ngIf="!isEditEstimate && issue?.isRevealed"
+             class="flex flex-column justify-content-center align-items-center gap-1">
+          <div class="text-xl text-center font-medium">
+            <span *ngIf="issue?.finalEstimate">
+                {{issue?.finalEstimate}}
+            </span>
+            <span *ngIf="!issue?.finalEstimate">
+                [ not estimated ]
+            </span>
+          </div>
+          <span class="font-medium text-500 text-center">Final estimate</span>
+        </div>
+
+        <ng-template [ngIf]="activityRoomStatus?.isActive">
+
+          <div class="flex flex-row justify-content-center align-items-center gap-3"
+               *ngIf="(isFacilitator && !issue?.isRevealed) || (issue?.isRevealed && isFacilitator)">
+            <p-button label="Reveal estimates"
+                      severity="success"
+                      icon="pi pi-eye"
+                      *ngIf="isFacilitator && !issue?.isRevealed && activityRoomStatus?.isActive"
+                      (onClick)="onRevealEstimates()"></p-button>
+
+            <ng-template [ngIf]="issue?.isRevealed && isFacilitator">
+              <prime-input placeholder="Final estimate"
+                           *ngIf="isEditEstimate"
+                           [hideValidation]="true"
+                           [control]="finalEstimateControl"/>
+              <p-buttonGroup>
+                <ng-template [ngIf]="isEditEstimate">
+                  <p-button label="Submit estimate"
+                            severity="success"
+                            icon="pi pi-check"
+                            size="small"
+                            (onClick)="onSelectFinalEstimate()"></p-button>
+                  <p-button label="Cancel"
+                            severity="secondary"
+                            icon="pi pi-times"
+                            size="small"
+                            [outlined]="true"
+                            (onClick)="onCancelFinalEstimate()"></p-button>
+                </ng-template>
+                <ng-template [ngIf]="!isEditEstimate">
+                  <p-button label="Change estimate"
+                            severity="warning"
+                            icon="pi pi-pencil"
+                            size="small"
+                            (onClick)="isEditEstimate = !isEditEstimate"></p-button>
+                  <p-button label="Revote"
+                            severity="warning"
+                            icon="pi pi-eye-slash"
+                            size="small"
+                            (onClick)="onHideEstimates()"
+                            [outlined]="true"></p-button>
+                </ng-template>
+              </p-buttonGroup>
+            </ng-template>
+          </div>
+        </ng-template>
+
+      </div>
+
+      <p-divider></p-divider>
+
+
+      <div class="flex flex-row gap-3 flex-wrap justify-content-around align-items-center pb-5"
+           *ngIf="!issue?.isRevealed">
+        <ng-container *ngTemplateOutlet="providedEstimates"></ng-container>
+        <div class="mx-3">
+          <div class="flex flex-column gap-2 align-items-center justify-content-center">
+            <i class="pi pi-spin pi-spinner text-green-500" style="font-size: 5rem"></i>
+            <p>Waiting for votes reveal...</p>
+          </div>
+        </div>
+      </div>
+
+      <ng-template [ngIf]="issue?.isRevealed">
+        <div class="flex flex-row gap-3 flex-wrap justify-content-around align-items-center">
+          <div class="flex flex-row flex-wrap justify-content-center gap-3 align-items-center">
+            <ng-container *ngTemplateOutlet="providedEstimates"></ng-container>
+          </div>
+
+          <div class="flex flex-column"
+               *ngIf="issueEstimatePolarChartHasData">
+            <p-chart type="polarArea"
+                     [data]="issueEstimatePolarChartData"
+                     [options]="issueEstimatePolarChartOptions"/>
+
+          </div>
+
+
+        </div>
+      </ng-template>
+
+    </div>
+
+    <estimate-scale-deck *ngIf="!issue?.isRevealed"
+                         [scaleMetadata]="block?.scaleMetadata"
+                         [userEstimate]="userEstimate"
+                         (onSelectEstimate)="onSelectEstimate($event)"></estimate-scale-deck>
+  </div>
+
+  <!--  ESTIMATE WORKSPACE-->
+
+</div>
+
+
+<ng-template #providedEstimates>
+  <div class="flex flex-column justify-content-center align-items-center"
+       *ngFor="let userEstimate of issue?.userEstimateMetadata">
+    <div class="relative flex justify-content-center align-items-center">
+      <estimate-card [value]="userEstimate.estimate"
+                     [isBack]="!issue?.isRevealed && userMetadata?.userId != userEstimate.userMetadata.userId"></estimate-card>
+      <div class="absolute top-75">
+        <div class="flex flex-column gap-2 align-items-center justify-content-center">
+          <prime-avatar
+            labelMode="split"
+            size="large"
+            [tooltip]="userEstimate?.userMetadata?.firstName! + ' ' + userEstimate?.userMetadata?.lastName!"
+            [label]="userEstimate?.userMetadata?.firstName! + ' ' + userEstimate?.userMetadata?.lastName!">
+          </prime-avatar>
+          <span class="text-sm text-center">
+          {{userEstimate?.userMetadata?.firstName! + ' ' + userEstimate?.userMetadata?.lastName!}}
+        </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

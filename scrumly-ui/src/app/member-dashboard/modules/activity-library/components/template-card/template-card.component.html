@@ -1,0 +1,58 @@
+<p-toast></p-toast>
+<div *ngIf="template"
+     class="shadow-2 surface-card p-4 border-2 border-transparent h-full cursor-pointer relative overflow-hidden"
+     style="border-radius: 10px;"
+     (click)="openDetails(template?.templateId!, menu)"
+     (mouseenter)="op.show($event)"
+     (mouseleave)="op.hide()">
+
+  <div class="flex flex-column">
+    <prime-image-box [src]="template.previewImageId"
+                     height="150px"
+                     width="200px"
+                     styleClass="mb-2"
+                     containerStyleClass="flex justify-content-center"
+                     defaultImage="assets/img/templates/{{ template.type?.type!.toUpperCase()! }}.png"
+                     alt="Sample Image"></prime-image-box>
+
+    <span class="text-700 text-lg mb-1 font-medium">{{ template.name }}</span>
+    <span class="text-600 text-sm mb-2">
+      {{ template.type?.type }}
+    </span>
+
+    <div class="flex flex-wrap gap-2">
+      <span *ngFor="let tag of template.tags" class="p-1 text-xs bg-gray-200 text-gray-700 border-round">
+        {{ tag }}
+      </span>
+    </div>
+
+    <p-overlayPanel #op styleClass="w-25rem text-left">
+      <div class="flex flex-column align-items-left justify-content-start mb-2 gap-2">
+        <span class="text-700 text-lg text-left font-medium">Description</span>
+        <span class="text-sm text-left font-medium pl-2 overflow-hidden text-overflow-ellipsis">
+          <prime-text-editor [value]="template?.description!"></prime-text-editor>
+        </span>
+      </div>
+      <div class="flex flex-column align-items-left justify-content-start mb-0 gap-2">
+        <span class="text-700 text-lg text-left mb-1 font-medium">Blocks</span>
+        <div>
+          <prime-template-block-info blockStyle="pl-2"
+                                     [block]="getBlockDescription(template)"></prime-template-block-info>
+        </div>
+      </div>
+    </p-overlayPanel>
+
+    <!-- Action Button -->
+    <p-button icon="pi pi-ellipsis-v"
+              severity="success"
+              styleClass="absolute top-0 right-0"
+              (onClick)="menu.toggle($event)"
+              [rounded]="true"
+              [outlined]="true"/>
+    <p-menu #menu
+            [model]="getMenuItems(template)"
+            [popup]="true"
+            appendTo="body"/>
+  </div>
+</div>
+
